@@ -1,0 +1,80 @@
+/*
+ *     Copyright 2026 Parresum Soft @ http://parresum.de
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *          http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package de.parresum.digisim.parser;
+
+import java.util.List;
+
+/**
+ * Pin extracted from scheme
+ *
+ * @author Kai Uwe Bachmann
+ */
+public class NetPin extends AbstractNetElement {
+
+   /** Position of the pin in scheme */
+   private final NetPoint point;
+
+   /** Name of the pin */
+   private final String pinNr;
+
+   /** Name of the part, the pin is for */
+   private final String part;
+
+   public NetPin(String uuid, String part, String pinNr, NetPoint point) {
+      super(uuid);
+      this.part = part;
+      this.pinNr = pinNr;
+      this.point = point;
+   }
+
+   @Override
+   public boolean containsPoint(List<NetPoint> points) {
+      for (NetPoint pt : points) {
+         if (this.point.equals(pt)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   @Override
+   public List<NetPoint> getPoints() {
+      return List.of(point);
+   }
+
+   @Override
+   public boolean isPin() {
+      return true;
+   }
+
+   public String getPinNr() {
+      return pinNr;
+   }
+
+   public String getPart() {
+      return part;
+   }
+
+   /**
+    * for debugging, only
+    */
+   @Override
+   public void print() {
+      System.out.println(String.format("  %s, %s (%s)", part, pinNr, point));
+
+   }
+
+}

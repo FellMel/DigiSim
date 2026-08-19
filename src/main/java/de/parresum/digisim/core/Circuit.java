@@ -1,0 +1,118 @@
+/*
+ *     Copyright 2026 Parresum Soft @ http://parresum.de
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *          http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package de.parresum.digisim.core;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import de.parresum.digisim.core.wire.Wire;
+
+/**
+ * A circuit to simulate
+ *
+ * @author Kai Uwe Bachmann
+ */
+public class Circuit {
+   /** Name of the circuit */
+   private final String name;
+
+   /** Map of all parts within the circuit */
+   private final Map<String, CircuitPart> parts = new HashMap<>();
+
+   /** Map of all wires within the circuit */
+   private final Map<String, Wire> wires = new HashMap<>();
+
+   /** List of input components to show in the simulation GUI */
+   private final List<InputPart> inputs = new ArrayList<>();
+
+   /** List of output components to show in the simulation GUI */
+   private final List<OutputPart> outputs = new ArrayList<>();
+
+   /**
+    * Creates a new circuit
+    *
+    * @param name name of the circuit
+    */
+   public Circuit(String name) {
+      super();
+      this.name = name;
+   }
+
+   /**
+    * gets the name of the circuit
+    *
+    * @return name of the circuit
+    */
+   public String getName() {
+      return name;
+   }
+
+   /**
+    * Adds a part to the circuit
+    *
+    * @param name name of the part to add
+    * @param part part to add
+    */
+   public void addPart(String name, CircuitPart part) {
+      parts.put(name, part);
+      if (part instanceof OutputPart) {
+         outputs.add((OutputPart) part);
+      } else if (part instanceof InputPart) {
+         inputs.add((InputPart) part);
+      }
+   }
+
+   /**
+    * Gets a dedicated part of the circuit
+    *
+    * @param name name of the part to get
+    * @return the part or null, if not available
+    */
+   public CircuitPart getPart(String name) {
+      return parts.get(name);
+   }
+
+   /**
+    * Adds a wire to the circuit
+    *
+    * @param wire wire to add
+    */
+   public void addWire(Wire wire) {
+      wires.put(wire.getName(), wire);
+
+   }
+
+   /**
+    * Gets the list of input elements
+    *
+    * @return input elements
+    */
+   public List<InputPart> getInputs() {
+      return inputs;
+   }
+
+   /**
+    * Gets the list of output elements
+    *
+    * @return output elements
+    */
+   public List<OutputPart> getOutputs() {
+      return outputs;
+   }
+
+}

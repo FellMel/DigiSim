@@ -1,0 +1,55 @@
+/*
+ *     Copyright 2026 Parresum Soft @ http://parresum.de
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *          http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package de.parresum.digisim.gui.example;
+
+import java.awt.HeadlessException;
+
+import de.parresum.digisim.core.gates.And;
+import de.parresum.digisim.core.io.Input;
+import de.parresum.digisim.core.io.Output;
+import de.parresum.digisim.core.wire.Wire;
+import de.parresum.digisim.gui.MainWindow;
+
+public class AndExample extends MainWindow {
+
+   private static final long serialVersionUID = -7287795071644005395L;
+
+   public AndExample() throws HeadlessException {
+      super("AND-Example");
+   }
+
+   @Override
+   protected void setup() {
+      final Wire a = new Wire("a");
+      final Wire b = new Wire("b");
+      final Wire out = new Wire("out");
+
+      final Input i1 = new Input(a);
+      final Input i2 = new Input(b);
+
+      final Output o = new Output(out);
+
+      final And gate = new And(null, out, a, b);
+
+      this.input.addInput(i1);
+      this.input.addInput(i2);
+      this.output.addOutput(o);
+   }
+
+   public static void main(final String... args) {
+      new AndExample();
+   }
+}
