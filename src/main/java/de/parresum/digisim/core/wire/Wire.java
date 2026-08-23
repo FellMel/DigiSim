@@ -77,7 +77,8 @@ public class Wire {
       super();
       this.name = name;
       if (name != null && !name.isBlank()) {
-         log = LogManager.getLogger(name);
+         String logName = name.replace(" ", "_");
+         log = LogManager.getLogger(logName);
       } else {
          log = LogManager.getLogger(this.getClass());
       }

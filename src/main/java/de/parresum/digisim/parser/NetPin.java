@@ -17,12 +17,16 @@ package de.parresum.digisim.parser;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * Pin extracted from scheme
  *
  * @author Kai Uwe Bachmann
  */
 public class NetPin extends AbstractNetElement {
+   private final static Logger LOG = LogManager.getLogger(NetPin.class);
 
    /** Position of the pin in scheme */
    private final NetPoint point;
@@ -73,7 +77,7 @@ public class NetPin extends AbstractNetElement {
     */
    @Override
    public void print() {
-      System.out.println(String.format("  %s, %s (%s)", part, pinNr, point));
+      LOG.info(String.format("  %s, %s (%s)", part, pinNr, point));
 
    }
 

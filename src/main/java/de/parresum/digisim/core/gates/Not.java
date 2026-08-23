@@ -16,6 +16,8 @@
 package de.parresum.digisim.core.gates;
 
 import de.parresum.digisim.annotations.Part;
+import de.parresum.digisim.annotations.Pin;
+import de.parresum.digisim.annotations.PortType;
 import de.parresum.digisim.core.Out;
 import de.parresum.digisim.core.State;
 import de.parresum.digisim.core.wire.Wire;
@@ -51,6 +53,11 @@ public class Not extends AbstractGate {
          throw new IllegalStateException("Multiple inputs for Not");
       }
       super.addInput(input);
+   }
+
+   @Pin(value = "I", type = PortType.INPUT)
+   public void setInput(Wire wire) {
+      super.setA(wire);
    }
 
    @Override

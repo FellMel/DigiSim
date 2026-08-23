@@ -17,6 +17,41 @@
 	<!-- 		<AppenderRef ref="ConsoleAppender" /> -->
 			<AppenderRef ref="FileAppender" />
 		</Root>
+		<Logger name="nand1" level="debug" additivity="false">
+			<AppenderRef ref="FileAppender" />
+		</Logger>
+		<Logger name="nand2" level="debug" additivity="false">
+			<AppenderRef ref="FileAppender" />
+		</Logger>
+		<Logger name="nand3" level="debug" additivity="false">
+			<AppenderRef ref="FileAppender" />
+		</Logger>
+		<Logger name="nand4" level="debug" additivity="false">
+			<AppenderRef ref="FileAppender" />
+		</Logger>
+		<Logger name="nand5" level="debug" additivity="false">
+			<AppenderRef ref="FileAppender" />
+		</Logger>
+		<Logger name="nand6" level="debug" additivity="false">
+			<AppenderRef ref="FileAppender" />
+		</Logger>
+		<Logger name="nand7" level="debug" additivity="false">
+			<AppenderRef ref="FileAppender" />
+		</Logger>
+		<Logger name="nand8" level="debug" additivity="false">
+			<AppenderRef ref="FileAppender" />
+		</Logger>
+
+		<Logger name="not1" level="debug" additivity="false">
+			<AppenderRef ref="FileAppender" />
+		</Logger>
+
+		<Logger name="sw6" level="debug" additivity="false">
+			<AppenderRef ref="FileAppender" />
+		</Logger>
+		<Logger name="sw7" level="debug" additivity="false">
+			<AppenderRef ref="FileAppender" />
+		</Logger>
 
 	</Loggers>
 </Configuration>

@@ -314,7 +314,7 @@ public abstract class AbstractGate extends AbstractPart implements StateListener
                output.get());
          if (log.isDebugEnabled()) {
             for (final Wire wire : inputs) {
-               log.debug("   Wire {}: {}", wire, wire.get());
+               log.debug("   Wire {}: {}", wire, wire != null ? wire.get() : null);
             }
          }
          log.debug("  now: {}", current);

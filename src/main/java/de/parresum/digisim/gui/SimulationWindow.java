@@ -16,6 +16,9 @@
 
 package de.parresum.digisim.gui;
 
+import java.util.Collections;
+import java.util.List;
+
 import javax.swing.JComponent;
 
 import de.parresum.digisim.core.Circuit;
@@ -43,6 +46,10 @@ public class SimulationWindow extends MainWindow {
 
    @Override
    protected void setup() {
+      List<InputPart> in = circuit.getInputs();
+//      Collections.sort(in, (a, b) -> {
+//         return a.getName().compareToIgnoreCase(b.getName());
+//      });
       for (InputPart input : circuit.getInputs()) {
          if (input instanceof JComponent) {
             this.input.add((JComponent) input);
@@ -51,6 +58,10 @@ public class SimulationWindow extends MainWindow {
          }
       }
 
+      Collections.sort(circuit.getOutputs(), (a, b) -> {
+         return a.getName().compareToIgnoreCase(b.getName());
+
+      });
       for (OutputPart output : circuit.getOutputs()) {
          if (output instanceof JComponent) {
             this.output.add((JComponent) output);
@@ -58,5 +69,6 @@ public class SimulationWindow extends MainWindow {
             this.output.add(new Output(output.getName(), output.getInput()));
          }
       }
+      circuit.start();
    }
 }

@@ -22,6 +22,7 @@ import java.util.List;
 import de.parresum.kicad.parser.eescheme.Pin;
 import de.parresum.kicad.parser.eescheme.Property;
 import de.parresum.kicad.parser.eescheme.Symbol;
+import de.parresum.kicad.parser.model.MirrorType;
 import de.parresum.kicad.parser.model.PositionAt;
 
 /**
@@ -54,6 +55,9 @@ public class NetPart {
    /** values of the part */
    private final List<NetValue> values = new ArrayList<>();
 
+   private final boolean mirrorX;
+   private final boolean mirrorY;
+
    public NetPart(Symbol symbol, LibPart libPart) {
       this.uuid = symbol.getUuid().getUuid();
       this.name = getSymbolName(symbol);
@@ -61,6 +65,17 @@ public class NetPart {
       this.lib = symbol.getLibraryIdentifier();
       this.point = new NetPoint(symbol.getPosition().getX(), symbol.getPosition().getY());
       this.angle = (int) Math.round(symbol.getPosition().getAngle());
+      if (symbol.getMirror() == null) {
+         mirrorX = false;
+         mirrorY = false;
+      } else if (symbol.getMirror() == MirrorType.X) {
+         mirrorX = true;
+         mirrorY = false;
+      } else {
+         mirrorX = false;
+         mirrorY = true;
+      }
+
       parsePins(symbol);
       parseValues(symbol);
    }
@@ -103,10 +118,21 @@ public class NetPart {
       }
 
       NetPoint pinPos = libPin.getPosition();
+      if (angle != 0) {
+         pinPos = pinPos.rotate(angle);
+      }
+      if (mirrorX) {
+         pinPos = pinPos.mirror(true);
+      }
+      if (mirrorY) {
+         pinPos = pinPos.mirror(false);
+      }
 
       // TODO: was ist mit gedrehten / gespiegelten Symbolen?
       // Y wird negativ gezählt ??? Warum ?
-      return new NetPoint(origin.getX() + pinPos.getX(), origin.getY() - pinPos.getY());
+      NetPoint pt = new NetPoint(origin.getX() + pinPos.getX(), origin.getY() - pinPos.getY());
+
+      return pt;
 
    }
 

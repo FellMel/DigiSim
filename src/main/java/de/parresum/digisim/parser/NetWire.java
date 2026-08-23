@@ -18,6 +18,9 @@ package de.parresum.digisim.parser;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.parresum.kicad.parser.eescheme.Wire;
 import de.parresum.kicad.parser.model.PointList;
 import de.parresum.kicad.parser.model.Position;
@@ -28,6 +31,7 @@ import de.parresum.kicad.parser.model.Position;
  * @author Kai Uwe Bachmann
  */
 public class NetWire extends AbstractNetElement {
+   private final static Logger LOG = LogManager.getLogger(NetWire.class);
 
    /**
     * List of points, the wire is defined by
@@ -79,7 +83,7 @@ public class NetWire extends AbstractNetElement {
     */
    @Override
    public void print() {
-      System.out.println(String.format("  wire (%.2f, %.2f) - (%.2f, %.2f)", points.get(0).getX(), points.get(0).getY(),
+      LOG.info(String.format("  wire (%.2f, %.2f) - (%.2f, %.2f)", points.get(0).getX(), points.get(0).getY(),
             points.get(1).getX(), points.get(1).getY()));
       // nothing to do, yet
 

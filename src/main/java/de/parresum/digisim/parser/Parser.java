@@ -25,6 +25,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.parresum.digisim.core.Circuit;
 import de.parresum.digisim.core.CircuitPart;
 import de.parresum.digisim.gui.SimulationWindow;
@@ -40,15 +43,18 @@ import de.parresum.kicad.parser.sexpr.SExpressionParser;
  * @author Kai Uwe Bachmann
  */
 public class Parser {
+   private final static Logger LOG = LogManager.getLogger(Parser.class);
 
    private static Map<String, LibPart> lib = new HashMap<>();
    private static List<NetPart> parts = new ArrayList<NetPart>();
    private static Map<String, List<AbstractNetElement>> netLists = new HashMap<>();
 
    public static void main(String[] args) {
-
+      LOG.info("Start parsing");
       // TODO: switch to file chooser
-      String filename = "src/main/resources/kicad/DigiSim/DigiSim.kicad_sch";
+//      String filename = "src/main/resources/kicad/DigiSim/DigiSim.kicad_sch";
+//      String filename = "src/main/resources/kicad/DigiSim/d-flipflop.kicad_sch";
+      String filename = "src/main/resources/kicad/DigiSim/t-flipflop.kicad_sch";
 
       String circuitName = extractElements(filename);
       Circuit circuit = createCircuit(circuitName);
@@ -70,7 +76,7 @@ public class Parser {
          }
 
          // first extract wires, pins and junctions
-         System.err.println("collecting net elements ...");
+         LOG.info("collecting net elements ...");
          List<AbstractNetElement> elements = new ArrayList<AbstractNetElement>();
          for (Wire wire : result.getWires()) {
             elements.add(new NetWire(wire));
@@ -87,11 +93,11 @@ public class Parser {
 
             elements.addAll(part.getPins());
          }
-         System.err.println("Found " + elements.size() + " elements");
+         LOG.info("Found " + elements.size() + " elements");
 
          // now group them by netlists
          int netCnt = 1;
-         System.err.println("grouping nets ...");
+         LOG.info("grouping nets ...");
          while (!elements.isEmpty()) {
             List<AbstractNetElement> netList = new ArrayList<>();
             AbstractNetElement root = elements.remove(0);
@@ -120,16 +126,16 @@ public class Parser {
             netCnt++;
          }
 
-         System.err.println("Found " + netLists.size() + " nets");
+         LOG.info("Found " + netLists.size() + " nets");
 
          // print result
          for (Entry<String, List<AbstractNetElement>> entry : netLists.entrySet()) {
-            System.out.println("------------------------------------");
-            System.out.println(entry.getKey());
+            LOG.info("------------------------------------");
+            LOG.info(entry.getKey());
             for (AbstractNetElement item : entry.getValue()) {
                item.print();
             }
-            System.out.println();
+            LOG.info("");
          }
          return result.getTitleBlock().getTitle();
 
@@ -171,8 +177,7 @@ public class Parser {
          }
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
             | InvocationTargetException e) {
-         System.err.println("Error in imlementation ...");
-         e.printStackTrace();
+         LOG.error("Error in imlementation ...", e);
          System.exit(-1);
       }
       return circuit;

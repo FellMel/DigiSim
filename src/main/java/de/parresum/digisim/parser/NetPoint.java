@@ -46,6 +46,33 @@ public class NetPoint {
       return y;
    }
 
+   public NetPoint rotate(int angle) {
+      switch (angle) {
+         case 0:
+            return this;
+
+         case 90:
+            return new NetPoint(-y, x);
+
+         case 180:
+            return new NetPoint(-x, -y);
+
+         case 270:
+            return new NetPoint(y, -x);
+
+         default:
+            return this;
+      }
+   }
+
+   public NetPoint mirror(boolean xAxis) {
+      if (xAxis) {
+         return new NetPoint(x, -y);
+      } else {
+         return new NetPoint(-x, y);
+      }
+   }
+
    @Override
    public int hashCode() {
       return Objects.hash(x, y);

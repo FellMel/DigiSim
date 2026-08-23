@@ -25,6 +25,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.parresum.digisim.annotations.Part;
 import de.parresum.digisim.core.CircuitPart;
 import de.parresum.digisim.core.wire.Wire;
@@ -39,6 +42,7 @@ import de.parresum.digisim.parser.accessor.ValueAccessor;
  * @author Kai Uwe Bachmann
  */
 public class PartHelper {
+   private final static Logger LOG = LogManager.getLogger(PartHelper.class);
 
    /** map to store known part descriptors */
    private final static Map<String, PartDescriptor> descriptors = new HashMap<>();
@@ -52,11 +56,11 @@ public class PartHelper {
                PartDescriptor desc = new PartDescriptor(cls);
                for (Part part : parts) {
                   descriptors.put(part.value(), desc);
-                  System.out.println("Found part " + part.value() + " in class " + cls.getName());
+                  LOG.info("Found part {} in class {}", part.value(), cls.getName());
 
                }
                for (String e : desc.getPins().keySet()) {
-                  System.out.println("   Pin " + e);
+                  LOG.info("   Pin {}", e);
                }
             }
          }
@@ -167,7 +171,7 @@ public class PartHelper {
       PartDescriptor desc = descriptors.get(part.getLibName());
 
       PinAccessor pinAccess = desc.getPins().get(pinNumber);
-      System.out.println("  connection " + wire.getName() + " on " + part.getLibName() + " : " + pinNumber);
+      LOG.info("  connection {} on {} : {}", wire.getName(), part.getLibName(), pinNumber);
       pinAccess.setWire(part, wire);
    }
 

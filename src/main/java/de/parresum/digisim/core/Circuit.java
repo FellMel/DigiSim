@@ -115,4 +115,11 @@ public class Circuit {
       return outputs;
    }
 
+   public void start() {
+      for (Wire w : wires.values()) {
+         w.set(State.HIGH);
+         w.set(State.LOW);
+      }
+   }
+
 }

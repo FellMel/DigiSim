@@ -13,31 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package de.parresum.digisim.annotations;
 
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Pin definition of a part
  *
- * @author Kai Uwe Bachmann
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@Repeatable(Pins.class)
-public @interface Pin {
-   PortType type() default PortType.INPUT;
+public @interface Pins {
+   /** List of different pins */
+   Pin[] value();
 
-   /**
-    * Name of the pin number to connect.
-    *
-    * @return
-    */
-   String value();
-
-   String part() default "";
 }

@@ -432,9 +432,14 @@
         "filename": "d-flipflop.kicad_sch",
         "name": "D-FlipFlop",
         "uuid": "ad5f2c55-e2ab-40d9-8d74-0522ff94fd81"
+      },
+      {
+        "filename": "t-flipflop.kicad_sch",
+        "name": "T-FlipFlop",
+        "uuid": "b0c2dfea-75e4-4d04-a9cb-6b5d0eb62d59"
       }
     ],
-    "used_designators": "led1-5,sw1-6,nand1-11",
+    "used_designators": "led1-7,nor1-3,sw1-8,nand1-11,and1-3",
     "variants": []
   },
   "sheets": [
@@ -445,6 +450,10 @@
     [
       "ad5f2c55-e2ab-40d9-8d74-0522ff94fd81",
       "D-FlipFlop"
+    ],
+    [
+      "b0c2dfea-75e4-4d04-a9cb-6b5d0eb62d59",
+      "T-FlipFlop"
     ]
   ],
   "text_variables": {},
