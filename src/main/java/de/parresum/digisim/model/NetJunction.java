@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.parresum.digisim.parser;
+package de.parresum.digisim.model;
 
 import java.util.List;
 

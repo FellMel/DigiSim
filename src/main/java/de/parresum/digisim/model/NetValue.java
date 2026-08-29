@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.parresum.digisim.parser;
+package de.parresum.digisim.model;
 
 /**
  * Value definition

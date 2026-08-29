@@ -31,10 +31,20 @@ import org.apache.logging.log4j.Logger;
 import de.parresum.digisim.core.Circuit;
 import de.parresum.digisim.core.CircuitPart;
 import de.parresum.digisim.gui.SimulationWindow;
+import de.parresum.digisim.model.AbstractNetElement;
+import de.parresum.digisim.model.LibPart;
+import de.parresum.digisim.model.NetJunction;
+import de.parresum.digisim.model.NetPart;
+import de.parresum.digisim.model.NetPin;
+import de.parresum.digisim.model.NetPoint;
+import de.parresum.digisim.model.NetWire;
+import de.parresum.digisim.model.graph.NetView;
+import de.parresum.digisim.model.graph.PartView;
 import de.parresum.kicad.parser.eescheme.Junction;
 import de.parresum.kicad.parser.eescheme.Schematic;
 import de.parresum.kicad.parser.eescheme.Symbol;
 import de.parresum.kicad.parser.eescheme.Wire;
+import de.parresum.kicad.parser.library.LibSymbol;
 import de.parresum.kicad.parser.sexpr.SExpressionParser;
 
 /**
@@ -52,9 +62,9 @@ public class Parser {
    public static void main(String[] args) {
       LOG.info("Start parsing");
       // TODO: switch to file chooser
-//      String filename = "src/main/resources/kicad/DigiSim/DigiSim.kicad_sch";
+      String filename = "src/main/resources/kicad/DigiSim/DigiSim.kicad_sch";
 //      String filename = "src/main/resources/kicad/DigiSim/d-flipflop.kicad_sch";
-      String filename = "src/main/resources/kicad/DigiSim/t-flipflop.kicad_sch";
+//      String filename = "src/main/resources/kicad/DigiSim/t-flipflop.kicad_sch";
 
       String circuitName = extractElements(filename);
       Circuit circuit = createCircuit(circuitName);
@@ -70,7 +80,7 @@ public class Parser {
          final Schematic result = SExpressionParser.parse(infile, new Schematic());
 
          // get used Lib symbols ...
-         for (Symbol sym : result.getLibSymbols().getSymbols()) {
+         for (LibSymbol sym : result.getLibSymbols().getSymbols()) {
             LibPart part = new LibPart(sym);
             lib.put(part.getName(), part);
          }
@@ -153,25 +163,28 @@ public class Parser {
       try {
          for (NetPart part : parts) {
             CircuitPart sp = PartHelper.createPart(part);
-            circuit.addPart(part.getName(), sp);
+            PartView view = new PartView(part.getName(), sp, part);
+            circuit.addPart(part.getName(), view);
          }
 
          // now create wires and connect them to elements
          for (Entry<String, List<AbstractNetElement>> net : netLists.entrySet()) {
             de.parresum.digisim.core.wire.Wire wire = new de.parresum.digisim.core.wire.Wire(net.getKey());
-            circuit.addWire(wire);
+            NetView view = new NetView(net.getKey(), wire);
+            circuit.addWire(view);
             for (AbstractNetElement item : net.getValue()) {
+               view.addElement(item);
                if (item.isPin()) {
                   NetPin pin = (NetPin) item;
                   String partName = pin.getPart();
                   String pinNumber = pin.getPinNr();
 
-                  CircuitPart part = circuit.getPart(partName);
+                  PartView part = circuit.getPart(partName);
                   if (part == null) {
                      throw new IllegalStateException("Unknown part with name " + partName);
                   }
 
-                  PartHelper.join(wire, part, pinNumber);
+                  PartHelper.join(wire, part.getPart(), pinNumber);
                }
             }
          }

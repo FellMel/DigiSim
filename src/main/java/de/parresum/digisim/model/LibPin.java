@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package de.parresum.digisim.parser;
+package de.parresum.digisim.model;
 
-import de.parresum.kicad.parser.eescheme.Pin;
+import de.parresum.kicad.parser.library.GraphPin;
 
 /**
  * Extracted pin definition of lib symbol
@@ -39,7 +39,7 @@ public class LibPin {
    /** type of the pin */
    private final PinType type;
 
-   public LibPin(Pin pin) {
+   public LibPin(GraphPin pin) {
       name = pin.getPinName().getName();
       number = pin.getPinNumber().getName();
       position = new NetPoint(pin.getPosition().getX(), pin.getPosition().getY());

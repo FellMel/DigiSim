@@ -14,26 +14,40 @@
  * limitations under the License.
  */
 
-package de.parresum.digisim.parser;
+package de.parresum.digisim.model.graph;
+
+import de.parresum.digisim.core.CircuitPart;
+import de.parresum.digisim.model.NetPart;
 
 /**
- * Type of pins
+ *
  *
  * @author Kai Uwe Bachmann
  */
-public enum PinType {
-   /** unknown pin type */
-   UNKNOWN,
+public class PartView {
 
-   /** Input Pin */
-   INPUT,
+   private final String name;
+   private final CircuitPart part;
 
-   /** Output pin */
-   OUTPUT,
+   private final NetPart netPart;
 
-   /** Tri-State pin */
-   TRI_STATE,
+   public PartView(String name, CircuitPart part, NetPart netPart) {
+      super();
+      this.name = name;
+      this.part = part;
+      this.netPart = netPart;
+   }
 
-   /** Open-collector pin */
-   OPEN_COLLECTOR;
+   public String getName() {
+      return name;
+   }
+
+   public CircuitPart getPart() {
+      return part;
+   }
+
+   public NetPart getNetPart() {
+      return netPart;
+   }
+
 }

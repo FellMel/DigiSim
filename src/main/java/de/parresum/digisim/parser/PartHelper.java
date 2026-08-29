@@ -31,6 +31,8 @@ import org.apache.logging.log4j.Logger;
 import de.parresum.digisim.annotations.Part;
 import de.parresum.digisim.core.CircuitPart;
 import de.parresum.digisim.core.wire.Wire;
+import de.parresum.digisim.model.NetPart;
+import de.parresum.digisim.model.NetValue;
 import de.parresum.digisim.parser.accessor.PartCreator;
 import de.parresum.digisim.parser.accessor.PartDescriptor;
 import de.parresum.digisim.parser.accessor.PinAccessor;

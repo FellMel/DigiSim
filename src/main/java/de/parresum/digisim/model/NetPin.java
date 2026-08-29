@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.parresum.digisim.parser;
+package de.parresum.digisim.model;
 
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import de.parresum.kicad.parser.eescheme.Pin;
 
 /**
  * Pin extracted from scheme
@@ -30,6 +32,8 @@ public class NetPin extends AbstractNetElement {
 
    /** Position of the pin in scheme */
    private final NetPoint point;
+   private final int angle;
+//   private final double length;
 
    /** Name of the pin */
    private final String pinNr;
@@ -37,11 +41,16 @@ public class NetPin extends AbstractNetElement {
    /** Name of the part, the pin is for */
    private final String part;
 
-   public NetPin(String uuid, String part, String pinNr, NetPoint point) {
-      super(uuid);
+   // private final PinShapeView pinShape;
+
+   public NetPin(Pin pin, String part, NetPoint point, int angle) {
+      super(pin.getUuid().getUuid());
       this.part = part;
-      this.pinNr = pinNr;
+      this.pinNr = pin.getName();
       this.point = point;
+      this.angle = angle;
+      // this.length = pin.getLength();
+      // this.pinShape = PinShapeView.from(pin.getGraphicPinShape());
    }
 
    @Override
@@ -71,6 +80,18 @@ public class NetPin extends AbstractNetElement {
    public String getPart() {
       return part;
    }
+
+   public int getAngle() {
+      return angle;
+   }
+
+//   public double getLength() {
+//      return length;
+//   }
+//
+//   public PinShapeView getPinShape() {
+//      return pinShape;
+//   }
 
    /**
     * for debugging, only

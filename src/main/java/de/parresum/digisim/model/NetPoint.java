@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.parresum.digisim.parser;
+package de.parresum.digisim.model;
 
 import java.util.Objects;
+
+import de.parresum.kicad.parser.model.Position;
 
 /**
  * An extracted Point from scheme
@@ -32,6 +34,11 @@ public class NetPoint {
    /** y cordinate */
    private final double y;
 
+   public NetPoint(Position pos) {
+      this.x = pos.getX();
+      this.y = pos.getY();
+   }
+
    public NetPoint(double x, double y) {
       super();
       this.x = x;
@@ -44,6 +51,14 @@ public class NetPoint {
 
    public double getY() {
       return y;
+   }
+
+   public NetPoint add(NetPoint pos) {
+      return new NetPoint(this.x + pos.getX(), this.y + pos.getY());
+   }
+
+   public NetPoint add(double dx, double dy) {
+      return new NetPoint(this.x + dx, this.y + dy);
    }
 
    public NetPoint rotate(int angle) {

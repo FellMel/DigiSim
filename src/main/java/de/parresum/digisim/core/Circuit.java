@@ -16,11 +16,13 @@
 package de.parresum.digisim.core;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.parresum.digisim.core.wire.Wire;
+import de.parresum.digisim.model.graph.NetView;
+import de.parresum.digisim.model.graph.PartView;
 
 /**
  * A circuit to simulate
@@ -32,10 +34,10 @@ public class Circuit {
    private final String name;
 
    /** Map of all parts within the circuit */
-   private final Map<String, CircuitPart> parts = new HashMap<>();
+   private final Map<String, PartView> parts = new HashMap<>();
 
    /** Map of all wires within the circuit */
-   private final Map<String, Wire> wires = new HashMap<>();
+   private final Map<String, NetView> wires = new HashMap<>();
 
    /** List of input components to show in the simulation GUI */
    private final List<InputPart> inputs = new ArrayList<>();
@@ -68,12 +70,13 @@ public class Circuit {
     * @param name name of the part to add
     * @param part part to add
     */
-   public void addPart(String name, CircuitPart part) {
+   public void addPart(String name, PartView part) {
       parts.put(name, part);
-      if (part instanceof OutputPart) {
-         outputs.add((OutputPart) part);
-      } else if (part instanceof InputPart) {
-         inputs.add((InputPart) part);
+      CircuitPart element = part.getPart();
+      if (element instanceof OutputPart) {
+         outputs.add((OutputPart) element);
+      } else if (element instanceof InputPart) {
+         inputs.add((InputPart) element);
       }
    }
 
@@ -83,8 +86,12 @@ public class Circuit {
     * @param name name of the part to get
     * @return the part or null, if not available
     */
-   public CircuitPart getPart(String name) {
+   public PartView getPart(String name) {
       return parts.get(name);
+   }
+
+   public Collection<PartView> getParts() {
+      return parts.values();
    }
 
    /**
@@ -92,9 +99,13 @@ public class Circuit {
     *
     * @param wire wire to add
     */
-   public void addWire(Wire wire) {
+   public void addWire(NetView wire) {
       wires.put(wire.getName(), wire);
 
+   }
+
+   public Collection<NetView> getViews() {
+      return wires.values();
    }
 
    /**
@@ -115,11 +126,11 @@ public class Circuit {
       return outputs;
    }
 
-   public void start() {
-      for (Wire w : wires.values()) {
-         w.set(State.HIGH);
-         w.set(State.LOW);
-      }
-   }
+//   public void start() {
+//      for (Wire w : wires.values()) {
+//         w.set(State.HIGH);
+//         w.set(State.LOW);
+//      }
+//   }
 
 }

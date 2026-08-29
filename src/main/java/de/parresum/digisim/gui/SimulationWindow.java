@@ -16,6 +16,7 @@
 
 package de.parresum.digisim.gui;
 
+import java.awt.BorderLayout;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,6 +27,7 @@ import de.parresum.digisim.core.InputPart;
 import de.parresum.digisim.core.OutputPart;
 import de.parresum.digisim.core.io.Input;
 import de.parresum.digisim.core.io.Output;
+import de.parresum.digisim.gui.scheme.SchemePanel;
 
 /**
  * General window for simulation
@@ -69,6 +71,7 @@ public class SimulationWindow extends MainWindow {
             this.output.add(new Output(output.getName(), output.getInput()));
          }
       }
-      circuit.start();
+      this.add(new SchemePanel(circuit), BorderLayout.CENTER);
+//      circuit.start();
    }
 }

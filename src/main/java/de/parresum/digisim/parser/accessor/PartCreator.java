@@ -20,7 +20,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import de.parresum.digisim.core.CircuitPart;
-import de.parresum.digisim.parser.NetPart;
+import de.parresum.digisim.model.NetPart;
 
 /**
  * Creator to create a new instance of a circuit part

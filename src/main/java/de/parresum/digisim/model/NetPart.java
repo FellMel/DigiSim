@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package de.parresum.digisim.parser;
+package de.parresum.digisim.model;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
 
 import de.parresum.kicad.parser.eescheme.Pin;
-import de.parresum.kicad.parser.eescheme.Property;
 import de.parresum.kicad.parser.eescheme.Symbol;
 import de.parresum.kicad.parser.model.MirrorType;
 import de.parresum.kicad.parser.model.PositionAt;
+import de.parresum.kicad.parser.model.Property;
 
 /**
  * Part extracted from scheme
@@ -92,10 +94,10 @@ public class NetPart {
 
    private void parsePins(Symbol symbol) {
       for (Pin pin : symbol.getPins()) {
-         String pinName = pin.getName();
          NetPoint point = getPinPoint(symbol, pin);
+         int angle = getPinAngle(symbol, pin);
 
-         NetPin partPin = new NetPin(pin.getUuid().getUuid(), name, pinName, point);
+         NetPin partPin = new NetPin(pin, name, point, angle);
 
          pins.add(partPin);
       }
@@ -136,6 +138,30 @@ public class NetPart {
 
    }
 
+   private int getPinAngle(Symbol symbol, Pin pin) {
+      PositionAt origin = symbol.getPosition();
+      String pinName = pin.getName();
+      LibPin libPin = libPart.getPin(pinName);
+      if (libPin == null) {
+         throw new IllegalStateException("Can't find pin entry for " + pinName);
+      }
+
+      return (int) (libPin.getAngle() + symbol.getPosition().getAngle());
+
+   }
+
+   private int getPinLength(Symbol symbol, Pin pin) {
+      PositionAt origin = symbol.getPosition();
+      String pinName = pin.getName();
+      LibPin libPin = libPart.getPin(pinName);
+      if (libPin == null) {
+         throw new IllegalStateException("Can't find pin entry for " + pinName);
+      }
+
+      return (int) (libPin.getAngle() + symbol.getPosition().getAngle());
+
+   }
+
    public List<NetPin> getPins() {
       return pins;
    }
@@ -164,4 +190,9 @@ public class NetPart {
       return lib;
    }
 
+   public void paint(Graphics2D g) {
+      g.setColor(Color.BLACK);
+
+      libPart.paint(g, point, angle, mirrorX, mirrorY);
+   }
 }
