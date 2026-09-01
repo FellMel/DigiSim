@@ -138,18 +138,17 @@ public class LibPart {
 
    protected AffineTransform transform(Graphics2D g2d, NetPoint position, int angle, boolean mirrorX, boolean mirrorY) {
       AffineTransform oldTransform = g2d.getTransform();
-      g2d.rotate(angle * Math.PI / 180);
+      // must be in inverse order
+      g2d.translate(position.getX() * AbstractView.BASE_SCALE, position.getY() * AbstractView.BASE_SCALE);
+      g2d.rotate(Math.toRadians(-angle));
       // TODO: handle mirror
-
-//if (mirrorX) {
+      // if (mirrorX) {
 //    p = p.mirror(true);
 // } else if (mirrorY) {
 //    p = p.mirror(false);
 // }
 //
 // return position.add(p);
-
-      g2d.translate(position.getX() * AbstractView.BASE_SCALE, position.getY() * AbstractView.BASE_SCALE);
 
       return oldTransform;
    }

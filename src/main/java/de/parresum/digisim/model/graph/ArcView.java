@@ -25,7 +25,7 @@ import de.parresum.kicad.parser.eescheme.shape.Radius;
 import de.parresum.kicad.parser.model.Position;
 
 /**
- *
+ * a graphical arc element
  *
  * @author Kai Uwe Bachmann
  */

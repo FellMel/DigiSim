@@ -26,12 +26,13 @@ import de.parresum.kicad.parser.eescheme.shape.AbstractShape;
 import de.parresum.kicad.parser.model.FillType;
 
 /**
- *
+ * Base of graphical elements
  *
  * @author Kai Uwe Bachmann
  */
 public abstract class AbstractView {
 
+   // Some line definitions
    private final static Stroke DASH = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f,
          new float[] { 5.0f }, 0.0f);
    private final static Stroke DASH_DOT = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f,
@@ -42,16 +43,20 @@ public abstract class AbstractView {
          new float[] { 1.0f }, 0.0f);
    private final static Stroke SOLID = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER);
 
+   /** base scale factor */
    public final static double BASE_SCALE = 5.0;
 
+   // Stroke definition
    private final Stroke stroke;
    private double lineWidth;
    private final Color lineColor;
 //   private LineType lineType;
 
+   // Fill definition
    private final Color fillColor;
    private final FillType fillType;
 
+   // Shape for the element
    private final Shape shape;
 
    protected AbstractView(AbstractShape kiCadShape, Shape shape) {
@@ -101,18 +106,33 @@ public abstract class AbstractView {
       }
    }
 
+   /**
+    * paints the element
+    *
+    * @param g2d
+    */
    public void paint(Graphics2D g2d) {
 
       paintBackground(g2d);
       paintOutline(g2d);
    }
 
+   /**
+    * paints the outline
+    *
+    * @param g2d
+    */
    protected void paintOutline(Graphics2D g2d) {
       g2d.setColor(lineColor);
       g2d.setStroke(stroke);
       g2d.draw(shape);
    }
 
+   /**
+    * paints the filled content of the shape
+    *
+    * @param g2d
+    */
    protected void paintBackground(Graphics2D g2d) {
       switch (fillType) {
          case NONE:
@@ -128,7 +148,13 @@ public abstract class AbstractView {
       g2d.fill(shape);
    }
 
-   private Color createColor(de.parresum.kicad.parser.model.Color col) {
+   /**
+    * creates a color from model
+    *
+    * @param col
+    * @return
+    */
+   protected Color createColor(de.parresum.kicad.parser.model.Color col) {
       if (col == null) {
          return Color.BLACK;
       }

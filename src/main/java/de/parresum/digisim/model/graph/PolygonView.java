@@ -24,7 +24,7 @@ import de.parresum.kicad.parser.eescheme.shape.Polyline;
 import de.parresum.kicad.parser.model.Position;
 
 /**
- *
+ * A graphical polygon element
  *
  * @author Kai Uwe Bachmann
  */

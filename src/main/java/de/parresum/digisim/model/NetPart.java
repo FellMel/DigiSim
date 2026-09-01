@@ -18,9 +18,12 @@ package de.parresum.digisim.model;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.parresum.digisim.model.graph.AbstractView;
+import de.parresum.digisim.model.graph.TextView;
 import de.parresum.kicad.parser.eescheme.Pin;
 import de.parresum.kicad.parser.eescheme.Symbol;
 import de.parresum.kicad.parser.model.MirrorType;
@@ -56,6 +59,8 @@ public class NetPart {
 
    /** values of the part */
    private final List<NetValue> values = new ArrayList<>();
+
+   private final List<AbstractView> properties = new ArrayList<>();
 
    private final boolean mirrorX;
    private final boolean mirrorY;
@@ -107,6 +112,9 @@ public class NetPart {
       for (Property prop : symbol.getProperties()) {
          if (prop.getValue() != null && !prop.getValue().isBlank()) {
             values.add(new NetValue(prop.getKey(), prop.getValue(), name));
+            if (!prop.isHide()) {
+               properties.add(new TextView(prop));
+            }
          }
       }
    }
@@ -194,5 +202,17 @@ public class NetPart {
       g.setColor(Color.BLACK);
 
       libPart.paint(g, point, angle, mirrorX, mirrorY);
+      paint(g, point, angle);
    }
+
+   public void paint(Graphics2D g, NetPoint position, int angle) {
+      AffineTransform oldTransform = g.getTransform();
+      g.rotate(Math.toRadians(-angle), position.getX() * AbstractView.BASE_SCALE,
+            position.getY() * AbstractView.BASE_SCALE);
+      for (AbstractView item : properties) {
+         item.paint(g);
+      }
+      g.setTransform(oldTransform);
+   }
+
 }

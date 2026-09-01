@@ -15,6 +15,7 @@
  */
 package de.parresum.digisim.parser;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -24,6 +25,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -61,12 +65,47 @@ public class Parser {
 
    public static void main(String[] args) {
       LOG.info("Start parsing");
-      // TODO: switch to file chooser
-      String filename = "src/main/resources/kicad/DigiSim/DigiSim.kicad_sch";
-//      String filename = "src/main/resources/kicad/DigiSim/d-flipflop.kicad_sch";
-//      String filename = "src/main/resources/kicad/DigiSim/t-flipflop.kicad_sch";
+      File file = null;
 
-      String circuitName = extractElements(filename);
+      if (args.length > 0) {
+         String filename = args[0];
+         file = new File(filename);
+      } else {
+         JFileChooser fileChooser = new JFileChooser();
+
+         // Optional: Startverzeichnis festlegen (z. B. Benutzerordner)
+         fileChooser.setCurrentDirectory(new File("src/main/resources/kicad/DigiSim"));
+         fileChooser.setAcceptAllFileFilterUsed(false);
+         fileChooser.addChoosableFileFilter(new FileFilter() {
+            @Override
+            public String getDescription() {
+               return "KiCad Scheme (*.kicad_sch)";
+            }
+
+            @Override
+            public boolean accept(File f) {
+               if (f.isDirectory()) {
+                  return true;
+               } else {
+                  return f.getName().toLowerCase().endsWith(".kicad_sch");
+               }
+            }
+         });
+
+         // 2. Dialog anzeigen (parent ist z. B. ein JFrame oder null)
+         int result = fileChooser.showOpenDialog(null);
+
+         // 3. Ergebnis auswerten
+         if (result != JFileChooser.APPROVE_OPTION) {
+            System.exit(0);
+         }
+         file = fileChooser.getSelectedFile();
+      }
+//       filename = "src/main/resources/kicad/DigiSim/DigiSim.kicad_sch";
+//       filename = "src/main/resources/kicad/DigiSim/d-flipflop.kicad_sch";
+//       filename = "src/main/resources/kicad/DigiSim/t-flipflop.kicad_sch";
+
+      String circuitName = extractElements(file);
       Circuit circuit = createCircuit(circuitName);
 
       // Create test window with inputs and outputs
@@ -74,8 +113,8 @@ public class Parser {
 
    }
 
-   private static String extractElements(String filename) {
-      try (FileReader infile = new FileReader(filename)) {
+   private static String extractElements(File file) {
+      try (FileReader infile = new FileReader(file)) {
 
          final Schematic result = SExpressionParser.parse(infile, new Schematic());
 

@@ -24,7 +24,7 @@ import de.parresum.kicad.parser.model.PointList;
 import de.parresum.kicad.parser.model.Position;
 
 /**
- *
+ * a graphical bezier element
  *
  * @author Kai Uwe Bachmann
  */

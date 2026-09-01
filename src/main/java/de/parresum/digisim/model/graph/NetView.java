@@ -31,16 +31,20 @@ import de.parresum.digisim.model.NetPoint;
 import de.parresum.digisim.model.NetWire;
 
 /**
- *
+ * a graphical part representing a wire with all pathes
  *
  * @author Kai Uwe Bachmann
  */
 public class NetView {
    private static final int RADIUS = 3;
-   private static final double ZOOM = 5.0;
 
+   /** name of the network */
    private final String name;
+
+   /** the graphical elements representing this network */
    private List<AbstractNetElement> elements = new ArrayList<>();
+
+   /** the associated wire */
    private Wire wire;
 
    public NetView(String name, Wire wire) {
@@ -117,9 +121,6 @@ public class NetView {
 
    private void paintPin(Graphics g, NetPin pin) {
       // Pins will be drawn by parts ...
-//      NetPoint pt = pin.getPoints().getFirst();
-//
-//      pin.getPinShape().paint(g, zoom(pt.getX()), zoom(pt.getY()), zoom(pin.getLength()), pin.getAngle());
    }
 
    private int zoom(double val) {

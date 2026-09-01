@@ -23,7 +23,7 @@ import de.parresum.kicad.parser.eescheme.shape.Rectangle;
 import de.parresum.kicad.parser.model.Position;
 
 /**
- *
+ * A graphical rectangle element
  *
  * @author Kai Uwe Bachmann
  */

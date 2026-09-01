@@ -19,31 +19,33 @@ package de.parresum.digisim.model.graph;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
-import java.awt.geom.Rectangle2D;
 
 import de.parresum.digisim.model.NetPoint;
 import de.parresum.kicad.parser.library.GraphPin;
 import de.parresum.kicad.parser.library.PinShapeType;
-import de.parresum.kicad.parser.model.PositionAt;
 
 /**
- *
+ * A graphical pin element
  *
  * @author Kai Uwe Bachmann
  */
 public class PinView extends AbstractView {
-   private final static double DIAMETER = 0.7;
-   private final static double CLOCK_SIZE = 0.2;
+   /** diameter of the inverter circle */
+   private final static double DIAMETER = 0.1 * BASE_SCALE;
+
+   /** the size of the clock triangle */
+   private final static double CLOCK_SIZE = 0.1 * BASE_SCALE;
 
    public PinView(GraphPin pin) {
       super(null, createShape(pin));
    }
 
-   private static Shape createShape2(GraphPin pin) {
-      PositionAt pos = pin.getPosition();
-      return new Rectangle2D.Double(pos.getX() * BASE_SCALE, pos.getY() * -BASE_SCALE, 5, 5);
-   }
-
+   /**
+    * Creates the shape of the pin
+    *
+    * @param pin the pin type
+    * @return the shape
+    */
    private static Shape createShape(GraphPin pin) {
       PinShapeType pinShape = pin.getGraphicPinShape();
       double length = pin.getLength();
@@ -94,32 +96,67 @@ public class PinView extends AbstractView {
       return path;
    }
 
+   /**
+    * creates a clock pin
+    *
+    * @param path
+    * @param to
+    * @param angle
+    */
    private static void createClock(Path2D path, NetPoint to, int angle) {
       createLine(path, to, angle);
       createClockPart(path, to, angle);
    }
 
+   /**
+    * creates a clock pin with edge
+    *
+    * @param path
+    * @param to
+    * @param angle
+    */
    private static void createClockLow(Path2D path, NetPoint to, int angle) {
       createClock(path, to, angle);
       createEdge(path, to, angle);
    }
 
+   /**
+    * creates a clock pin with edge
+    *
+    * @param path
+    * @param to
+    * @param angle
+    */
    private static void createEdgeClockHigh(Path2D path, NetPoint to, int angle) {
       createClock(path, to, angle);
       createEdge(path, to, angle);
    }
 
+   /**
+    * creates an input pin with edge
+    *
+    * @param path
+    * @param to
+    * @param angle
+    */
    private static void createInputLow(Path2D path, NetPoint to, int angle) {
       createLine(path, to, angle);
       createEdge(path, to, angle);
    }
 
+   /**
+    * creates an inverted pin
+    *
+    * @param path
+    * @param to
+    * @param angle
+    */
    private static void createInverted(Path2D path, NetPoint to, int angle) {
       switch (angle) {
          case 0:
             path.lineTo((to.getX() - DIAMETER) * BASE_SCALE, to.getY() * -BASE_SCALE);
-            path.append(new Ellipse2D.Double(to.getX() * BASE_SCALE, (to.getY() + DIAMETER / 2.0) * -BASE_SCALE,
-                  DIAMETER * BASE_SCALE, DIAMETER * BASE_SCALE), false);
+            path.append(new Ellipse2D.Double((to.getX() - DIAMETER) * BASE_SCALE,
+                  (to.getY() + DIAMETER / 2.0) * -BASE_SCALE, DIAMETER * BASE_SCALE, DIAMETER * BASE_SCALE), false);
             break;
          case 90:
             path.lineTo(to.getX() * BASE_SCALE, (to.getY() - DIAMETER) * -BASE_SCALE);
@@ -139,19 +176,47 @@ public class PinView extends AbstractView {
       }
    }
 
+   /**
+    * creates an inverted clock pin
+    *
+    * @param path
+    * @param to
+    * @param angle
+    */
    private static void createInvertedClock(Path2D path, NetPoint to, int angle) {
       createInverted(path, to, angle);
       createClockPart(path, to, angle);
    }
 
+   /**
+    * creates a normal pin
+    *
+    * @param path
+    * @param to
+    * @param angle
+    */
    private static void createLine(Path2D path, NetPoint to, int angle) {
       path.lineTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
    }
 
+   /**
+    * creates a non logical pin
+    *
+    * @param path
+    * @param to
+    * @param angle
+    */
    private static void createNonLogic(Path2D path, NetPoint to, int angle) {
       path.lineTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
    }
 
+   /**
+    * creates an output pin with edge
+    *
+    * @param path
+    * @param to
+    * @param angle
+    */
    private static void createOutputLow(Path2D path, NetPoint to, int angle) {
       createLine(path, to, angle);
       switch (angle) {
@@ -170,7 +235,7 @@ public class PinView extends AbstractView {
          case 180:
             path.moveTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
             path.lineTo(to.getX() * BASE_SCALE, (to.getY() + CLOCK_SIZE) * -BASE_SCALE);
-            path.lineTo((to.getX() - CLOCK_SIZE) * BASE_SCALE, to.getY() * -BASE_SCALE);
+            path.lineTo((to.getX() + CLOCK_SIZE) * BASE_SCALE, to.getY() * -BASE_SCALE);
             path.lineTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
             break;
          case 270:
@@ -182,6 +247,13 @@ public class PinView extends AbstractView {
       }
    }
 
+   /**
+    * creates the clock part (triangle) of a pin
+    *
+    * @param path
+    * @param to
+    * @param angle
+    */
    private static void createClockPart(Path2D path, NetPoint to, int angle) {
       switch (angle) {
          case 0:
@@ -215,45 +287,40 @@ public class PinView extends AbstractView {
       }
    }
 
+   /**
+    * creates the edge part of a pin
+    *
+    * @param path
+    * @param to
+    * @param angle
+    */
    private static void createEdge(Path2D path, NetPoint to, int angle) {
       switch (angle) {
          case 0:
             path.moveTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
-            path.lineTo((to.getX() - CLOCK_SIZE) * BASE_SCALE, (to.getY() - CLOCK_SIZE) * -BASE_SCALE);
+            path.lineTo((to.getX() - CLOCK_SIZE) * BASE_SCALE, (to.getY() + CLOCK_SIZE) * -BASE_SCALE);
             path.lineTo((to.getX() - CLOCK_SIZE) * BASE_SCALE, to.getY() * -BASE_SCALE);
             path.lineTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
             break;
          case 90:
             path.moveTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
-            path.lineTo((to.getX() - CLOCK_SIZE) * BASE_SCALE, (to.getY() + CLOCK_SIZE) * -BASE_SCALE);
+            path.lineTo((to.getX() - CLOCK_SIZE) * BASE_SCALE, (to.getY() - CLOCK_SIZE) * -BASE_SCALE);
             path.lineTo(to.getX() * BASE_SCALE, (to.getY() + CLOCK_SIZE) * -BASE_SCALE);
             path.lineTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
             break;
          case 180:
             path.moveTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
-            path.lineTo((to.getX() - CLOCK_SIZE) * BASE_SCALE, (to.getY() + CLOCK_SIZE) * -BASE_SCALE);
-            path.lineTo((to.getX() - CLOCK_SIZE) * BASE_SCALE, to.getY() * -BASE_SCALE);
+            path.lineTo((to.getX() + CLOCK_SIZE) * BASE_SCALE, (to.getY() + CLOCK_SIZE) * -BASE_SCALE);
+            path.lineTo((to.getX() + CLOCK_SIZE) * BASE_SCALE, to.getY() * -BASE_SCALE);
             path.lineTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
             break;
          case 270:
             path.moveTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
-            path.lineTo((to.getX() + CLOCK_SIZE) * BASE_SCALE, (to.getY() - CLOCK_SIZE) * -BASE_SCALE);
+            path.lineTo((to.getX() + CLOCK_SIZE) * BASE_SCALE, (to.getY() + CLOCK_SIZE) * -BASE_SCALE);
             path.lineTo(to.getX() * BASE_SCALE, (to.getY() - CLOCK_SIZE) * -BASE_SCALE);
             path.lineTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
             break;
       }
    }
-//   @Override
-//   protected void paintOutline(Graphics2D g2d) {
-//      // TODO: Text-Effects
-//
-//      g2d.drawString(str, (float) pos.getX(), (float) pos.getY());
-//
-//   }
-//
-//   @Override
-//   protected void paintBackground(Graphics2D g2d) {
-//      // nothing to do, yet
-//   }
 
 }

@@ -23,7 +23,7 @@ import de.parresum.kicad.parser.eescheme.shape.Circle;
 import de.parresum.kicad.parser.model.Position;
 
 /**
- *
+ * agraphical circle element
  *
  * @author Kai Uwe Bachmann
  */
