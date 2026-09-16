@@ -73,7 +73,6 @@ public class TextView extends AbstractView {
 
    @Override
    protected void paintOutline(Graphics2D g2d) {
-      // TODO: Text-Effects
       java.awt.Font oldfont = g2d.getFont();
 
       g2d.setFont(font);

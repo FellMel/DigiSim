@@ -140,15 +140,12 @@ public class LibPart {
       AffineTransform oldTransform = g2d.getTransform();
       // must be in inverse order
       g2d.translate(position.getX() * AbstractView.BASE_SCALE, position.getY() * AbstractView.BASE_SCALE);
+      if (mirrorX) {
+         g2d.scale(1, -1);
+      } else if (mirrorY) {
+         g2d.scale(-1, 1);
+      }
       g2d.rotate(Math.toRadians(-angle));
-      // TODO: handle mirror
-      // if (mirrorX) {
-//    p = p.mirror(true);
-// } else if (mirrorY) {
-//    p = p.mirror(false);
-// }
-//
-// return position.add(p);
 
       return oldTransform;
    }

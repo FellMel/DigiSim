@@ -18,12 +18,19 @@ package de.parresum.digisim.parser;
 
 import java.beans.IntrospectionException;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -50,6 +57,7 @@ public class PartHelper {
    private final static Map<String, PartDescriptor> descriptors = new HashMap<>();
    static {
       try {
+         LOG.info("Start searching parts ...");
          // TODO: implement a configuration service to extend with new parts
          List<Class<? extends CircuitPart>> pkg = getClasses("de.parresum.digisim.core");
          for (Class<? extends CircuitPart> cls : pkg) {
@@ -66,9 +74,8 @@ public class PartHelper {
                }
             }
          }
-      } catch (ClassNotFoundException | IntrospectionException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
+      } catch (ClassNotFoundException | IntrospectionException | IOException | URISyntaxException e) {
+         LOG.error("Error while parsing classes", e);
       }
    }
 
@@ -78,53 +85,71 @@ public class PartHelper {
     * @param pckgname package to parse
     * @return list of classes found
     * @throws ClassNotFoundException when an error occours
+    * @throws IOException
+    * @throws URISyntaxException
     */
-   private static List<Class<? extends CircuitPart>> getClasses(String pckgname) throws ClassNotFoundException {
+   private static List<Class<? extends CircuitPart>> getClasses(String pckgname)
+         throws ClassNotFoundException, IOException, URISyntaxException {
 
-      ArrayList<Class<? extends CircuitPart>> classes = new ArrayList<>();
-      // Get a File object for the package
-      File directory = null;
-      try {
-         ClassLoader cld = Thread.currentThread().getContextClassLoader();
-         if (cld == null) {
-            throw new ClassNotFoundException("Can't get class loader.");
-         }
+      ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+      ArrayList<String> names = new ArrayList<String>();
 
-         String path = pckgname.replace('.', '/');
+      String path = pckgname.replace(".", "/");
+      URL packageURL = classLoader.getResource(path);
 
-         URL resource = cld.getResource(path);
-         if (resource == null) {
-            throw new ClassNotFoundException("No resource for " + path);
-         }
+      if (packageURL.getProtocol().equals("jar")) {
+         ArrayList<Class<? extends CircuitPart>> classes = new ArrayList<>();
 
-         directory = new File(resource.getFile());
-      } catch (NullPointerException x) {
-         throw new ClassNotFoundException(pckgname + " (" + directory + ") does not appear to be a valid package");
-      }
+         // build jar file name, then loop through zipped entries
+         String jarFileName = URLDecoder.decode(packageURL.getFile(), "UTF-8");
+         jarFileName = jarFileName.substring(5, jarFileName.indexOf("!"));
 
-      if (directory.exists()) {
-         // Get the list of the files contained in the package
-         File[] files = directory.listFiles();
-         for (File file : files) {
-            if (file.isFile()) {
-               String fileName = file.getName();
-               // we are only interested in .class files
-               if (fileName.endsWith(".class")) {
+         try (JarFile jf = new JarFile(jarFileName)) {
+            Enumeration<JarEntry> jarEntries = jf.entries();
+
+            while (jarEntries.hasMoreElements()) {
+               String entryName = jarEntries.nextElement().getName();
+               if (entryName.startsWith(path) && entryName.endsWith(".class")) {
+
+                  entryName = entryName.substring(0, entryName.lastIndexOf('.'));
+                  // we are only interested in .class files
                   // removes the .class extension
-                  Class<?> candidate = Class.forName(pckgname + '.' + fileName.substring(0, fileName.length() - 6));
+                  Class<?> candidate = Class.forName(entryName.replace("/", "."));
                   if (CircuitPart.class.isAssignableFrom(candidate)) {
                      classes.add((Class<? extends CircuitPart>) candidate);
                   }
                }
-            } else if (file.isDirectory()) {
-               classes.addAll(getClasses(pckgname + '.' + file.getName()));
             }
          }
+         return classes;
 
       } else {
-         throw new ClassNotFoundException(pckgname + " does not appear to be a valid package");
+         // loop through files in classpath
+         URI uri = new URI(packageURL.toString());
+         File folder = new File(uri.getPath());
+         return getFileClasses(pckgname, folder);
       }
+   }
 
+   private static List<Class<? extends CircuitPart>> getFileClasses(String pckgname, File folder)
+         throws ClassNotFoundException {
+      ArrayList<Class<? extends CircuitPart>> classes = new ArrayList<>();
+      File[] content = folder.listFiles();
+      for (File actual : content) {
+         if (actual.isDirectory()) {
+            classes.addAll(getFileClasses(pckgname + "." + actual.getName(), actual));
+         } else {
+            String entryName = actual.getName();
+            // we are only interested in .class files
+            if (entryName.endsWith(".class")) {
+               // removes the .class extension
+               Class<?> candidate = Class.forName(pckgname + '.' + entryName.substring(0, entryName.length() - 6));
+               if (CircuitPart.class.isAssignableFrom(candidate)) {
+                  classes.add((Class<? extends CircuitPart>) candidate);
+               }
+            }
+         }
+      }
       return classes;
    }
 

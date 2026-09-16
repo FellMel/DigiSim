@@ -10,351 +10,8 @@
 		(rev "1.0")
 	)
 	(lib_symbols
-		(symbol "LED_1"
-			(pin_names
-				(hide yes)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(in_pos_files yes)
-			(duplicate_pin_numbers_are_jumpers no)
-			(property "Reference" "led"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" ""
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Description" ""
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(symbol "LED_1_0_1"
-				(polyline
-					(pts
-						(xy -1.905 1.27) (xy 0 -2.54) (xy 1.905 1.27) (xy -1.905 1.27)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -1.27 -3.81) (xy 1.27 -3.81)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 1.27) (xy 0 -3.81)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.27 -1.27) (xy 2.54 -2.54)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.905 0) (xy 3.175 -1.27)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.905 -2.54) (xy 2.54 -2.54) (xy 2.54 -1.905)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 2.54 -1.27) (xy 3.175 -1.27) (xy 3.175 -0.635)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 2.54 -2.54) (xy 2.54 -2.54)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 3.175 -1.27) (xy 3.175 -1.27)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(pin input line
-					(at 0 3.81 270)
-					(length 2.54)
-					(name "I"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "I"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "Switch_1"
-			(pin_names
-				(hide yes)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(in_pos_files yes)
-			(duplicate_pin_numbers_are_jumpers no)
-			(property "Reference" "sw"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" ""
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Description" ""
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(symbol "Switch_1_0_1"
-				(circle
-					(center 0 4.445)
-					(radius 0.635)
-					(stroke
-						(width 0)
-						(type solid)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(circle
-					(center 0 1.905)
-					(radius 0.284)
-					(stroke
-						(width 0)
-						(type solid)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 1.905) (xy 0 4.445)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 -2.54) (xy -1.905 1.905)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 0 -2.54)
-					(radius 0.254)
-					(stroke
-						(width 0)
-						(type solid)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(text "VCC"
-					(at 2.54 5.08 0)
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(pin output line
-					(at 0 -5.08 90)
-					(length 2.54)
-					(name "O"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "O"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
 		(symbol "digisim:LED"
-			(pin_names
+			(pin_numbers
 				(hide yes)
 			)
 			(exclude_from_sim no)
@@ -860,6 +517,7 @@
 			)
 			(pin_names
 				(offset 0)
+				(hide yes)
 			)
 			(exclude_from_sim no)
 			(in_bom yes)
@@ -991,7 +649,7 @@
 			(embedded_fonts no)
 		)
 		(symbol "digisim:Switch"
-			(pin_names
+			(pin_numbers
 				(hide yes)
 			)
 			(exclude_from_sim no)
@@ -1820,7 +1478,6 @@
 		(uuid "fd3361ff-1caf-4a05-ac91-ec3f5a5ed698")
 	)
 	(symbol
-		(lib_name "LED_1")
 		(lib_id "digisim:LED")
 		(at 158.75 120.65 0)
 		(unit 1)
@@ -1889,6 +1546,12 @@
 		(instances
 			(project "t-flipflop"
 				(path "/964f6d1c-6461-4c76-b05d-3d35f9e67bb3"
+					(reference "led6")
+					(unit 1)
+				)
+			)
+			(project "DigiSim"
+				(path "/b0c2dfea-75e4-4d04-a9cb-6b5d0eb62d59"
 					(reference "led6")
 					(unit 1)
 				)
@@ -1975,6 +1638,12 @@
 					(unit 1)
 				)
 			)
+			(project "DigiSim"
+				(path "/b0c2dfea-75e4-4d04-a9cb-6b5d0eb62d59"
+					(reference "nand4")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -2057,6 +1726,12 @@
 					(unit 1)
 				)
 			)
+			(project "DigiSim"
+				(path "/b0c2dfea-75e4-4d04-a9cb-6b5d0eb62d59"
+					(reference "nand5")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -2134,6 +1809,12 @@
 					(unit 1)
 				)
 			)
+			(project "DigiSim"
+				(path "/b0c2dfea-75e4-4d04-a9cb-6b5d0eb62d59"
+					(reference "led5")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -2148,7 +1829,7 @@
 		(dnp no)
 		(uuid "49dbe099-a332-4366-84cb-f252bb575c32")
 		(property "Reference" "nand1"
-			(at 100.33 70.358 0)
+			(at 100.584 60.96 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -2206,15 +1887,21 @@
 		(pin "A"
 			(uuid "52807532-36fb-4c88-9aa6-343433190bd7")
 		)
-		(pin "C"
-			(uuid "0c836880-240e-458f-9b8f-f90c9d31fe1c")
-		)
 		(pin "O"
 			(uuid "c4df5768-641d-411f-8720-990486b15e66")
+		)
+		(pin "C"
+			(uuid "f52dd6dd-399a-41a3-ad88-711799306ce8")
 		)
 		(instances
 			(project "t-flipflop"
 				(path "/964f6d1c-6461-4c76-b05d-3d35f9e67bb3"
+					(reference "nand1")
+					(unit 1)
+				)
+			)
+			(project "DigiSim"
+				(path "/b0c2dfea-75e4-4d04-a9cb-6b5d0eb62d59"
 					(reference "nand1")
 					(unit 1)
 				)
@@ -2301,6 +1988,12 @@
 					(unit 1)
 				)
 			)
+			(project "DigiSim"
+				(path "/b0c2dfea-75e4-4d04-a9cb-6b5d0eb62d59"
+					(reference "nand7")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -2380,7 +2073,7 @@
 			)
 			(project "DigiSim"
 				(path "/b0c2dfea-75e4-4d04-a9cb-6b5d0eb62d59"
-					(reference "led5")
+					(reference "led7")
 					(unit 1)
 				)
 			)
@@ -2466,10 +2159,15 @@
 					(unit 1)
 				)
 			)
+			(project "DigiSim"
+				(path "/b0c2dfea-75e4-4d04-a9cb-6b5d0eb62d59"
+					(reference "nand3")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
-		(lib_name "LED_1")
 		(lib_id "digisim:LED")
 		(at 135.89 120.65 0)
 		(unit 1)
@@ -2538,6 +2236,12 @@
 		(instances
 			(project "t-flipflop"
 				(path "/964f6d1c-6461-4c76-b05d-3d35f9e67bb3"
+					(reference "led4")
+					(unit 1)
+				)
+			)
+			(project "DigiSim"
+				(path "/b0c2dfea-75e4-4d04-a9cb-6b5d0eb62d59"
 					(reference "led4")
 					(unit 1)
 				)
@@ -2627,10 +2331,15 @@
 					(unit 1)
 				)
 			)
+			(project "DigiSim"
+				(path "/b0c2dfea-75e4-4d04-a9cb-6b5d0eb62d59"
+					(reference "nand2")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
-		(lib_name "Switch_1")
 		(lib_id "digisim:Switch")
 		(at 76.2 91.44 90)
 		(mirror x)
@@ -2796,7 +2505,6 @@
 		)
 	)
 	(symbol
-		(lib_name "LED_1")
 		(lib_id "digisim:LED")
 		(at 111.76 120.65 0)
 		(unit 1)
@@ -2865,6 +2573,12 @@
 		(instances
 			(project "t-flipflop"
 				(path "/964f6d1c-6461-4c76-b05d-3d35f9e67bb3"
+					(reference "led2")
+					(unit 1)
+				)
+			)
+			(project "DigiSim"
+				(path "/b0c2dfea-75e4-4d04-a9cb-6b5d0eb62d59"
 					(reference "led2")
 					(unit 1)
 				)
@@ -2951,6 +2665,12 @@
 					(unit 1)
 				)
 			)
+			(project "DigiSim"
+				(path "/b0c2dfea-75e4-4d04-a9cb-6b5d0eb62d59"
+					(reference "nand6")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -3024,6 +2744,12 @@
 		(instances
 			(project "t-flipflop"
 				(path "/964f6d1c-6461-4c76-b05d-3d35f9e67bb3"
+					(reference "led1")
+					(unit 1)
+				)
+			)
+			(project "DigiSim"
+				(path "/b0c2dfea-75e4-4d04-a9cb-6b5d0eb62d59"
 					(reference "led1")
 					(unit 1)
 				)
@@ -3110,6 +2836,12 @@
 					(unit 1)
 				)
 			)
+			(project "DigiSim"
+				(path "/b0c2dfea-75e4-4d04-a9cb-6b5d0eb62d59"
+					(reference "nand8")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -3183,6 +2915,12 @@
 		(instances
 			(project "t-flipflop"
 				(path "/964f6d1c-6461-4c76-b05d-3d35f9e67bb3"
+					(reference "led3")
+					(unit 1)
+				)
+			)
+			(project "DigiSim"
+				(path "/b0c2dfea-75e4-4d04-a9cb-6b5d0eb62d59"
 					(reference "led3")
 					(unit 1)
 				)
@@ -3267,10 +3005,15 @@
 					(unit 1)
 				)
 			)
+			(project "DigiSim"
+				(path "/b0c2dfea-75e4-4d04-a9cb-6b5d0eb62d59"
+					(reference "not1")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
-		(lib_name "LED_1")
 		(lib_id "digisim:LED")
 		(at 172.72 120.65 0)
 		(unit 1)
@@ -3345,7 +3088,7 @@
 			)
 			(project "DigiSim"
 				(path "/b0c2dfea-75e4-4d04-a9cb-6b5d0eb62d59"
-					(reference "led6")
+					(reference "led8")
 					(unit 1)
 				)
 			)

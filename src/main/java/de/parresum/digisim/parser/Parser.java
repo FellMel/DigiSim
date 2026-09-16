@@ -37,17 +37,20 @@ import de.parresum.digisim.core.CircuitPart;
 import de.parresum.digisim.gui.SimulationWindow;
 import de.parresum.digisim.model.AbstractNetElement;
 import de.parresum.digisim.model.LibPart;
+import de.parresum.digisim.model.NetConnection;
 import de.parresum.digisim.model.NetJunction;
 import de.parresum.digisim.model.NetPart;
 import de.parresum.digisim.model.NetPin;
 import de.parresum.digisim.model.NetPoint;
 import de.parresum.digisim.model.NetWire;
 import de.parresum.digisim.model.graph.NetView;
+import de.parresum.digisim.model.graph.ConnectionView;
 import de.parresum.digisim.model.graph.PartView;
 import de.parresum.kicad.parser.eescheme.Junction;
 import de.parresum.kicad.parser.eescheme.Schematic;
 import de.parresum.kicad.parser.eescheme.Symbol;
 import de.parresum.kicad.parser.eescheme.Wire;
+import de.parresum.kicad.parser.eescheme.label.GlobalLabel;
 import de.parresum.kicad.parser.library.LibSymbol;
 import de.parresum.kicad.parser.sexpr.SExpressionParser;
 
@@ -133,6 +136,10 @@ public class Parser {
 
          for (Junction junction : result.getJunctions()) {
             elements.add(new NetJunction(junction));
+         }
+
+         for (GlobalLabel label : result.getGlobalLabels()) {
+            elements.add(new NetConnection(label));
          }
 
          for (Symbol symbol : result.getSymbols()) {
@@ -224,6 +231,13 @@ public class Parser {
                   }
 
                   PartHelper.join(wire, part.getPart(), pinNumber);
+               } else if (item instanceof NetConnection) {
+                  NetConnection connection = (NetConnection) item;
+                  String conName = connection.getName();
+
+                  ConnectionView partConnection = new ConnectionView(connection);
+                  partConnection.setWire(wire);
+                  circuit.addConnection(conName, partConnection);
                }
             }
          }

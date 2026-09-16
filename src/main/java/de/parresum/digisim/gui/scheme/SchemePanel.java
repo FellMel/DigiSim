@@ -24,6 +24,7 @@ import java.awt.Graphics2D;
 import javax.swing.JPanel;
 
 import de.parresum.digisim.core.Circuit;
+import de.parresum.digisim.model.graph.ConnectionView;
 import de.parresum.digisim.model.graph.NetView;
 import de.parresum.digisim.model.graph.PartView;
 
@@ -59,6 +60,7 @@ public class SchemePanel extends JPanel {
       // paint elements
       paintParts(g2d);
       paintWires(g2d);
+      paintConnectors(g2d);
    }
 
    private void paintParts(Graphics2D g) {
@@ -70,6 +72,12 @@ public class SchemePanel extends JPanel {
    private void paintWires(Graphics2D g) {
       for (NetView view : circuit.getViews()) {
          view.paint(g);
+      }
+   }
+
+   private void paintConnectors(Graphics2D g) {
+      for (ConnectionView con : circuit.getConnections()) {
+         con.paint(g);
       }
    }
 

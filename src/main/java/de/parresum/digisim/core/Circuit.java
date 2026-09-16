@@ -21,6 +21,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.parresum.digisim.core.io.Input;
+import de.parresum.digisim.core.io.Output;
+import de.parresum.digisim.model.graph.ConnectionView;
 import de.parresum.digisim.model.graph.NetView;
 import de.parresum.digisim.model.graph.PartView;
 
@@ -38,6 +41,8 @@ public class Circuit {
 
    /** Map of all wires within the circuit */
    private final Map<String, NetView> wires = new HashMap<>();
+
+   private final Map<String, ConnectionView> connections = new HashMap<>();
 
    /** List of input components to show in the simulation GUI */
    private final List<InputPart> inputs = new ArrayList<>();
@@ -80,6 +85,36 @@ public class Circuit {
       }
    }
 
+   public void addConnection(String name, ConnectionView connection) {
+      connections.put(name, connection);
+
+      switch (connection.getType()) {
+         case INPUT:
+            inputs.add(new Input(formatConnectionName(connection.getName()), connection.getWire()));
+            break;
+         case OUTPUT:
+            outputs.add(new Output(formatConnectionName(connection.getName()), connection.getWire()));
+            break;
+         case OPEN_COLLECTOR:
+         case TRI_STATE:
+            // TODO: TriState-Input
+            inputs.add(new Input(formatConnectionName(connection.getName()), connection.getWire()));
+            outputs.add(new Output(formatConnectionName(connection.getName()), connection.getWire()));
+            break;
+         case UNKNOWN:
+         default:
+            // TODO: what kind of connection is this ????
+
+      }
+
+   }
+
+   private String formatConnectionName(String name) {
+      name = name.replace("{", "").replace("}", "");
+      name = name.replace("_", "").replace("^", "");
+      return name;
+   }
+
    /**
     * Gets a dedicated part of the circuit
     *
@@ -106,6 +141,10 @@ public class Circuit {
 
    public Collection<NetView> getViews() {
       return wires.values();
+   }
+
+   public Collection<ConnectionView> getConnections() {
+      return connections.values();
    }
 
    /**

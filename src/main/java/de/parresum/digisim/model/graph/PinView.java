@@ -31,7 +31,7 @@ import de.parresum.kicad.parser.library.PinShapeType;
  */
 public class PinView extends AbstractView {
    /** diameter of the inverter circle */
-   private final static double DIAMETER = 0.1 * BASE_SCALE;
+   private final static double DIAMETER = 0.15 * BASE_SCALE;
 
    /** the size of the clock triangle */
    private final static double CLOCK_SIZE = 0.1 * BASE_SCALE;

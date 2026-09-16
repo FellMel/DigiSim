@@ -61,7 +61,7 @@ public class PartDescriptor {
             Pin pin = prop.getWriteMethod().getAnnotation(Pin.class);
             if (pin != null) {
                if (prop.getWriteMethod().getParameterCount() != 1
-                     || !prop.getWriteMethod().getParameters()[0].getType().isAssignableFrom(Wire.class)) {
+                     || !Wire.class.isAssignableFrom(prop.getWriteMethod().getParameters()[0].getType())) {
                   System.err.println("Illegal Wire setter. Need one argument of typ Wire");
                } else {
                   pins.put(pin.value(), new PinAccessor(pin.value(), clazz, prop));
