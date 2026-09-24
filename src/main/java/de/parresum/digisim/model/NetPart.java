@@ -16,9 +16,12 @@
 
 package de.parresum.digisim.model;
 
+import static de.parresum.digisim.model.ModelConstants.UNIT_FACTOR;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +38,7 @@ import de.parresum.kicad.parser.model.Property;
  *
  * @author Kai Uwe Bachmann
  */
-public class NetPart {
+public class NetPart extends AbstractCircuitPart {
    /** the uuid of the part */
    private final String uuid;
 
@@ -70,7 +73,7 @@ public class NetPart {
       this.name = getSymbolName(symbol);
       this.libPart = libPart;
       this.lib = symbol.getLibraryIdentifier();
-      this.point = new NetPoint(symbol.getPosition().getX(), symbol.getPosition().getY());
+      this.point = new NetPoint(symbol.getPosition().getX() * UNIT_FACTOR, symbol.getPosition().getY() * UNIT_FACTOR);
       this.angle = (int) Math.round(symbol.getPosition().getAngle());
       if (symbol.getMirror() == null) {
          mirrorX = false;
@@ -140,26 +143,14 @@ public class NetPart {
 
       // TODO: was ist mit gedrehten / gespiegelten Symbolen?
       // Y wird negativ gezählt ??? Warum ?
-      NetPoint pt = new NetPoint(origin.getX() + pinPos.getX(), origin.getY() - pinPos.getY());
+      NetPoint pt = new NetPoint(origin.getX() * UNIT_FACTOR + pinPos.getX() * UNIT_FACTOR,
+            origin.getY() * UNIT_FACTOR - pinPos.getY() * UNIT_FACTOR);
 
       return pt;
 
    }
 
    private int getPinAngle(Symbol symbol, Pin pin) {
-      PositionAt origin = symbol.getPosition();
-      String pinName = pin.getName();
-      LibPin libPin = libPart.getPin(pinName);
-      if (libPin == null) {
-         throw new IllegalStateException("Can't find pin entry for " + pinName);
-      }
-
-      return (int) (libPin.getAngle() + symbol.getPosition().getAngle());
-
-   }
-
-   private int getPinLength(Symbol symbol, Pin pin) {
-      PositionAt origin = symbol.getPosition();
       String pinName = pin.getName();
       LibPin libPin = libPart.getPin(pinName);
       if (libPin == null) {
@@ -201,18 +192,45 @@ public class NetPart {
    public void paint(Graphics2D g) {
       g.setColor(Color.BLACK);
 
-      libPart.paint(g, point, angle, mirrorX, mirrorY);
-      paint(g, point, angle);
+      // Lib is mirrored on axis x
+      AffineTransform oldTransform = transform(g, point, angle, !mirrorX, mirrorY);
+      libPart.paint(g);
+      g.setTransform(oldTransform);
+
+      paintProps(g);
    }
 
-   public void paint(Graphics2D g, NetPoint position, int angle) {
-      AffineTransform oldTransform = g.getTransform();
-      g.rotate(Math.toRadians(-angle), position.getX() * AbstractView.BASE_SCALE,
-            position.getY() * AbstractView.BASE_SCALE);
+   public void paintProps(Graphics2D g) {
+      // TODO: rotate
       for (AbstractView item : properties) {
          item.paint(g);
       }
-      g.setTransform(oldTransform);
+
    }
 
+   protected AffineTransform transform(Graphics2D g2d, NetPoint position, int angle, boolean mirrorX, boolean mirrorY) {
+      AffineTransform oldTransform = g2d.getTransform();
+      // must be in inverse order
+      g2d.translate(position.getX(), position.getY());
+      if (mirrorX) {
+         g2d.scale(1, -1);
+      } else if (mirrorY) {
+         g2d.scale(-1, 1);
+      }
+      g2d.rotate(Math.toRadians(-angle));
+
+      return oldTransform;
+   }
+
+   public Rectangle2D getBounding() {
+      Rectangle2D bound = libPart.getBounding();
+
+      bound = translate(bound, point, angle, mirrorX, mirrorY);
+
+      for (AbstractView item : properties) {
+         bound.add(item.getBounding());
+      }
+
+      return bound;
+   }
 }

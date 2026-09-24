@@ -16,11 +16,14 @@
 
 package de.parresum.digisim.app.project;
 
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JTree;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultTreeSelectionModel;
 import javax.swing.tree.TreePath;
 
 /**
@@ -37,7 +40,7 @@ public class ProjectSelectTree extends JTree {
       treeModel = new ProjectTreeModel();
       this.setModel(treeModel);
 
-      setSelectionModel(null);
+      setSelectionModel(new DefaultTreeSelectionModel());
 
       setCellRenderer(new ProjectCellRenderer());
       setToolTipText("");
@@ -66,6 +69,30 @@ public class ProjectSelectTree extends JTree {
 
    public boolean isProjectOpen() {
       return treeModel.isProjectOpen();
+   }
+
+   @Override
+   public void addTreeSelectionListener(TreeSelectionListener listener) {
+      getSelectionModel().addTreeSelectionListener(listener);
+   }
+
+   @Override
+   public void removeTreeSelectionListener(TreeSelectionListener listener) {
+      getSelectionModel().removeTreeSelectionListener(listener);
+   }
+
+   public void tmp() {
+      addMouseListener(new MouseAdapter() {
+         @Override
+         public void mousePressed(MouseEvent e) {
+            int selRow = getRowForLocation(e.getX(), e.getY());
+            TreePath selPath = getPathForLocation(e.getX(), e.getY());
+            if (selRow != -1 && e.getClickCount() == 2 && selPath != null) {
+               Object selectedNode = selPath.getLastPathComponent();
+               // do something else
+            }
+         }
+      });
    }
 
    @Override

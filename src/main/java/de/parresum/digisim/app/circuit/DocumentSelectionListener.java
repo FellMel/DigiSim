@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package de.parresum.digisim.app;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+package de.parresum.digisim.app.circuit;
 
 /**
- * Component which shows the circuit.
+ *
  *
  * @author Kai Uwe Bachmann
  */
-public class CircuitComponent extends JPanel {
-
-   public CircuitComponent() {
-      super();
-      add(new JLabel("Hello World"));
-   }
+public interface DocumentSelectionListener {
+   void documentSelected(DocumentSelectedEvent e);
 
 }

@@ -16,6 +16,8 @@
 
 package de.parresum.digisim.model.graph;
 
+import static de.parresum.digisim.model.ModelConstants.UNIT_FACTOR;
+
 import java.awt.Shape;
 import java.awt.geom.Path2D;
 import java.awt.geom.Path2D.Double;
@@ -29,8 +31,11 @@ import de.parresum.kicad.parser.model.Position;
  * @author Kai Uwe Bachmann
  */
 public class PolygonView extends AbstractView {
+   private final Polyline polyline;
+
    public PolygonView(Polyline polyline) {
       super(polyline, createShape(polyline));
+      this.polyline = polyline;
    }
 
    public static Shape createShape(Polyline polyline) {
@@ -40,15 +45,14 @@ public class PolygonView extends AbstractView {
       boolean first = true;
       for (Position pt : polyline.getPoints().getPoints()) {
          if (first) {
-            path.moveTo(pt.getX() * BASE_SCALE, pt.getY() * -BASE_SCALE);
+            path.moveTo(pt.getX() * UNIT_FACTOR, pt.getY() * UNIT_FACTOR);
             first = false;
          } else {
-            path.lineTo(pt.getX() * BASE_SCALE, pt.getY() * -BASE_SCALE);
+            path.lineTo(pt.getX() * UNIT_FACTOR, pt.getY() * UNIT_FACTOR);
          }
       }
 
       return path;
-
    }
 
 }

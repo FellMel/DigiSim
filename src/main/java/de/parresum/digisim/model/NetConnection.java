@@ -16,7 +16,7 @@
 
 package de.parresum.digisim.model;
 
-import static de.parresum.digisim.model.graph.AbstractView.BASE_SCALE;
+import static de.parresum.digisim.model.ModelConstants.UNIT_FACTOR;
 
 import java.awt.Font;
 import java.util.List;
@@ -49,7 +49,7 @@ public class NetConnection extends AbstractNetElement {
 
    public NetConnection(GlobalLabel label) {
       super(label.getUuid().getUuid());
-      point = new NetPoint(label.getPosition().getX(), label.getPosition().getY());
+      point = new NetPoint(label.getPosition().getX() * UNIT_FACTOR, label.getPosition().getY() * UNIT_FACTOR);
       angle = label.getPosition().getAngle();
       switch (label.getShape()) {
          case BIDIRECTIONAL:
@@ -87,7 +87,7 @@ public class NetConnection extends AbstractNetElement {
       Size size = infont.getSize();
       Double thick = infont.getThickness();
 
-      font = new Font(face, Font.PLAIN, (int) ((size.getHeight() + .5) * BASE_SCALE));
+      font = new Font(face, Font.PLAIN, (int) ((size.getHeight() * UNIT_FACTOR + .5)));
 
       Justify just = stile.getJustify();
 

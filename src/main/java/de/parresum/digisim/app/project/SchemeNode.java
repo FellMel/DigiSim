@@ -137,4 +137,9 @@ public class SchemeNode implements TreeNode, INode {
       return Collections.enumeration(children);
    }
 
+   @Override
+   public String toString() {
+      return "SchemeNode [" + name + "]";
+   }
+
 }

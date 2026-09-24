@@ -46,7 +46,7 @@ public abstract class MainWindow extends JFrame {
    public MainWindow(final String title) throws HeadlessException {
       super(title);
 
-      setSize(400, 400);
+      // setSize(400, 400);
       setLayout(new BorderLayout());
 
       addWindowListener(new WindowAdapter() {
@@ -60,6 +60,8 @@ public abstract class MainWindow extends JFrame {
       this.add(output, BorderLayout.SOUTH);
 
       setup();
+
+      pack();
 
       setVisible(true);
    }

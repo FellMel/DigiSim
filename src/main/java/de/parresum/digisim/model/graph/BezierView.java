@@ -16,6 +16,8 @@
 
 package de.parresum.digisim.model.graph;
 
+import static de.parresum.digisim.model.ModelConstants.UNIT_FACTOR;
+
 import java.awt.Shape;
 import java.awt.geom.CubicCurve2D;
 
@@ -29,8 +31,11 @@ import de.parresum.kicad.parser.model.Position;
  * @author Kai Uwe Bachmann
  */
 public class BezierView extends AbstractView {
+   private final Bezier bezier;
+
    public BezierView(Bezier bezier) {
       super(bezier, createShape(bezier));
+      this.bezier = bezier;
    }
 
    public static Shape createShape(Bezier bezier) {
@@ -41,10 +46,10 @@ public class BezierView extends AbstractView {
       Position ctl2 = points.getPoints().get(2);
       Position end = points.getPoints().get(3);
 
-      return new CubicCurve2D.Double(start.getX() * BASE_SCALE, start.getY() * -BASE_SCALE, //
-            ctl1.getX() * BASE_SCALE, ctl1.getY() * -BASE_SCALE, //
-            ctl2.getX() * BASE_SCALE, ctl2.getY() * -BASE_SCALE, //
-            end.getX() * BASE_SCALE, end.getY() * -BASE_SCALE);
+      return new CubicCurve2D.Double(start.getX() * UNIT_FACTOR, start.getY() * UNIT_FACTOR, //
+            ctl1.getX() * UNIT_FACTOR, ctl1.getY() * UNIT_FACTOR, //
+            ctl2.getX() * UNIT_FACTOR, ctl2.getY() * UNIT_FACTOR, //
+            end.getX() * UNIT_FACTOR, end.getY() * UNIT_FACTOR);
 
    }
 

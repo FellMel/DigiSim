@@ -43,8 +43,8 @@ import de.parresum.digisim.model.NetPart;
 import de.parresum.digisim.model.NetPin;
 import de.parresum.digisim.model.NetPoint;
 import de.parresum.digisim.model.NetWire;
-import de.parresum.digisim.model.graph.NetView;
 import de.parresum.digisim.model.graph.ConnectionView;
+import de.parresum.digisim.model.graph.NetView;
 import de.parresum.digisim.model.graph.PartView;
 import de.parresum.kicad.parser.eescheme.Junction;
 import de.parresum.kicad.parser.eescheme.Schematic;
@@ -61,10 +61,6 @@ import de.parresum.kicad.parser.sexpr.SExpressionParser;
  */
 public class Parser {
    private final static Logger LOG = LogManager.getLogger(Parser.class);
-
-   private static Map<String, LibPart> lib = new HashMap<>();
-   private static List<NetPart> parts = new ArrayList<NetPart>();
-   private static Map<String, List<AbstractNetElement>> netLists = new HashMap<>();
 
    public static void main(String[] args) {
       LOG.info("Start parsing");
@@ -104,104 +100,108 @@ public class Parser {
          }
          file = fileChooser.getSelectedFile();
       }
-//       filename = "src/main/resources/kicad/DigiSim/DigiSim.kicad_sch";
-//       filename = "src/main/resources/kicad/DigiSim/d-flipflop.kicad_sch";
-//       filename = "src/main/resources/kicad/DigiSim/t-flipflop.kicad_sch";
 
-      String circuitName = extractElements(file);
-      Circuit circuit = createCircuit(circuitName);
+      Circuit circuit = readFile(file);
 
       // Create test window with inputs and outputs
       createSimWindow(circuit);
 
    }
 
-   private static String extractElements(File file) {
+   private static Circuit readFile(File file) {
       try (FileReader infile = new FileReader(file)) {
 
          final Schematic result = SExpressionParser.parse(infile, new Schematic());
 
-         // get used Lib symbols ...
-         for (LibSymbol sym : result.getLibSymbols().getSymbols()) {
-            LibPart part = new LibPart(sym);
-            lib.put(part.getName(), part);
-         }
-
-         // first extract wires, pins and junctions
-         LOG.info("collecting net elements ...");
-         List<AbstractNetElement> elements = new ArrayList<AbstractNetElement>();
-         for (Wire wire : result.getWires()) {
-            elements.add(new NetWire(wire));
-         }
-
-         for (Junction junction : result.getJunctions()) {
-            elements.add(new NetJunction(junction));
-         }
-
-         for (GlobalLabel label : result.getGlobalLabels()) {
-            elements.add(new NetConnection(label));
-         }
-
-         for (Symbol symbol : result.getSymbols()) {
-            LibPart libPart = getLibSymbol(symbol.getLibraryIdentifier());
-            NetPart part = new NetPart(symbol, libPart);
-            parts.add(part);
-
-            elements.addAll(part.getPins());
-         }
-         LOG.info("Found " + elements.size() + " elements");
-
-         // now group them by netlists
-         int netCnt = 1;
-         LOG.info("grouping nets ...");
-         while (!elements.isEmpty()) {
-            List<AbstractNetElement> netList = new ArrayList<>();
-            AbstractNetElement root = elements.remove(0);
-
-            netList.add(root);
-            boolean found = false;
-            do {
-               found = false;
-               Iterator<AbstractNetElement> it = elements.iterator();
-               while (it.hasNext()) {
-                  AbstractNetElement srcitem = it.next();
-                  List<NetPoint> srcPoints = srcitem.getPoints();
-
-                  for (AbstractNetElement netItem : netList) {
-                     if (netItem.containsPoint(srcPoints)) {
-                        it.remove();
-                        netList.add(srcitem);
-                        found = true;
-                        break;
-                     }
-                  }
-               }
-            } while (found);
-
-            netLists.put("net " + netCnt, netList);
-            netCnt++;
-         }
-
-         LOG.info("Found " + netLists.size() + " nets");
-
-         // print result
-         for (Entry<String, List<AbstractNetElement>> entry : netLists.entrySet()) {
-            LOG.info("------------------------------------");
-            LOG.info(entry.getKey());
-            for (AbstractNetElement item : entry.getValue()) {
-               item.print();
-            }
-            LOG.info("");
-         }
-         return result.getTitleBlock().getTitle();
-
+         return parseCircuit(result);
       } catch (IOException e) {
          throw new IllegalStateException("Can't read input file", e);
       }
+   }
+
+   public static Circuit parseCircuit(Schematic scheme) {
+
+      // get used Lib symbols ...
+      Map<String, LibPart> lib = new HashMap<>();
+      for (LibSymbol sym : scheme.getLibSymbols().getSymbols()) {
+         LibPart part = new LibPart(sym);
+         lib.put(part.getName(), part);
+      }
+
+      // first extract wires, pins and junctions
+      LOG.info("collecting net elements ...");
+      List<AbstractNetElement> elements = new ArrayList<AbstractNetElement>();
+      for (Wire wire : scheme.getWires()) {
+         elements.add(new NetWire(wire));
+      }
+
+      for (Junction junction : scheme.getJunctions()) {
+         elements.add(new NetJunction(junction));
+      }
+
+      for (GlobalLabel label : scheme.getGlobalLabels()) {
+         elements.add(new NetConnection(label));
+      }
+
+      List<NetPart> parts = new ArrayList<NetPart>();
+      for (Symbol symbol : scheme.getSymbols()) {
+         LibPart libPart = getLibSymbol(symbol.getLibraryIdentifier(), lib);
+         NetPart part = new NetPart(symbol, libPart);
+         parts.add(part);
+
+         elements.addAll(part.getPins());
+      }
+      LOG.info("Found " + elements.size() + " elements");
+
+      // now group them by netlists
+      int netCnt = 1;
+      LOG.info("grouping nets ...");
+      Map<String, List<AbstractNetElement>> netLists = new HashMap<>();
+      while (!elements.isEmpty()) {
+         List<AbstractNetElement> netList = new ArrayList<>();
+         AbstractNetElement root = elements.remove(0);
+
+         netList.add(root);
+         boolean found = false;
+         do {
+            found = false;
+            Iterator<AbstractNetElement> it = elements.iterator();
+            while (it.hasNext()) {
+               AbstractNetElement srcitem = it.next();
+               List<NetPoint> srcPoints = srcitem.getPoints();
+
+               for (AbstractNetElement netItem : netList) {
+                  if (netItem.containsPoint(srcPoints)) {
+                     it.remove();
+                     netList.add(srcitem);
+                     found = true;
+                     break;
+                  }
+               }
+            }
+         } while (found);
+
+         netLists.put("net " + netCnt, netList);
+         netCnt++;
+      }
+
+      LOG.info("Found " + netLists.size() + " nets");
+
+      // print result
+      for (Entry<String, List<AbstractNetElement>> entry : netLists.entrySet()) {
+         LOG.info("------------------------------------");
+         LOG.info(entry.getKey());
+         for (AbstractNetElement item : entry.getValue()) {
+            item.print();
+         }
+         LOG.info("");
+      }
+      return createCircuit(scheme.getTitleBlock().getTitle(), lib, parts, netLists);
 
    }
 
-   private static Circuit createCircuit(String name) {
+   private static Circuit createCircuit(String name, Map<String, LibPart> lib, List<NetPart> parts,
+         Map<String, List<AbstractNetElement>> netLists) {
 
       Circuit circuit = new Circuit(name);
 
@@ -253,7 +253,7 @@ public class Parser {
       SimulationWindow wnd = new SimulationWindow(circuit);
    }
 
-   private static LibPart getLibSymbol(String libSymbol) {
+   private static LibPart getLibSymbol(String libSymbol, Map<String, LibPart> lib) {
 
       LibPart part = lib.get(libSymbol);
       if (part != null) {

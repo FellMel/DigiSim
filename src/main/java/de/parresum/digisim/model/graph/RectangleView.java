@@ -16,6 +16,8 @@
 
 package de.parresum.digisim.model.graph;
 
+import static de.parresum.digisim.model.ModelConstants.UNIT_FACTOR;
+
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 
@@ -29,16 +31,24 @@ import de.parresum.kicad.parser.model.Position;
  */
 public class RectangleView extends AbstractView {
 
+   private final Rectangle rect;
+
    public RectangleView(Rectangle rect) {
       super(rect, createShape(rect));
+      this.rect = rect;
    }
 
    public static Shape createShape(Rectangle rect) {
       Position start = rect.getStartPosition();
       Position end = rect.getEndPosition();
 
-      return new Rectangle2D.Double(start.getX() * BASE_SCALE, start.getY() * -BASE_SCALE, //
-            (end.getX() - start.getX()) * BASE_SCALE, (end.getY() - start.getY()) * -BASE_SCALE);
+      double x = Math.min(start.getX() * UNIT_FACTOR, end.getX() * UNIT_FACTOR);
+      double y = Math.min(start.getY() * UNIT_FACTOR, end.getY() * UNIT_FACTOR);
+      double w = Math.abs(end.getX() * UNIT_FACTOR - start.getX() * UNIT_FACTOR);
+      double h = Math.abs(end.getY() * UNIT_FACTOR - start.getY() * UNIT_FACTOR);
+
+      return new Rectangle2D.Double(x, y, w, h);
 
    }
+
 }

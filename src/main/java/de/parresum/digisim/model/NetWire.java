@@ -15,6 +15,8 @@
  */
 package de.parresum.digisim.model;
 
+import static de.parresum.digisim.model.ModelConstants.UNIT_FACTOR;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +50,7 @@ public class NetWire extends AbstractNetElement {
       PointList pointList = wire.getPoints();
       points = new ArrayList<>(pointList.getPoints().size());
       for (Position pt : pointList.getPoints()) {
-         points.add(new NetPoint(pt.getX(), pt.getY()));
+         points.add(new NetPoint(pt.getX() * UNIT_FACTOR, pt.getY() * UNIT_FACTOR));
       }
    }
 

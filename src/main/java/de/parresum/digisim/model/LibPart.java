@@ -17,7 +17,7 @@
 package de.parresum.digisim.model;
 
 import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +46,7 @@ import de.parresum.kicad.parser.library.LibSymbol;
  *
  * @author Kai Uwe Bachmann
  */
-public class LibPart {
+public class LibPart extends AbstractCircuitPart {
 
    /** name of the symbol */
    private final String name;
@@ -128,26 +128,20 @@ public class LibPart {
       return pins.get(number);
    }
 
-   public void paint(Graphics2D g, NetPoint position, int angle, boolean mirrorX, boolean mirrorY) {
-      AffineTransform transform = transform(g, position, angle, mirrorX, mirrorY);
+   public void paint(Graphics2D g) {
       for (AbstractView item : graphic) {
          item.paint(g);
       }
-      g.setTransform(transform);
    }
 
-   protected AffineTransform transform(Graphics2D g2d, NetPoint position, int angle, boolean mirrorX, boolean mirrorY) {
-      AffineTransform oldTransform = g2d.getTransform();
-      // must be in inverse order
-      g2d.translate(position.getX() * AbstractView.BASE_SCALE, position.getY() * AbstractView.BASE_SCALE);
-      if (mirrorX) {
-         g2d.scale(1, -1);
-      } else if (mirrorY) {
-         g2d.scale(-1, 1);
-      }
-      g2d.rotate(Math.toRadians(-angle));
+   public Rectangle2D getBounding() {
 
-      return oldTransform;
+      Rectangle2D bounding = new Rectangle2D.Double(0, 0, 0, 0);
+      for (AbstractView item : graphic) {
+         Rectangle2D bound = item.getBounding();
+         bounding.add(bound);
+      }
+      return bounding;
    }
 
 }

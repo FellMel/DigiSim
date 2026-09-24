@@ -16,11 +16,19 @@
 
 package de.parresum.digisim.model.graph;
 
+import static de.parresum.digisim.model.ModelConstants.DASH;
+import static de.parresum.digisim.model.ModelConstants.DASH_DOT;
+import static de.parresum.digisim.model.ModelConstants.DASH_DOT_DOT;
+import static de.parresum.digisim.model.ModelConstants.DOT;
+import static de.parresum.digisim.model.ModelConstants.SOLID;
+import static de.parresum.digisim.model.ModelConstants.UNIT_FACTOR;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.Stroke;
+import java.awt.geom.Rectangle2D;
 
 import de.parresum.kicad.parser.eescheme.shape.AbstractShape;
 import de.parresum.kicad.parser.model.FillType;
@@ -32,25 +40,10 @@ import de.parresum.kicad.parser.model.FillType;
  */
 public abstract class AbstractView {
 
-   // Some line definitions
-   private final static Stroke DASH = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f,
-         new float[] { 5.0f }, 0.0f);
-   private final static Stroke DASH_DOT = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f,
-         new float[] { 5.0f, 1.0f, 1.0f, 1.0f }, 0.0f);
-   private final static Stroke DASH_DOT_DOT = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f,
-         new float[] { 5.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f }, 0.0f);
-   private final static Stroke DOT = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f,
-         new float[] { 1.0f }, 0.0f);
-   private final static Stroke SOLID = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER);
-
-   /** base scale factor */
-   public final static double BASE_SCALE = 5.0;
-
    // Stroke definition
    private final Stroke stroke;
    private double lineWidth;
    private final Color lineColor;
-//   private LineType lineType;
 
    // Fill definition
    private final Color fillColor;
@@ -63,28 +56,34 @@ public abstract class AbstractView {
       this.shape = shape;
       if (kiCadShape != null) {
          if (kiCadShape.getStroke() != null) {
-            // TODO: lineWidth
+            BasicStroke tmp;
+            lineWidth = kiCadShape.getStroke().getWidth() * UNIT_FACTOR;
+
             switch (kiCadShape.getStroke().getType()) {
                case DASH:
-                  stroke = DASH;
+                  tmp = DASH;
                   break;
                case DASH_DOT:
-                  stroke = DASH_DOT;
+                  tmp = DASH_DOT;
                   break;
                case DASH_DOT_DOT:
-                  stroke = DASH_DOT_DOT;
+                  tmp = DASH_DOT_DOT;
                   break;
                case DOT:
-                  stroke = DOT;
+                  tmp = DOT;
                   break;
                case SOLID:
-                  stroke = SOLID;
+                  tmp = SOLID;
                   break;
                default:
-                  stroke = SOLID;
+                  tmp = SOLID;
+            }
+            if (lineWidth > 0.0) {
+               tmp = new BasicStroke((float) lineWidth, tmp.getEndCap(), tmp.getLineJoin(), tmp.getMiterLimit(),
+                     tmp.getDashArray(), tmp.getDashPhase());
             }
 
-            lineWidth = kiCadShape.getStroke().getWidth();
+            stroke = tmp;
             lineColor = createColor(kiCadShape.getStroke().getColor());
          } else {
             stroke = SOLID;
@@ -146,6 +145,10 @@ public abstract class AbstractView {
             break;
       }
       g2d.fill(shape);
+   }
+
+   public Rectangle2D getBounding() {
+      return shape.getBounds2D();
    }
 
    /**

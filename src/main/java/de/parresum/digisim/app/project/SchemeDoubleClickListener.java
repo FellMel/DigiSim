@@ -14,38 +14,15 @@
  * limitations under the License.
  */
 
-package de.parresum.digisim.app;
+package de.parresum.digisim.app.project;
 
-import java.awt.BorderLayout;
-import java.io.File;
-import java.io.IOException;
-
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-
-import de.parresum.digisim.app.project.ProjectSelectTree;
+import java.util.EventListener;
 
 /**
  *
  *
  * @author Kai Uwe Bachmann
  */
-public class ProjectPanel extends JPanel {
-   private final ProjectSelectTree tree;
-
-   public ProjectPanel() {
-      super(new BorderLayout());
-
-      tree = new ProjectSelectTree();
-      this.add(new JScrollPane(tree));
-
-   }
-
-   public void openProject(File file) throws IOException {
-      tree.openProject(file);
-   }
-
-   public void closeProject() {
-      tree.closeProject();
-   }
+public interface SchemeDoubleClickListener extends EventListener {
+   void projectDoubleclicked(SchemeSelectionEvent e);
 }

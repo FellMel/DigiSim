@@ -16,17 +16,20 @@
 
 package de.parresum.digisim.model.graph;
 
-import static de.parresum.digisim.model.graph.AbstractView.BASE_SCALE;
+import static de.parresum.digisim.model.ModelConstants.SOLID;
+import static de.parresum.digisim.model.ModelConstants.UNIT_FACTOR;
 
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
 import de.parresum.digisim.core.wire.Wire;
 import de.parresum.digisim.model.AbstractNetElement;
 import de.parresum.digisim.model.NetJunction;
-import de.parresum.digisim.model.NetPin;
 import de.parresum.digisim.model.NetPoint;
 import de.parresum.digisim.model.NetWire;
 
@@ -36,7 +39,7 @@ import de.parresum.digisim.model.NetWire;
  * @author Kai Uwe Bachmann
  */
 public class NetView {
-   private static final int RADIUS = 3;
+   private static final double RADIUS = 0.4 * UNIT_FACTOR;
 
    /** name of the network */
    private final String name;
@@ -68,7 +71,7 @@ public class NetView {
       return name;
    }
 
-   public void paint(Graphics g) {
+   public void paint(Graphics2D g2d) {
       Color col;
       switch (wire.get()) {
          case HIGH:
@@ -84,18 +87,16 @@ public class NetView {
             col = Color.BLACK;
             break;
       }
-      g.setColor(col);
+      g2d.setColor(col);
+      g2d.setStroke(SOLID);
 
       for (AbstractNetElement element : elements) {
          switch (element) {
             case NetJunction j:
-               paintJunction(g, j);
-               break;
-            case NetPin p:
-               paintPin(g, p);
+               paintJunction(g2d, j);
                break;
             case NetWire w:
-               paintWire(g, w);
+               paintWire(g2d, w);
                break;
             default:
          }
@@ -103,27 +104,60 @@ public class NetView {
 
    }
 
-   private void paintWire(Graphics g, NetWire wire) {
+   private void paintWire(Graphics2D g, NetWire wire) {
       NetPoint prev = null;
       for (NetPoint pt : wire.getPoints()) {
          if (prev != null) {
-            g.drawLine(zoom(prev.getX()), zoom(prev.getY()), zoom(pt.getX()), zoom(pt.getY()));
+            g.draw(new Line2D.Double(prev.getX(), prev.getY(), pt.getX(), pt.getY()));
          }
 
          prev = pt;
       }
    }
 
-   private void paintJunction(Graphics g, NetJunction junct) {
+   private void paintJunction(Graphics2D g, NetJunction junct) {
       NetPoint pt = junct.getPoints().getFirst();
-      g.fillOval(zoom(pt.getX()) - RADIUS, zoom(pt.getY()) - RADIUS, RADIUS + RADIUS, RADIUS + RADIUS);
+      g.fill(new Ellipse2D.Double(pt.getX() - RADIUS, pt.getY() - RADIUS, RADIUS + RADIUS, RADIUS + RADIUS));
    }
 
-   private void paintPin(Graphics g, NetPin pin) {
-      // Pins will be drawn by parts ...
+   public Rectangle2D getBounding() {
+      Rectangle2D bounding = null;
+      for (AbstractNetElement element : elements) {
+         switch (element) {
+            case NetJunction j:
+               bounding = boundJunction(bounding, j);
+               break;
+            case NetWire w:
+               bounding = boundWire(bounding, w);
+               break;
+            default:
+         }
+      }
+
+      return bounding;
    }
 
-   private int zoom(double val) {
-      return (int) (val * BASE_SCALE);
+   private Rectangle2D boundWire(Rectangle2D bound, NetWire wire) {
+      for (NetPoint pt : wire.getPoints()) {
+         if (bound == null) {
+            bound = new Rectangle2D.Double(pt.getX(), pt.getY(), 0, 0);
+         } else {
+            bound.add(pt.getX(), pt.getY());
+
+         }
+      }
+
+      return bound;
+   }
+
+   private Rectangle2D boundJunction(Rectangle2D bound, NetJunction junct) {
+      NetPoint pt = junct.getPoints().getFirst();
+      if (bound == null) {
+         bound = new Rectangle2D.Double(pt.getX() - RADIUS, pt.getY() - RADIUS, RADIUS + RADIUS, RADIUS + RADIUS);
+      } else {
+         bound.add(pt.getX() - RADIUS, pt.getY() - RADIUS);
+         bound.add(pt.getX() + RADIUS, pt.getY() + RADIUS);
+      }
+      return bound;
    }
 }

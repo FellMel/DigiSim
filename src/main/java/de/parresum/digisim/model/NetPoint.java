@@ -15,6 +15,8 @@
  */
 package de.parresum.digisim.model;
 
+import static de.parresum.digisim.model.ModelConstants.UNIT_FACTOR;
+
 import java.util.Objects;
 
 import de.parresum.kicad.parser.model.Position;
@@ -35,8 +37,8 @@ public class NetPoint {
    private final double y;
 
    public NetPoint(Position pos) {
-      this.x = pos.getX();
-      this.y = pos.getY();
+      this.x = pos.getX() * UNIT_FACTOR;
+      this.y = pos.getY() * UNIT_FACTOR;
    }
 
    public NetPoint(double x, double y) {

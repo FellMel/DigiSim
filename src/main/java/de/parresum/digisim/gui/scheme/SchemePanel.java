@@ -20,6 +20,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
 
 import javax.swing.JPanel;
 
@@ -34,9 +35,14 @@ import de.parresum.digisim.model.graph.PartView;
  * @author Kai Uwe Bachmann
  */
 public class SchemePanel extends JPanel {
+   private final static int BORDER = 20;
+   private final static double[] ZOOM_FACTORS = { 0.1, 0.2, 0.5, 1, 2, 5, 10, 20 };
    private Circuit circuit;
 
-   private double zoom = 1.0;
+   private int zoom = 2;
+
+   private Rectangle2D bounding;
+   private Dimension size;
 
    public SchemePanel(Circuit circuit) {
       super();
@@ -45,17 +51,47 @@ public class SchemePanel extends JPanel {
       for (NetView wire : circuit.getViews()) {
          wire.getWire().addStateListener((_, _, _) -> repaint());
       }
+      init();
+
+      setZoom();
+   }
+
+   private void init() {
+
+      for (PartView part : circuit.getParts()) {
+         extendBounding(part.getNetPart().getBounding());
+      }
+      for (NetView view : circuit.getViews()) {
+         extendBounding(view.getBounding());
+      }
+      for (ConnectionView con : circuit.getConnections()) {
+         extendBounding(con.getBounding());
+      }
+
+      bounding = new Rectangle2D.Double(bounding.getX() - BORDER, bounding.getY() - BORDER,
+            bounding.getWidth() + BORDER + BORDER, bounding.getHeight() + BORDER + BORDER);
+      System.out.println(bounding);
+   }
+
+   private void extendBounding(Rectangle2D bound) {
+      if (bounding == null) {
+         bounding = bound;
+      } else {
+         bounding.add(bound);
+      }
    }
 
    @Override
    protected void paintComponent(Graphics g) {
 
       Graphics2D g2d = (Graphics2D) g;
-      // g2d.scale(3.0, 3.0);
       // paint background
       g.setColor(Color.WHITE);
       Dimension size = this.getSize();
       g.fillRect(0, 0, size.width, size.height);
+
+      g2d.scale(ZOOM_FACTORS[zoom], ZOOM_FACTORS[zoom]);
+      g2d.translate(-bounding.getMinX(), -(bounding.getMinY() /* + bounding.getHeight() */));
 
       // paint elements
       paintParts(g2d);
@@ -81,4 +117,39 @@ public class SchemePanel extends JPanel {
       }
    }
 
+   public void zoomIn() {
+      zoom++;
+      if (zoom >= ZOOM_FACTORS.length) {
+         zoom = ZOOM_FACTORS.length - 1;
+      }
+      setZoom();
+   }
+
+   public void zoomOut() {
+      zoom--;
+      if (zoom < 0) {
+         zoom = 0;
+      }
+      setZoom();
+   }
+
+   public void zoomFit() {
+      // TODO: implement
+   }
+
+   public boolean canZoomIn() {
+      return zoom < ZOOM_FACTORS.length - 1;
+   }
+
+   public boolean canZoomOut() {
+      return zoom > 0;
+   }
+
+   private void setZoom() {
+      setPreferredSize(new Dimension((int) (bounding.getWidth() * ZOOM_FACTORS[zoom]),
+            (int) (bounding.getHeight() * ZOOM_FACTORS[zoom])));
+      setSize(new Dimension((int) (bounding.getWidth() * ZOOM_FACTORS[zoom]),
+            (int) (bounding.getHeight() * ZOOM_FACTORS[zoom])));
+
+   }
 }

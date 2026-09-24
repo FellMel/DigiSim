@@ -15,6 +15,8 @@
  */
 package de.parresum.digisim.model;
 
+import static de.parresum.digisim.model.ModelConstants.UNIT_FACTOR;
+
 import java.util.List;
 
 import de.parresum.kicad.parser.eescheme.Junction;
@@ -32,7 +34,7 @@ public class NetJunction extends AbstractNetElement {
    public NetJunction(Junction junction) {
       super(junction.getUuid().getUuid());
 
-      point = new NetPoint(junction.getPosition().getX(), junction.getPosition().getY());
+      point = new NetPoint(junction.getPosition().getX() * UNIT_FACTOR, junction.getPosition().getY() * UNIT_FACTOR);
 
    }
 

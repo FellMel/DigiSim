@@ -16,6 +16,8 @@
 
 package de.parresum.digisim.model.graph;
 
+import static de.parresum.digisim.model.ModelConstants.UNIT_FACTOR;
+
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 
@@ -28,17 +30,20 @@ import de.parresum.kicad.parser.model.Position;
  * @author Kai Uwe Bachmann
  */
 public class CircleView extends AbstractView {
+   private Circle circle;
+
    public CircleView(Circle circle) {
       super(circle, createShape(circle));
+      this.circle = circle;
    }
 
    public static Shape createShape(Circle circle) {
 
       Position center = circle.getCenter();
-      double radius = circle.getRadius();
+      double radius = circle.getRadius() * UNIT_FACTOR;
 
-      return new Ellipse2D.Double((center.getX() - radius) * BASE_SCALE, (center.getY() + radius) * -BASE_SCALE,
-            radius * 2 * BASE_SCALE, radius * 2 * BASE_SCALE);
+      return new Ellipse2D.Double(center.getX() * UNIT_FACTOR - radius, center.getY() * UNIT_FACTOR - radius,
+            radius * 2, radius * 2);
 
    }
 

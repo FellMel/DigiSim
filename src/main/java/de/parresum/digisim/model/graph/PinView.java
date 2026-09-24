@@ -16,6 +16,8 @@
 
 package de.parresum.digisim.model.graph;
 
+import static de.parresum.digisim.model.ModelConstants.UNIT_FACTOR;
+
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
@@ -31,10 +33,10 @@ import de.parresum.kicad.parser.library.PinShapeType;
  */
 public class PinView extends AbstractView {
    /** diameter of the inverter circle */
-   private final static double DIAMETER = 0.15 * BASE_SCALE;
+   private final static double DIAMETER = 0.8 * UNIT_FACTOR;
 
    /** the size of the clock triangle */
-   private final static double CLOCK_SIZE = 0.1 * BASE_SCALE;
+   private final static double CLOCK_SIZE = 0.8 * UNIT_FACTOR;
 
    public PinView(GraphPin pin) {
       super(null, createShape(pin));
@@ -48,8 +50,8 @@ public class PinView extends AbstractView {
     */
    private static Shape createShape(GraphPin pin) {
       PinShapeType pinShape = pin.getGraphicPinShape();
-      double length = pin.getLength();
-      NetPoint pinPos = new NetPoint(pin.getPosition().getX(), pin.getPosition().getY());
+      double length = pin.getLength() * UNIT_FACTOR;
+      NetPoint pinPos = new NetPoint(pin.getPosition().getX() * UNIT_FACTOR, pin.getPosition().getY() * UNIT_FACTOR);
       int angle = (int) pin.getPosition().getAngle();
 
       NetPoint pt = new NetPoint(length, 0);
@@ -58,7 +60,7 @@ public class PinView extends AbstractView {
       // pinPos = pinPos.rotate(angle);
 
       Path2D path = new Path2D.Double();
-      path.moveTo(pinPos.getX() * BASE_SCALE, pinPos.getY() * -BASE_SCALE);
+      path.moveTo(pinPos.getX(), pinPos.getY());
 
       switch (pinShape) {
          case CLOCK:
@@ -154,24 +156,21 @@ public class PinView extends AbstractView {
    private static void createInverted(Path2D path, NetPoint to, int angle) {
       switch (angle) {
          case 0:
-            path.lineTo((to.getX() - DIAMETER) * BASE_SCALE, to.getY() * -BASE_SCALE);
-            path.append(new Ellipse2D.Double((to.getX() - DIAMETER) * BASE_SCALE,
-                  (to.getY() + DIAMETER / 2.0) * -BASE_SCALE, DIAMETER * BASE_SCALE, DIAMETER * BASE_SCALE), false);
+            path.lineTo((to.getX() - DIAMETER), -to.getY());
+            path.append(new Ellipse2D.Double((to.getX() - DIAMETER), (to.getY() - DIAMETER / 2.0), DIAMETER, DIAMETER),
+                  false);
             break;
          case 90:
-            path.lineTo(to.getX() * BASE_SCALE, (to.getY() - DIAMETER) * -BASE_SCALE);
-            path.append(new Ellipse2D.Double((to.getX() - DIAMETER / 2.0) * BASE_SCALE, to.getY() * -BASE_SCALE,
-                  DIAMETER * BASE_SCALE, DIAMETER * BASE_SCALE), false);
+            path.lineTo(to.getX(), -(to.getY() - DIAMETER));
+            path.append(new Ellipse2D.Double((to.getX() - DIAMETER / 2.0), to.getY(), DIAMETER, DIAMETER), false);
             break;
          case 180: // checked
-            path.lineTo((to.getX() + DIAMETER) * BASE_SCALE, to.getY() * -BASE_SCALE);
-            path.append(new Ellipse2D.Double(to.getX() * BASE_SCALE, (to.getY() + DIAMETER / 2.0) * -BASE_SCALE,
-                  DIAMETER * BASE_SCALE, DIAMETER * BASE_SCALE), false);
+            path.lineTo((to.getX() + DIAMETER), -to.getY());
+            path.append(new Ellipse2D.Double(to.getX(), (to.getY() - DIAMETER / 2.0), DIAMETER, DIAMETER), false);
             break;
          case 270:
-            path.lineTo(to.getX() * BASE_SCALE, (to.getY() - DIAMETER) * -BASE_SCALE);
-            path.append(new Ellipse2D.Double((to.getX() - DIAMETER / 2.0) * BASE_SCALE, to.getY() * -BASE_SCALE,
-                  DIAMETER * BASE_SCALE, DIAMETER * BASE_SCALE), false);
+            path.lineTo(to.getX(), -(to.getY() - DIAMETER));
+            path.append(new Ellipse2D.Double((to.getX() - DIAMETER / 2.0), to.getY(), DIAMETER, DIAMETER), false);
             break;
       }
    }
@@ -196,7 +195,7 @@ public class PinView extends AbstractView {
     * @param angle
     */
    private static void createLine(Path2D path, NetPoint to, int angle) {
-      path.lineTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
+      path.lineTo(to.getX(), to.getY());
    }
 
    /**
@@ -207,7 +206,7 @@ public class PinView extends AbstractView {
     * @param angle
     */
    private static void createNonLogic(Path2D path, NetPoint to, int angle) {
-      path.lineTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
+      path.lineTo(to.getX(), to.getY());
    }
 
    /**
@@ -221,28 +220,28 @@ public class PinView extends AbstractView {
       createLine(path, to, angle);
       switch (angle) {
          case 0:
-            path.moveTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
-            path.lineTo(to.getX() * BASE_SCALE, (to.getY() - CLOCK_SIZE) * -BASE_SCALE);
-            path.lineTo((to.getX() - CLOCK_SIZE) * BASE_SCALE, to.getY() * -BASE_SCALE);
-            path.lineTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
+            path.moveTo(to.getX(), to.getY());
+            path.lineTo(to.getX(), (to.getY() - CLOCK_SIZE));
+            path.lineTo((to.getX() - CLOCK_SIZE), to.getY());
+            path.lineTo(to.getX(), -to.getY());
             break;
          case 90:
-            path.moveTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
-            path.lineTo((to.getX() - CLOCK_SIZE) * BASE_SCALE, to.getY() * -BASE_SCALE);
-            path.lineTo(to.getX() * BASE_SCALE, (to.getY() + CLOCK_SIZE) * -BASE_SCALE);
-            path.lineTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
+            path.moveTo(to.getX(), to.getY());
+            path.lineTo((to.getX() - CLOCK_SIZE), to.getY());
+            path.lineTo(to.getX(), -(to.getY() + CLOCK_SIZE));
+            path.lineTo(to.getX(), to.getY());
             break;
          case 180:
-            path.moveTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
-            path.lineTo(to.getX() * BASE_SCALE, (to.getY() + CLOCK_SIZE) * -BASE_SCALE);
-            path.lineTo((to.getX() + CLOCK_SIZE) * BASE_SCALE, to.getY() * -BASE_SCALE);
-            path.lineTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
+            path.moveTo(to.getX(), to.getY());
+            path.lineTo(to.getX(), (to.getY() + CLOCK_SIZE));
+            path.lineTo((to.getX() + CLOCK_SIZE), to.getY());
+            path.lineTo(to.getX(), to.getY());
             break;
          case 270:
-            path.moveTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
-            path.lineTo((to.getX() + CLOCK_SIZE) * BASE_SCALE, to.getY() * -BASE_SCALE);
-            path.lineTo(to.getX() * BASE_SCALE, (to.getY() - CLOCK_SIZE) * -BASE_SCALE);
-            path.lineTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
+            path.moveTo(to.getX(), to.getY());
+            path.lineTo((to.getX() + CLOCK_SIZE), to.getY());
+            path.lineTo(to.getX(), (to.getY() - CLOCK_SIZE));
+            path.lineTo(to.getX(), to.getY());
             break;
       }
    }
@@ -257,32 +256,32 @@ public class PinView extends AbstractView {
    private static void createClockPart(Path2D path, NetPoint to, int angle) {
       switch (angle) {
          case 0:
-            path.moveTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
-            path.lineTo(to.getX() * BASE_SCALE, (to.getY() - CLOCK_SIZE) * -BASE_SCALE);
-            path.lineTo((to.getX() + CLOCK_SIZE) * BASE_SCALE, to.getY() * -BASE_SCALE);
-            path.lineTo(to.getX() * BASE_SCALE, (to.getY() + CLOCK_SIZE) * -BASE_SCALE);
-            path.lineTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
+            path.moveTo(to.getX(), to.getY());
+            path.lineTo(to.getX(), (to.getY() - CLOCK_SIZE));
+            path.lineTo((to.getX() + CLOCK_SIZE), to.getY());
+            path.lineTo(to.getX(), (to.getY() + CLOCK_SIZE));
+            path.lineTo(to.getX(), to.getY());
             break;
          case 90:
-            path.moveTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
-            path.lineTo((to.getX() - CLOCK_SIZE) * BASE_SCALE, to.getY() * -BASE_SCALE);
-            path.lineTo(to.getX() * BASE_SCALE, (to.getY() + CLOCK_SIZE) * -BASE_SCALE);
-            path.lineTo((to.getX() + CLOCK_SIZE) * BASE_SCALE, to.getY() * -BASE_SCALE);
-            path.lineTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
+            path.moveTo(to.getX(), to.getY());
+            path.lineTo((to.getX() - CLOCK_SIZE), to.getY());
+            path.lineTo(to.getX(), (to.getY() + CLOCK_SIZE));
+            path.lineTo((to.getX() + CLOCK_SIZE), to.getY());
+            path.lineTo(to.getX(), to.getY());
             break;
          case 180:
-            path.moveTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
-            path.lineTo(to.getX() * BASE_SCALE, (to.getY() - CLOCK_SIZE) * -BASE_SCALE);
-            path.lineTo((to.getX() - CLOCK_SIZE) * BASE_SCALE, to.getY() * -BASE_SCALE);
-            path.lineTo(to.getX() * BASE_SCALE, (to.getY() + CLOCK_SIZE) * -BASE_SCALE);
-            path.lineTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
+            path.moveTo(to.getX(), to.getY());
+            path.lineTo(to.getX(), (to.getY() - CLOCK_SIZE));
+            path.lineTo((to.getX() - CLOCK_SIZE), to.getY());
+            path.lineTo(to.getX(), (to.getY() + CLOCK_SIZE));
+            path.lineTo(to.getX(), to.getY());
             break;
          case 270:
-            path.moveTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
-            path.lineTo((to.getX() - CLOCK_SIZE) * BASE_SCALE, to.getY() * -BASE_SCALE);
-            path.lineTo(to.getX() * BASE_SCALE, (to.getY() - CLOCK_SIZE) * -BASE_SCALE);
-            path.lineTo((to.getX() + CLOCK_SIZE) * BASE_SCALE, to.getY() * -BASE_SCALE);
-            path.lineTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
+            path.moveTo(to.getX(), to.getY());
+            path.lineTo((to.getX() - CLOCK_SIZE), to.getY());
+            path.lineTo(to.getX(), (to.getY() - CLOCK_SIZE));
+            path.lineTo((to.getX() + CLOCK_SIZE), to.getY());
+            path.lineTo(to.getX(), to.getY());
             break;
       }
    }
@@ -297,28 +296,28 @@ public class PinView extends AbstractView {
    private static void createEdge(Path2D path, NetPoint to, int angle) {
       switch (angle) {
          case 0:
-            path.moveTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
-            path.lineTo((to.getX() - CLOCK_SIZE) * BASE_SCALE, (to.getY() + CLOCK_SIZE) * -BASE_SCALE);
-            path.lineTo((to.getX() - CLOCK_SIZE) * BASE_SCALE, to.getY() * -BASE_SCALE);
-            path.lineTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
+            path.moveTo(to.getX(), to.getY());
+            path.lineTo((to.getX() - CLOCK_SIZE), (to.getY() + CLOCK_SIZE));
+            path.lineTo((to.getX() - CLOCK_SIZE), to.getY());
+            path.lineTo(to.getX(), to.getY());
             break;
          case 90:
-            path.moveTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
-            path.lineTo((to.getX() - CLOCK_SIZE) * BASE_SCALE, (to.getY() - CLOCK_SIZE) * -BASE_SCALE);
-            path.lineTo(to.getX() * BASE_SCALE, (to.getY() + CLOCK_SIZE) * -BASE_SCALE);
-            path.lineTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
+            path.moveTo(to.getX(), to.getY());
+            path.lineTo((to.getX() - CLOCK_SIZE), (to.getY() - CLOCK_SIZE));
+            path.lineTo(to.getX(), (to.getY() + CLOCK_SIZE));
+            path.lineTo(to.getX(), to.getY());
             break;
          case 180:
-            path.moveTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
-            path.lineTo((to.getX() + CLOCK_SIZE) * BASE_SCALE, (to.getY() + CLOCK_SIZE) * -BASE_SCALE);
-            path.lineTo((to.getX() + CLOCK_SIZE) * BASE_SCALE, to.getY() * -BASE_SCALE);
-            path.lineTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
+            path.moveTo(to.getX(), to.getY());
+            path.lineTo((to.getX() + CLOCK_SIZE), (to.getY() + CLOCK_SIZE));
+            path.lineTo((to.getX() + CLOCK_SIZE), to.getY());
+            path.lineTo(to.getX(), to.getY());
             break;
          case 270:
-            path.moveTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
-            path.lineTo((to.getX() + CLOCK_SIZE) * BASE_SCALE, (to.getY() + CLOCK_SIZE) * -BASE_SCALE);
-            path.lineTo(to.getX() * BASE_SCALE, (to.getY() - CLOCK_SIZE) * -BASE_SCALE);
-            path.lineTo(to.getX() * BASE_SCALE, to.getY() * -BASE_SCALE);
+            path.moveTo(to.getX(), to.getY());
+            path.lineTo((to.getX() + CLOCK_SIZE), (to.getY() + CLOCK_SIZE));
+            path.lineTo(to.getX(), (to.getY() - CLOCK_SIZE));
+            path.lineTo(to.getX(), to.getY());
             break;
       }
    }

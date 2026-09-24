@@ -42,6 +42,7 @@ import de.parresum.kicad.parser.project.TopLevelSheet;
  * @author Kai Uwe Bachmann
  */
 public class ProjectNode implements TreeNode, INode {
+
    private final List<SchemeNode> children = new ArrayList<>();
    private final String name;
    private final File file;
@@ -185,4 +186,10 @@ public class ProjectNode implements TreeNode, INode {
    public Enumeration<? extends TreeNode> children() {
       return Collections.enumeration(children);
    }
+
+   @Override
+   public String toString() {
+      return "ProjectNode [" + name + "]";
+   }
+
 }

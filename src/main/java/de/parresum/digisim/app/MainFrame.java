@@ -25,6 +25,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -35,6 +36,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.filechooser.FileFilter;
 
@@ -42,7 +44,11 @@ import org.apache.commons.lang3.SystemProperties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.parresum.digisim.app.circuit.CircuitDocumentPanel;
 import de.parresum.digisim.app.i18n.LanguageManager;
+import de.parresum.digisim.app.project.INode;
+import de.parresum.digisim.app.project.ProjectPanel;
+import de.parresum.digisim.app.project.SchemeNode;
 
 /**
  * Main Application window
@@ -53,14 +59,22 @@ public class MainFrame extends JFrame {
    private static final Logger LOG = LogManager.getLogger(MainFrame.class);
 
    // private final WindowPosManager windowPosManager;
-   private CircuitComponent circuitComponent;
-   private CircuitScrollPanel circuitScrollPanel;
+//   private CircuitComponent circuitComponent;
+//   private CircuitScrollPanel circuitScrollPanel;
    private final JLabel statusLabel;
 
    private Action openAction;
    private Action closeAction;
 
+   private Action openScheme;
+   private List<Action> schemeOpenedActions = new ArrayList<>();
+
+   private Action zoomIn;
+   private Action zoomOut;
+   private Action zoomFit;
+
    private ProjectPanel projectPanel;
+   private CircuitDocumentPanel circuitPanel;
 
    public static void main(String... args) {
       MainFrame mainframe = new MainFrame();
@@ -92,13 +106,12 @@ public class MainFrame extends JFrame {
       // statusLabel.setBorder(BorderFactory.createEmptyBorder(0, Screen.getInstance().getFontSize() * 2 / 3, 0, 0));
       getContentPane().add(statusLabel, BorderLayout.SOUTH);
 
-      createMainMenu();
-
       createPanes();
+      createMainMenu();
 
       validate();
       repaint();
-      setSize(400, 300);
+      pack();
    }
 
    private void createMainMenu() {
@@ -117,6 +130,7 @@ public class MainFrame extends JFrame {
       getContentPane().add(toolBar, BorderLayout.NORTH);
    }
 
+   // ---------------------------------------- o ----------------------------------------
    private void createFileMenu(JMenuBar mainMenu, JToolBar toolbar) {
       JMenu file =
 
@@ -172,26 +186,115 @@ public class MainFrame extends JFrame {
       mainMenu.add(file);
    }
 
+   // ---------------------------------------- o ----------------------------------------
    private void createEditMenu(JMenuBar mainMenu, JToolBar toolbar) {
 
    }
 
+   // ---------------------------------------- o ----------------------------------------
    private void createViewMenu(JMenuBar mainMenu, JToolBar toolbar) {
+      JMenu view =
+
+            new JMenu(LanguageManager.getAction("menu.view", new AbstractAction() {
+
+               @Override
+               public void actionPerformed(ActionEvent e) {
+
+               }
+            }));
+
+      openScheme = LanguageManager.getAction("menu.view.openScheme", new AbstractAction() {
+
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            doOpenScheme();
+
+         }
+      });
+      view.add(openScheme);
+
+      view.addSeparator();
+      Action closeScheme = LanguageManager.getAction("menu.view.closeScheme", new AbstractAction() {
+
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            doCloseScheme();
+
+         }
+      });
+      view.add(closeScheme);
+      schemeOpenedActions.add(closeScheme);
+
+      view.addSeparator();
+      zoomIn = LanguageManager.getAction("menu.view.zoomIn", new AbstractAction() {
+
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            doZoomIn();
+
+         }
+      });
+      view.add(zoomIn);
+      schemeOpenedActions.add(zoomIn);
+
+      zoomOut = LanguageManager.getAction("menu.view.zoomOut", new AbstractAction() {
+
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            doZoomOut();
+
+         }
+      });
+      view.add(zoomOut);
+      schemeOpenedActions.add(zoomOut);
+
+      zoomFit = LanguageManager.getAction("menu.view.zoomFit", new AbstractAction() {
+
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            doZoomFit();
+
+         }
+      });
+      view.add(zoomFit);
+      schemeOpenedActions.add(zoomFit);
+
+      adjustViewActions();
+
+      mainMenu.add(view);
 
    }
 
+   protected void adjustViewActions() {
+      INode node = projectPanel.getSelectedNode();
+      if (node instanceof SchemeNode) {
+         openScheme.setEnabled(true);
+      } else {
+         openScheme.setEnabled(false);
+      }
+
+      INode current = circuitPanel.getCurrentDocument();
+      for (Action a : schemeOpenedActions) {
+         a.setEnabled(current != null);
+      }
+   }
+
+   // ---------------------------------------- o ----------------------------------------
    private void createSimulateMenu(JMenuBar mainMenu, JToolBar toolbar) {
 
    }
 
+   // ---------------------------------------- o ----------------------------------------
    private void createAnalyseMenu(JMenuBar mainMenu, JToolBar toolbar) {
 
    }
 
+   // ---------------------------------------- o ----------------------------------------
    private void createWindowMenu(JMenuBar mainMenu, JToolBar toolbar) {
 
    }
 
+   // ---------------------------------------- o ----------------------------------------
    private void createHelpMemu(JMenuBar mainMenu, JToolBar toolbar) {
 
    }
@@ -204,20 +307,39 @@ public class MainFrame extends JFrame {
       createSchemeView();
 
       split.setLeftComponent(projectPanel);
-      split.setRightComponent(circuitScrollPanel);
+      split.setRightComponent(circuitPanel);
+      split.setDividerLocation(200);
 
       getContentPane().add(split);
+
+      circuitPanel.addChangeListener(_ -> {
+         documentChanged();
+      });
 
    }
 
    private void createProjectView() {
       projectPanel = new ProjectPanel();
+      projectPanel.addTreeSelectionListener(l -> {
+         if (l.isAddedPath()) {
+            System.out.println("Path " + l.getPath().toString() + " selected");
+         } else {
+            System.out.println("Path " + l.getPath().toString() + " deselected");
+         }
+         adjustViewActions();
+      });
+      projectPanel.addDoubleClickListener(l -> {
+         System.out.println("Project " + l.getNode().getName() + " opened");
+         doOpenCircuit(l.getNode());
+      });
 
    }
 
    private void createSchemeView() {
-      circuitComponent = new CircuitComponent();
-      circuitScrollPanel = new CircuitScrollPanel(circuitComponent);
+      circuitPanel = new CircuitDocumentPanel(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
+      circuitPanel.addSelectionListener(l -> adjustViewActions());
+//      circuitComponent = new CircuitComponent();
+//      circuitScrollPanel = new CircuitScrollPanel(circuitComponent);
 
       // circuitComponent = new CircuitComponent(/* this, library, shapeFactory */);
 //      circuitComponent.addListener(this);
@@ -255,7 +377,6 @@ public class MainFrame extends JFrame {
 
       String currentDir = AppPrefferences.getPref("currentDir", SystemProperties.getUserHome());
 
-      // Optional: Startverzeichnis festlegen (z. B. Benutzerordner)
       fileChooser.setCurrentDirectory(new File(currentDir));
       fileChooser.setAcceptAllFileFilterUsed(false);
       fileChooser.addChoosableFileFilter(new FileFilter() {
@@ -323,6 +444,60 @@ public class MainFrame extends JFrame {
       }
    }
 
+   // ---------------------------------------- o ----------------------------------------
+
+   /**
+   *
+   */
+   protected void doOpenScheme() {
+      INode node = projectPanel.getSelectedNode();
+      if (node instanceof SchemeNode) {
+         doOpenCircuit((SchemeNode) node);
+      }
+   }
+
+   private void doOpenCircuit(SchemeNode node) {
+      circuitPanel.openDocument(node);
+   }
+
+   /**
+    *
+    */
+   protected void doCloseScheme() {
+      circuitPanel.closeCurrentDocument();
+   }
+
+   /**
+    *
+    */
+   protected void doZoomIn() {
+      circuitPanel.zoomIn();
+      documentChanged();
+   }
+
+   /**
+    *
+    */
+   protected void doZoomOut() {
+      circuitPanel.zoomOut();
+      documentChanged();
+   }
+
+   /**
+    *
+    */
+   protected void doZoomFit() {
+      circuitPanel.zoomFit();
+      documentChanged();
+   }
+
+   public void documentChanged() {
+      zoomIn.setEnabled(circuitPanel.canZoomIn());
+      zoomOut.setEnabled(circuitPanel.canZoomOut());
+      zoomFit.setEnabled(circuitPanel.getSelectedIndex() >= 0);
+   }
+
+   // ---------------------------------------- o ----------------------------------------
    private void doError(Exception ex, String key, Object... params) {
       LOG.error("Error occoured", ex);
 
