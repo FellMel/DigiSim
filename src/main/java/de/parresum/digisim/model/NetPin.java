@@ -15,6 +15,8 @@
  */
 package de.parresum.digisim.model;
 
+import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -27,7 +29,7 @@ import de.parresum.kicad.parser.eescheme.Pin;
  *
  * @author Kai Uwe Bachmann
  */
-public class NetPin extends AbstractNetElement {
+public class NetPin extends AbstractNetElement implements CircuitPin {
    private final static Logger LOG = LogManager.getLogger(NetPin.class);
 
    /** Position of the pin in scheme */
@@ -51,6 +53,14 @@ public class NetPin extends AbstractNetElement {
       this.angle = angle;
       // this.length = pin.getLength();
       // this.pinShape = PinShapeView.from(pin.getGraphicPinShape());
+   }
+
+   public NetPin(Pin pin, String part) {
+      super(pin.getUuid().getUuid());
+      this.part = part;
+      this.pinNr = pin.getName();
+      this.point = new NetPoint(pin.getPosition());
+      this.angle = (int) pin.getPosition().getAngle();
    }
 
    @Override
@@ -81,8 +91,14 @@ public class NetPin extends AbstractNetElement {
       return part;
    }
 
+   @Override
    public int getAngle() {
       return angle;
+   }
+
+   @Override
+   public NetPoint getPosition() {
+      return point;
    }
 
 //   public double getLength() {
@@ -100,6 +116,19 @@ public class NetPin extends AbstractNetElement {
    public void print() {
       LOG.info(String.format("  %s, %s (%s)", part, pinNr, point));
 
+   }
+
+   @Override
+   public void paint(Graphics2D g) {
+      // TODO Auto-generated method stub
+      // System.out.println(String.format("Pin %s:%s - %s", part, pinNr, getUuid()));
+      // nothing to paint, yet
+   }
+
+   @Override
+   public Rectangle2D getBounding() {
+      // TODO Auto-generated method stub
+      return new Rectangle2D.Double(point.getX(), point.getY(), 0, 0);
    }
 
 }

@@ -16,35 +16,35 @@
 
 package de.parresum.digisim.model.graph;
 
-import static de.parresum.digisim.model.ModelConstants.UNIT_FACTOR;
-
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 import de.parresum.digisim.core.wire.Wire;
 import de.parresum.digisim.model.NetConnection;
 import de.parresum.digisim.model.NetPoint;
 import de.parresum.digisim.model.PinType;
+import de.parresum.kicad.parser.model.Justify;
 
 /**
  *
  *
  * @author Kai Uwe Bachmann
  */
-public class ConnectionView {
-   private final static double BORDER = 0.4 * UNIT_FACTOR;
-   private final static double DEPTH = 1.4 * UNIT_FACTOR;
+public abstract class ConnectionView {
    private final String name;
    private final NetConnection connection;
+   private Justify just;
 
    private Wire wire;
 
    public ConnectionView(NetConnection con) {
       name = con.getName();
       this.connection = con;
+      just = con.getJust();
    }
 
    public Wire getWire() {
@@ -55,6 +55,34 @@ public class ConnectionView {
       this.wire = wire;
    }
 
+   /**
+    * @return the connection
+    */
+   public NetConnection getConnection() {
+      return connection;
+   }
+
+   /**
+    * @param wire
+    */
+   public void joinWire(Wire wire) {
+      switch (getType()) {
+         case INPUT:
+            this.wire.join(wire);
+            break;
+
+         case OUTPUT:
+            wire.join(this.wire);
+            break;
+
+         case OPEN_COLLECTOR:
+         case TRI_STATE:
+            // TODO: join special pin
+         default:
+      }
+
+   }
+
    public PinType getType() {
       return connection.getType();
    }
@@ -63,10 +91,13 @@ public class ConnectionView {
       return name;
    }
 
-   public void paint(Graphics2D g2d) {
+   public abstract void paint(Graphics2D g2d);
 
+   public abstract Rectangle2D getBounding();
+
+   protected void setColor(Graphics2D g2d) {
       Color col;
-      switch (wire.get()) {
+      switch (getWire().get()) {
          case HIGH:
             col = Color.RED;
             break;
@@ -81,102 +112,45 @@ public class ConnectionView {
             break;
       }
       g2d.setColor(col);
+   }
 
-      AffineTransform oldTransform = g2d.getTransform();
+   protected Dimension2D paintText(Graphics2D g2d, double dx, double dy) {
       java.awt.Font oldfont = g2d.getFont();
-      g2d.setFont(connection.getFont());
+      g2d.setFont(getConnection().getFont());
 
       // calculate TextSize
-      int width = g2d.getFontMetrics().stringWidth(name);
+      int width = g2d.getFontMetrics().stringWidth(getName());
       int height = g2d.getFontMetrics().getHeight();
-      double w = width + 2.0 * DEPTH;
-      double heightHalf = (height + BORDER) / 2.0;
+      int ascent = g2d.getFontMetrics().getAscent();
+      int descent = g2d.getFontMetrics().getDescent();
+      double w = width + 2.0 * dx;
+      double heightHalf = (height + dy) / 2.0;
 
-      g2d.translate(connection.getPoint().getX(), connection.getPoint().getY());
-      g2d.rotate(Math.toRadians(connection.getAngle()));
+      AffineTransform tmpTransform = g2d.getTransform();
+      g2d.rotate(Math.toRadians(getConnection().getAngle() % 180.0));
 
+      Point2D textPos = rotate(width, height, dx, dy, getConnection().getAngle());
       // Draw text
       // TODO: Hoch-/Tief-stellen, andere sonderstyles in Helper erledigen
       // TODO: Rotate erst nach Text, Textpos in helper rotieren
-      g2d.drawString(connection.getName(), (int) (DEPTH), (int) ((heightHalf - BORDER)));
-
-      // Draw Box
-      g2d.drawLine((int) ((0 + DEPTH)), (int) (-heightHalf), //
-            (int) ((w - DEPTH)), (int) (-heightHalf));
-      g2d.drawLine((int) ((0 + DEPTH)), (int) (heightHalf), //
-            (int) ((w - DEPTH)), (int) (heightHalf));
-
-      switch (connection.getType()) {
-         case INPUT:
-            paintInput(g2d, w, heightHalf);
-            paintNoOutput(g2d, w, heightHalf);
-            break;
-
-         case OUTPUT:
-            paintNoInput(g2d, w, heightHalf);
-            paintOutput(g2d, w, heightHalf);
-            break;
-
-         case OPEN_COLLECTOR:
-         case TRI_STATE:
-            paintInput(g2d, w, heightHalf);
-            paintOutput(g2d, w, heightHalf);
-            break;
-
-         case UNKNOWN:
-         default:
-            paintNoInput(g2d, w, heightHalf);
-            paintNoOutput(g2d, w, heightHalf);
-            break;
-      }
-
+      g2d.drawString(getConnection().getName(), (float) (textPos.getX()), (float) (textPos.getY() + height / 2.0 - dy));
+      g2d.setTransform(tmpTransform);
       g2d.setFont(oldfont);
-      g2d.setTransform(oldTransform);
+
+      return new DimensionDouble(w, height);
    }
 
-   private void paintInput(Graphics2D g2d, double w, double heightHalf) {
-      g2d.drawLine(0, 0, (int) (DEPTH), (int) (heightHalf));
-      g2d.drawLine(0, 0, (int) (DEPTH), (int) (-heightHalf));
-   }
+   private Point2D rotate(int width, int height, double dx, double dy, double angle) {
 
-   private void paintOutput(Graphics2D g2d, double w, double heightHalf) {
-      g2d.drawLine((int) (w), 0, (int) ((w - DEPTH)), (int) (heightHalf));
-      g2d.drawLine((int) (w), 0, (int) ((w - DEPTH)), (int) (-heightHalf));
-
-   }
-
-   private void paintNoInput(Graphics2D g2d, double w, double heightHalf) {
-      g2d.drawLine(0, (int) (heightHalf), 0, (int) (-heightHalf));
-      g2d.drawLine(0, (int) (heightHalf), (int) (DEPTH), (int) (heightHalf));
-      g2d.drawLine(0, (int) (-heightHalf), (int) (DEPTH), (int) (-heightHalf));
-
-   }
-
-   private void paintNoOutput(Graphics2D g2d, double w, double heightHalf) {
-      g2d.drawLine((int) (w), (int) (heightHalf), (int) (w), (int) (-heightHalf));
-      g2d.drawLine((int) (w), (int) (heightHalf), (int) ((w - DEPTH)), (int) (heightHalf));
-      g2d.drawLine((int) (w), (int) (-heightHalf), (int) ((w - DEPTH)), (int) (-heightHalf));
-
-   }
-
-   public Rectangle2D getBounding() {
-
-      // calculate TextSize
-      Rectangle2D fontBound = connection.getFont().getStringBounds(name,
-            new FontRenderContext(new AffineTransform(), false, false));
-      double width = fontBound.getWidth();
-      double height = fontBound.getHeight();
-      double w = width + 2.0 * DEPTH;
-      double heightHalf = (height + BORDER) / 2.0;
-
-      Rectangle2D bounding = new Rectangle2D.Double(0, -heightHalf, 0, 0);
-      bounding.add(w, -heightHalf);
-      bounding.add(0, heightHalf);
-      bounding.add(w, heightHalf);
-
-      bounding = translate(bounding, connection.getPoint(), (int) connection.getAngle(), false, false);
-
-      return bounding;
+      switch ((int) angle % 360) {
+         case 0:
+         case 270:
+         default:
+            return new Point2D.Double(0 + dx, 0);
+         case 90:
+         case 180:
+            return new Point2D.Double(-width - dx, 0);
+      }
    }
 
    // TODO: mit AbstractCirclePart zusammen führen
@@ -197,10 +171,10 @@ public class ConnectionView {
             break;
 
          case 90:// cos = 0 ; sin = -1
-            xmin = -bound.getMinY();
-            ymin = bound.getMinX();
-            xmax = -bound.getMaxY();
-            ymax = bound.getMaxX();
+            xmin = bound.getMinY();
+            ymin = -bound.getMinX();
+            xmax = bound.getMaxY();
+            ymax = -bound.getMaxX();
             break;
 
          case 180:// cos = -1 ; sin = 0
@@ -211,10 +185,10 @@ public class ConnectionView {
             break;
 
          case 270:// cos = 0 ; sin = 1
-            xmin = bound.getMinY();
-            ymin = -bound.getMinX();
-            xmax = bound.getMaxY();
-            ymax = -bound.getMaxX();
+            xmin = -bound.getMinY();
+            ymin = bound.getMinX();
+            xmax = -bound.getMaxY();
+            ymax = bound.getMaxX();
             break;
       }
 

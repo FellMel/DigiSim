@@ -17,6 +17,9 @@ package de.parresum.digisim.model;
 
 import static de.parresum.digisim.model.ModelConstants.UNIT_FACTOR;
 
+import java.awt.Graphics2D;
+import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,6 +81,33 @@ public class NetWire extends AbstractNetElement {
    @Override
    public List<NetPoint> getPoints() {
       return points;
+   }
+
+   @Override
+   public void paint(Graphics2D g) {
+      NetPoint prev = null;
+      for (NetPoint pt : points) {
+         if (prev != null) {
+            g.draw(new Line2D.Double(prev.getX(), prev.getY(), pt.getX(), pt.getY()));
+         }
+
+         prev = pt;
+      }
+   }
+
+   @Override
+   public Rectangle2D getBounding() {
+      Rectangle2D bound = null;
+      for (NetPoint pt : points) {
+         if (bound == null) {
+            bound = new Rectangle2D.Double(pt.getX(), pt.getY(), 0, 0);
+         } else {
+            bound.add(pt.getX(), pt.getY());
+
+         }
+      }
+
+      return bound;
    }
 
    /**

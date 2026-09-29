@@ -36,6 +36,7 @@ import de.parresum.digisim.core.Circuit;
 import de.parresum.digisim.core.CircuitPart;
 import de.parresum.digisim.gui.SimulationWindow;
 import de.parresum.digisim.model.AbstractNetElement;
+import de.parresum.digisim.model.CircuitPin;
 import de.parresum.digisim.model.LibPart;
 import de.parresum.digisim.model.NetConnection;
 import de.parresum.digisim.model.NetJunction;
@@ -43,14 +44,19 @@ import de.parresum.digisim.model.NetPart;
 import de.parresum.digisim.model.NetPin;
 import de.parresum.digisim.model.NetPoint;
 import de.parresum.digisim.model.NetWire;
+import de.parresum.digisim.model.SheetPart;
 import de.parresum.digisim.model.graph.ConnectionView;
+import de.parresum.digisim.model.graph.GlobalConnectionView;
+import de.parresum.digisim.model.graph.HierarchicalConnectionView;
 import de.parresum.digisim.model.graph.NetView;
 import de.parresum.digisim.model.graph.PartView;
 import de.parresum.kicad.parser.eescheme.Junction;
 import de.parresum.kicad.parser.eescheme.Schematic;
+import de.parresum.kicad.parser.eescheme.Sheet;
 import de.parresum.kicad.parser.eescheme.Symbol;
 import de.parresum.kicad.parser.eescheme.Wire;
 import de.parresum.kicad.parser.eescheme.label.GlobalLabel;
+import de.parresum.kicad.parser.eescheme.label.HierarchicalLabel;
 import de.parresum.kicad.parser.library.LibSymbol;
 import de.parresum.kicad.parser.sexpr.SExpressionParser;
 
@@ -113,13 +119,13 @@ public class Parser {
 
          final Schematic result = SExpressionParser.parse(infile, new Schematic());
 
-         return parseCircuit(result);
+         return parseCircuit(file.getParentFile(), result);
       } catch (IOException e) {
          throw new IllegalStateException("Can't read input file", e);
       }
    }
 
-   public static Circuit parseCircuit(Schematic scheme) {
+   public static Circuit parseCircuit(File baseDir, Schematic scheme) {
 
       // get used Lib symbols ...
       Map<String, LibPart> lib = new HashMap<>();
@@ -143,13 +149,29 @@ public class Parser {
          elements.add(new NetConnection(label));
       }
 
+      for (HierarchicalLabel label : scheme.getHierarchicalLabels()) {
+         elements.add(new NetConnection(label));
+      }
+
       List<NetPart> parts = new ArrayList<NetPart>();
       for (Symbol symbol : scheme.getSymbols()) {
          LibPart libPart = getLibSymbol(symbol.getLibraryIdentifier(), lib);
          NetPart part = new NetPart(symbol, libPart);
          parts.add(part);
 
-         elements.addAll(part.getPins());
+         for (CircuitPin item : part.getPins()) {
+            elements.add((AbstractNetElement) item);
+         }
+      }
+
+      List<SheetPart> sheets = new ArrayList<>();
+      for (Sheet sheet : scheme.getSheets()) {
+         SheetPart part = new SheetPart(sheet);
+         sheets.add(part);
+         for (CircuitPin item : part.getPins()) {
+            elements.add((AbstractNetElement) item);
+         }
+
       }
       LOG.info("Found " + elements.size() + " elements");
 
@@ -196,12 +218,16 @@ public class Parser {
          }
          LOG.info("");
       }
-      return createCircuit(scheme.getTitleBlock().getTitle(), lib, parts, netLists);
+      String title = "";
+      if (scheme.getTitleBlock() != null) {
+         title = scheme.getTitleBlock().getTitle();
+      }
+      return createCircuit(baseDir, title, lib, parts, sheets, netLists);
 
    }
 
-   private static Circuit createCircuit(String name, Map<String, LibPart> lib, List<NetPart> parts,
-         Map<String, List<AbstractNetElement>> netLists) {
+   private static Circuit createCircuit(File baseDir, String name, Map<String, LibPart> lib, List<NetPart> parts,
+         List<SheetPart> sheets, Map<String, List<AbstractNetElement>> netLists) {
 
       Circuit circuit = new Circuit(name);
 
@@ -209,6 +235,15 @@ public class Parser {
       try {
          for (NetPart part : parts) {
             CircuitPart sp = PartHelper.createPart(part);
+            PartView view = new PartView(part.getName(), sp, part);
+            circuit.addPart(part.getName(), view);
+         }
+         for (SheetPart part : sheets) {
+            String filename = part.getFilename();
+
+            Circuit sub = readFile(new File(baseDir, filename));
+
+            de.parresum.digisim.core.SheetPart sp = new de.parresum.digisim.core.SheetPart(sub);
             PartView view = new PartView(part.getName(), sp, part);
             circuit.addPart(part.getName(), view);
          }
@@ -230,12 +265,18 @@ public class Parser {
                      throw new IllegalStateException("Unknown part with name " + partName);
                   }
 
-                  PartHelper.join(wire, part.getPart(), pinNumber);
+                  CircuitPart component = part.getPart();
+                  component.joinWire(wire, pinNumber);
                } else if (item instanceof NetConnection) {
                   NetConnection connection = (NetConnection) item;
                   String conName = connection.getName();
 
-                  ConnectionView partConnection = new ConnectionView(connection);
+                  ConnectionView partConnection;
+                  if (connection.isHierarchical()) {
+                     partConnection = new HierarchicalConnectionView(connection);
+                  } else {
+                     partConnection = new GlobalConnectionView(connection);
+                  }
                   partConnection.setWire(wire);
                   circuit.addConnection(conName, partConnection);
                }

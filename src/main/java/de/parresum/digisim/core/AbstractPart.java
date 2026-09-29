@@ -16,8 +16,13 @@
 
 package de.parresum.digisim.core;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import de.parresum.digisim.core.wire.Wire;
+import de.parresum.digisim.parser.PartHelper;
 
 /**
  * Base Element of most parts.
@@ -58,6 +63,16 @@ public abstract class AbstractPart implements CircuitPart {
    @Override
    public void setLibName(String libName) {
       this.libName = libName;
+   }
+
+   @Override
+   public void joinWire(Wire wire, String pinNumber) {
+      try {
+         PartHelper.join(wire, this, pinNumber);
+      } catch (IllegalAccessException | InvocationTargetException e) {
+         throw new IllegalStateException("Can't join wire on Pin " + pinNumber, e);
+      }
+
    }
 
 }

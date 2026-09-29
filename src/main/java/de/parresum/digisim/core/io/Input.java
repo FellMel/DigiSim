@@ -15,6 +15,8 @@
  */
 package de.parresum.digisim.core.io;
 
+import java.lang.reflect.InvocationTargetException;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
@@ -33,6 +35,7 @@ import de.parresum.digisim.core.Out;
 import de.parresum.digisim.core.State;
 import de.parresum.digisim.core.wire.TriStateWire;
 import de.parresum.digisim.core.wire.Wire;
+import de.parresum.digisim.parser.PartHelper;
 
 /**
  * GUI-Input element / switch
@@ -156,6 +159,16 @@ public class Input extends Box implements CircuitPart, ChangeListener, Out, Inpu
    public void stateChanged(final ChangeEvent e) {
       final State current = input.isSelected() ? State.HIGH : State.LOW;
       output.set(current);
+
+   }
+
+   @Override
+   public void joinWire(Wire wire, String pinNumber) {
+      try {
+         PartHelper.join(wire, this, pinNumber);
+      } catch (IllegalAccessException | InvocationTargetException e) {
+         throw new IllegalStateException("Can't join wire on Pin " + pinNumber, e);
+      }
 
    }
 

@@ -28,6 +28,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -112,8 +113,8 @@ public class CircuitDocumentPanel extends JTabbedPane {
       }));
    }
 
-   public void openDocument(SchemeNode scheme) {
-      CircuitComponent view = new CircuitComponent(scheme);
+   public void openDocument(File baseDir, SchemeNode scheme) {
+      CircuitComponent view = new CircuitComponent(baseDir, scheme);
       String name = scheme.getName();
       int idx = name.lastIndexOf(".");
       if (idx > 0) {

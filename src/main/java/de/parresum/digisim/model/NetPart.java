@@ -23,11 +23,13 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import de.parresum.digisim.model.graph.AbstractView;
 import de.parresum.digisim.model.graph.TextView;
 import de.parresum.kicad.parser.eescheme.Pin;
+import de.parresum.kicad.parser.eescheme.Sheet;
 import de.parresum.kicad.parser.eescheme.Symbol;
 import de.parresum.kicad.parser.model.MirrorType;
 import de.parresum.kicad.parser.model.PositionAt;
@@ -48,32 +50,29 @@ public class NetPart extends AbstractCircuitPart {
    /** angle of the part in scheme */
    private final int angle;
 
-   /** name of the part in scheme */
-   private final String name;
-
    /** name of the symbol in library */
    private final String lib;
 
    /** extracted symbol definition in lib */
-   private final LibPart libPart;
+   private final AbstractCircuitPart circuitPart;
 
-   /** pins of the part */
-   private final List<NetPin> pins = new ArrayList<NetPin>();
-
+//   /** pins of the part */
+//   private final List<NetPin> pins = new ArrayList<NetPin>();
+//
    /** values of the part */
    private final List<NetValue> values = new ArrayList<>();
 
-   private final List<AbstractView> properties = new ArrayList<>();
+   private final List<TextView> properties = new ArrayList<>();
 
    private final boolean mirrorX;
    private final boolean mirrorY;
 
    public NetPart(Symbol symbol, LibPart libPart) {
+      super(getSymbolName(symbol));
       this.uuid = symbol.getUuid().getUuid();
-      this.name = getSymbolName(symbol);
-      this.libPart = libPart;
+      this.circuitPart = libPart;
       this.lib = symbol.getLibraryIdentifier();
-      this.point = new NetPoint(symbol.getPosition().getX() * UNIT_FACTOR, symbol.getPosition().getY() * UNIT_FACTOR);
+      this.point = new NetPoint(symbol.getPosition());
       this.angle = (int) Math.round(symbol.getPosition().getAngle());
       if (symbol.getMirror() == null) {
          mirrorX = false;
@@ -87,10 +86,24 @@ public class NetPart extends AbstractCircuitPart {
       }
 
       parsePins(symbol);
-      parseValues(symbol);
+      parseValues(symbol.getProperties());
    }
 
-   private String getSymbolName(Symbol symbol) {
+   public NetPart(Sheet sheet) {
+      super(getSymbolName(sheet));
+      this.uuid = sheet.getUuid().getUuid();
+      this.circuitPart = new SheetPart(sheet);
+      this.lib = null; // symbol.getLibraryIdentifier();
+      this.point = new NetPoint(sheet.getAt());
+      this.angle = (int) Math.round(sheet.getAt().getAngle());
+      mirrorX = false;
+      mirrorY = false;
+
+      parsePins(sheet);
+      parseValues(sheet.getProperties());
+   }
+
+   private static String getSymbolName(Symbol symbol) {
       for (Property prop : symbol.getProperties()) {
          if ("Reference".equalsIgnoreCase(prop.getKey())) {
             return prop.getValue();
@@ -100,6 +113,16 @@ public class NetPart extends AbstractCircuitPart {
       return symbol.getLibName();
    }
 
+   private static String getSymbolName(Sheet sheet) {
+      for (Property prop : sheet.getProperties()) {
+         if ("Sheetname".equalsIgnoreCase(prop.getKey())) {
+            return prop.getValue();
+         }
+      }
+      // fallback ...
+      return null;
+   }
+
    private void parsePins(Symbol symbol) {
       for (Pin pin : symbol.getPins()) {
          NetPoint point = getPinPoint(symbol, pin);
@@ -107,12 +130,23 @@ public class NetPart extends AbstractCircuitPart {
 
          NetPin partPin = new NetPin(pin, name, point, angle);
 
-         pins.add(partPin);
+         pins.put(partPin.getPinNr(), partPin);
       }
    }
 
-   private void parseValues(Symbol symbol) {
-      for (Property prop : symbol.getProperties()) {
+   private void parsePins(Sheet sheet) {
+      for (Pin pin : sheet.getPins()) {
+         NetPoint point = new NetPoint(pin.getPosition());
+         int angle = (int) pin.getPosition().getAngle();
+
+         NetPin partPin = new NetPin(pin, name, point, angle);
+
+         pins.put(partPin.getPinNr(), partPin);
+      }
+   }
+
+   private void parseValues(List<Property> inProperties) {
+      for (Property prop : inProperties) {
          if (prop.getValue() != null && !prop.getValue().isBlank()) {
             values.add(new NetValue(prop.getKey(), prop.getValue(), name));
             if (!prop.isHide()) {
@@ -125,7 +159,7 @@ public class NetPart extends AbstractCircuitPart {
    private NetPoint getPinPoint(Symbol symbol, Pin pin) {
       PositionAt origin = symbol.getPosition();
       String pinName = pin.getName();
-      LibPin libPin = libPart.getPin(pinName);
+      CircuitPin libPin = circuitPart.getPin(pinName);
       if (libPin == null) {
          throw new IllegalStateException("Can't find pin entry for " + pinName);
       }
@@ -152,7 +186,7 @@ public class NetPart extends AbstractCircuitPart {
 
    private int getPinAngle(Symbol symbol, Pin pin) {
       String pinName = pin.getName();
-      LibPin libPin = libPart.getPin(pinName);
+      CircuitPin libPin = circuitPart.getPin(pinName);
       if (libPin == null) {
          throw new IllegalStateException("Can't find pin entry for " + pinName);
       }
@@ -161,8 +195,8 @@ public class NetPart extends AbstractCircuitPart {
 
    }
 
-   public List<NetPin> getPins() {
-      return pins;
+   public Collection<CircuitPin> getPins() {
+      return pins.values();
    }
 
    public List<NetValue> getValues() {
@@ -181,6 +215,7 @@ public class NetPart extends AbstractCircuitPart {
       return angle;
    }
 
+   @Override
    public String getName() {
       return name;
    }
@@ -189,12 +224,13 @@ public class NetPart extends AbstractCircuitPart {
       return lib;
    }
 
+   @Override
    public void paint(Graphics2D g) {
       g.setColor(Color.BLACK);
 
       // Lib is mirrored on axis x
       AffineTransform oldTransform = transform(g, point, angle, !mirrorX, mirrorY);
-      libPart.paint(g);
+      circuitPart.paint(g);
       g.setTransform(oldTransform);
 
       paintProps(g);
@@ -202,8 +238,8 @@ public class NetPart extends AbstractCircuitPart {
 
    public void paintProps(Graphics2D g) {
       // TODO: rotate
-      for (AbstractView item : properties) {
-         item.paint(g);
+      for (TextView item : properties) {
+         item.paintOutline(g, angle);
       }
 
    }
@@ -217,13 +253,14 @@ public class NetPart extends AbstractCircuitPart {
       } else if (mirrorY) {
          g2d.scale(-1, 1);
       }
-      g2d.rotate(Math.toRadians(-angle));
+      g2d.rotate(Math.toRadians(angle));
 
       return oldTransform;
    }
 
+   @Override
    public Rectangle2D getBounding() {
-      Rectangle2D bound = libPart.getBounding();
+      Rectangle2D bound = circuitPart.getBounding();
 
       bound = translate(bound, point, angle, mirrorX, mirrorY);
 
@@ -232,5 +269,10 @@ public class NetPart extends AbstractCircuitPart {
       }
 
       return bound;
+   }
+
+   @Override
+   public CircuitPin getPin(String number) {
+      return pins.get(number);
    }
 }

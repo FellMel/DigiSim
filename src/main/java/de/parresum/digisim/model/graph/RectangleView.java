@@ -22,7 +22,11 @@ import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 
 import de.parresum.kicad.parser.eescheme.shape.Rectangle;
+import de.parresum.kicad.parser.model.Fill;
 import de.parresum.kicad.parser.model.Position;
+import de.parresum.kicad.parser.model.PositionAt;
+import de.parresum.kicad.parser.model.Size;
+import de.parresum.kicad.parser.model.Stroke;
 
 /**
  * A graphical rectangle element
@@ -31,11 +35,18 @@ import de.parresum.kicad.parser.model.Position;
  */
 public class RectangleView extends AbstractView {
 
-   private final Rectangle rect;
-
    public RectangleView(Rectangle rect) {
       super(rect, createShape(rect));
-      this.rect = rect;
+   }
+
+   /**
+    * @param at
+    * @param size
+    * @param stroke
+    * @param fill
+    */
+   public RectangleView(PositionAt at, Size size, Stroke stroke, Fill fill) {
+      super(stroke, fill, createShape(at, size));
    }
 
    public static Shape createShape(Rectangle rect) {
@@ -49,6 +60,22 @@ public class RectangleView extends AbstractView {
 
       return new Rectangle2D.Double(x, y, w, h);
 
+   }
+
+   /**
+    * @param at
+    * @param size
+    * @return
+    */
+   private static Shape createShape(PositionAt start, Size size) {
+      Position end = new Position(start.getX() + size.getWidth(), start.getY() + size.getHeight());
+
+      double x = Math.min(start.getX() * UNIT_FACTOR, end.getX() * UNIT_FACTOR);
+      double y = Math.min(start.getY() * UNIT_FACTOR, end.getY() * UNIT_FACTOR);
+      double w = Math.abs(end.getX() * UNIT_FACTOR - start.getX() * UNIT_FACTOR);
+      double h = Math.abs(end.getY() * UNIT_FACTOR - start.getY() * UNIT_FACTOR);
+
+      return new Rectangle2D.Double(x, y, w, h);
    }
 
 }

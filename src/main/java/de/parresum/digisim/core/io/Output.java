@@ -15,6 +15,8 @@
  */
 package de.parresum.digisim.core.io;
 
+import java.lang.reflect.InvocationTargetException;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -30,6 +32,7 @@ import de.parresum.digisim.core.State;
 import de.parresum.digisim.core.StateListener;
 import de.parresum.digisim.core.wire.Wire;
 import de.parresum.digisim.gui.Led;
+import de.parresum.digisim.parser.PartHelper;
 
 /**
  * GUI-Element of an output wire / LED
@@ -172,6 +175,16 @@ public class Output extends Box implements CircuitPart, StateListener, OutputPar
          final State current = input.get();
          output.setValue(current);
       }
+   }
+
+   @Override
+   public void joinWire(Wire wire, String pinNumber) {
+      try {
+         PartHelper.join(wire, this, pinNumber);
+      } catch (IllegalAccessException | InvocationTargetException e) {
+         throw new IllegalStateException("Can't join wire on Pin " + pinNumber, e);
+      }
+
    }
 
 }

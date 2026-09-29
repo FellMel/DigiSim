@@ -16,14 +16,34 @@
 
 package de.parresum.digisim.model;
 
+import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import de.parresum.digisim.model.graph.AbstractView;
 
 /**
  *
  *
  * @author Kai Uwe Bachmann
  */
-public class AbstractCircuitPart {
+public abstract class AbstractCircuitPart {
+   /** name of the symbol */
+   protected final String name;
+
+   /** pins of the symbol */
+   protected final Map<String, CircuitPin> pins = new HashMap<>();
+
+   protected final List<AbstractView> graphic = new ArrayList<>();
+
+   public AbstractCircuitPart(String name) {
+      super();
+      this.name = name;
+   }
+
    protected Rectangle2D translate(Rectangle2D bound, NetPoint position, int angle, boolean mirrorX, boolean mirrorY) {
       double xmin, ymin;
       double xmax, ymax;
@@ -82,6 +102,31 @@ public class AbstractCircuitPart {
             Math.min(ymin, ymax), //
             Math.abs(xmax - xmin), //
             Math.abs(ymax - ymin));
+   }
+
+   public abstract CircuitPin getPin(String number);
+
+   /**
+    * @return the name
+    */
+   public String getName() {
+      return name;
+   }
+
+   public void paint(Graphics2D g) {
+      for (AbstractView item : graphic) {
+         item.paint(g);
+      }
+   }
+
+   public Rectangle2D getBounding() {
+
+      Rectangle2D bounding = new Rectangle2D.Double(0, 0, 0, 0);
+      for (AbstractView item : graphic) {
+         Rectangle2D bound = item.getBounding();
+         bounding.add(bound);
+      }
+      return bounding;
    }
 
 }

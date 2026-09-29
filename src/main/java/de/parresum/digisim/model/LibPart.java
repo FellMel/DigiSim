@@ -18,10 +18,6 @@ package de.parresum.digisim.model;
 
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import de.parresum.digisim.model.graph.AbstractView;
 import de.parresum.digisim.model.graph.ArcView;
@@ -48,16 +44,8 @@ import de.parresum.kicad.parser.library.LibSymbol;
  */
 public class LibPart extends AbstractCircuitPart {
 
-   /** name of the symbol */
-   private final String name;
-
-   /** pins of the symbol */
-   private final Map<String, LibPin> pins = new HashMap<>();
-
-   private final List<AbstractView> graphic = new ArrayList<>();
-
    public LibPart(LibSymbol symbol) {
-      name = symbol.getName();
+      super(symbol.getName());
 
       if (symbol.getSymbols() != null) {
          for (GraphSymbol sub : symbol.getSymbols()) {
@@ -124,16 +112,19 @@ public class LibPart extends AbstractCircuitPart {
       return name;
    }
 
-   public LibPin getPin(String number) {
+   @Override
+   public CircuitPin getPin(String number) {
       return pins.get(number);
    }
 
+   @Override
    public void paint(Graphics2D g) {
       for (AbstractView item : graphic) {
          item.paint(g);
       }
    }
 
+   @Override
    public Rectangle2D getBounding() {
 
       Rectangle2D bounding = new Rectangle2D.Double(0, 0, 0, 0);

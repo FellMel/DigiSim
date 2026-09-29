@@ -1829,7 +1829,7 @@
 		(dnp no)
 		(uuid "49dbe099-a332-4366-84cb-f252bb575c32")
 		(property "Reference" "nand1"
-			(at 100.584 60.96 0)
+			(at 100.584 59.69 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects

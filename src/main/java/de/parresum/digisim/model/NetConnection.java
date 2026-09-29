@@ -19,9 +19,14 @@ package de.parresum.digisim.model;
 import static de.parresum.digisim.model.ModelConstants.UNIT_FACTOR;
 
 import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
 import java.util.List;
 
+import de.parresum.kicad.parser.eescheme.ShapeType;
+import de.parresum.kicad.parser.eescheme.label.AbstractLabel;
 import de.parresum.kicad.parser.eescheme.label.GlobalLabel;
+import de.parresum.kicad.parser.eescheme.label.HierarchicalLabel;
 import de.parresum.kicad.parser.model.Justify;
 import de.parresum.kicad.parser.model.Size;
 import de.parresum.kicad.parser.model.TextEffects;
@@ -46,12 +51,25 @@ public class NetConnection extends AbstractNetElement {
    private final String name;
 
    private Font font;
+   private Justify just;
+   private final boolean isHierarchical;
 
    public NetConnection(GlobalLabel label) {
+      this(label, false, label.getShape());
+   }
+
+   public NetConnection(HierarchicalLabel label) {
+      this(label, true, label.getShape());
+   }
+
+   private NetConnection(AbstractLabel label, boolean hierarchical, ShapeType shape) {
       super(label.getUuid().getUuid());
       point = new NetPoint(label.getPosition().getX() * UNIT_FACTOR, label.getPosition().getY() * UNIT_FACTOR);
       angle = label.getPosition().getAngle();
-      switch (label.getShape()) {
+
+      name = label.getText();
+      isHierarchical = hierarchical;
+      switch (shape) {
          case BIDIRECTIONAL:
             type = PinType.TRI_STATE;
             break;
@@ -75,8 +93,6 @@ public class NetConnection extends AbstractNetElement {
             break;
 
       }
-
-      name = label.getText();
       readEffects(label.getTextEffects());
    }
 
@@ -89,7 +105,7 @@ public class NetConnection extends AbstractNetElement {
 
       font = new Font(face, Font.PLAIN, (int) ((size.getHeight() * UNIT_FACTOR + .5)));
 
-      Justify just = stile.getJustify();
+      just = stile.getJustify();
 
    }
 
@@ -117,6 +133,20 @@ public class NetConnection extends AbstractNetElement {
       this.font = font;
    }
 
+   /**
+    * @return the just
+    */
+   public Justify getJust() {
+      return just;
+   }
+
+   /**
+    * @return the isHierarchical
+    */
+   public boolean isHierarchical() {
+      return isHierarchical;
+   }
+
    @Override
    public boolean containsPoint(List<NetPoint> points) {
       for (NetPoint pt : points) {
@@ -130,6 +160,19 @@ public class NetConnection extends AbstractNetElement {
    @Override
    public List<NetPoint> getPoints() {
       return List.of(point);
+   }
+
+   @Override
+   public void paint(Graphics2D g) {
+      // System.out.println(String.format("Con %s:%s - %s", name, type, getUuid()));
+      // TODO Auto-generated method stub
+      // nothing to paint, yet
+
+   }
+
+   @Override
+   public Rectangle2D getBounding() {
+      return new Rectangle2D.Double(point.getX(), point.getY(), 0, 0);
    }
 
    /**

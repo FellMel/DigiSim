@@ -147,6 +147,10 @@ public class Circuit {
       return connections.values();
    }
 
+   public ConnectionView getConection(String name) {
+      return connections.get(name);
+   }
+
    /**
     * Gets the list of input elements
     *

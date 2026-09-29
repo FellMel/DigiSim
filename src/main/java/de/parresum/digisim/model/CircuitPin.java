@@ -14,30 +14,17 @@
  * limitations under the License.
  */
 
-package de.parresum.digisim.core;
-
-import de.parresum.digisim.core.wire.Wire;
+package de.parresum.digisim.model;
 
 /**
- * Base for all parts which can be put to a circuit
+ *
  *
  * @author Kai Uwe Bachmann
  */
-public interface CircuitPart {
+public interface CircuitPin {
 
-   /**
-    * gets the name of lib, where the part comes from
-    *
-    * @return name of the lib
-    */
-   public String getLibName();
+   public NetPoint getPosition();
 
-   /**
-    * sets the name of the lib, where the part comes from
-    *
-    * @param libName
-    */
-   public void setLibName(String libName);
+   public int getAngle();
 
-   public void joinWire(Wire wire, String pinNumber);
 }

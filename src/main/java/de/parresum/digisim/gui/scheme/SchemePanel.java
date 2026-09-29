@@ -70,7 +70,6 @@ public class SchemePanel extends JPanel {
 
       bounding = new Rectangle2D.Double(bounding.getX() - BORDER, bounding.getY() - BORDER,
             bounding.getWidth() + BORDER + BORDER, bounding.getHeight() + BORDER + BORDER);
-      System.out.println(bounding);
    }
 
    private void extendBounding(Rectangle2D bound) {

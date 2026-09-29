@@ -51,7 +51,7 @@ public class PinView extends AbstractView {
    private static Shape createShape(GraphPin pin) {
       PinShapeType pinShape = pin.getGraphicPinShape();
       double length = pin.getLength() * UNIT_FACTOR;
-      NetPoint pinPos = new NetPoint(pin.getPosition().getX() * UNIT_FACTOR, pin.getPosition().getY() * UNIT_FACTOR);
+      NetPoint pinPos = new NetPoint(pin.getPosition());
       int angle = (int) pin.getPosition().getAngle();
 
       NetPoint pt = new NetPoint(length, 0);

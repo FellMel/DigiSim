@@ -15,6 +15,8 @@
  */
 package de.parresum.digisim.model;
 
+import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
 import java.util.List;
 
 /**
@@ -64,4 +66,8 @@ public abstract class AbstractNetElement {
    public boolean isPin() {
       return false;
    }
+
+   public abstract void paint(Graphics2D g);
+
+   public abstract Rectangle2D getBounding();
 }

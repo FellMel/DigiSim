@@ -16,6 +16,7 @@
 
 package de.parresum.digisim.model;
 
+import de.parresum.kicad.parser.eescheme.Pin;
 import de.parresum.kicad.parser.library.GraphPin;
 
 /**
@@ -23,7 +24,7 @@ import de.parresum.kicad.parser.library.GraphPin;
  *
  * @author Kai Uwe Bachmann
  */
-public class LibPin {
+public class LibPin implements CircuitPin {
    /** name of the pin */
    private final String name;
 
@@ -42,6 +43,30 @@ public class LibPin {
    public LibPin(GraphPin pin) {
       name = pin.getPinName().getName();
       number = pin.getPinNumber().getName();
+      position = new NetPoint(pin.getPosition().getX(), pin.getPosition().getY());
+      angle = (int) Math.round(pin.getPosition().getAngle());
+      switch (pin.getElectricalPinType()) {
+         case INPUT:
+            type = PinType.INPUT;
+            break;
+         case OUTPUT:
+            type = PinType.OUTPUT;
+            break;
+         case TRI_STATE:
+            type = PinType.TRI_STATE;
+            break;
+         case OPEN_COLLECTOR:
+            type = PinType.OPEN_COLLECTOR;
+            break;
+         default:
+            type = PinType.UNKNOWN;
+            break;
+      }
+   }
+
+   public LibPin(Pin pin) {
+      name = pin.getName();
+      number = pin.getName();
       position = new NetPoint(pin.getPosition().getX(), pin.getPosition().getY());
       angle = (int) Math.round(pin.getPosition().getAngle());
       switch (pin.getElectricalPinType()) {

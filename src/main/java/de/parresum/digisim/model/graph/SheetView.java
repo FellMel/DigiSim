@@ -14,30 +14,39 @@
  * limitations under the License.
  */
 
-package de.parresum.digisim.core;
+package de.parresum.digisim.model.graph;
 
-import de.parresum.digisim.core.wire.Wire;
+import de.parresum.digisim.core.CircuitPart;
+import de.parresum.digisim.model.NetPart;
 
 /**
- * Base for all parts which can be put to a circuit
+ *
  *
  * @author Kai Uwe Bachmann
  */
-public interface CircuitPart {
+public class SheetView {
+   private final String name;
+   private final CircuitPart part;
 
-   /**
-    * gets the name of lib, where the part comes from
-    *
-    * @return name of the lib
-    */
-   public String getLibName();
+   private final NetPart netPart;
 
-   /**
-    * sets the name of the lib, where the part comes from
-    *
-    * @param libName
-    */
-   public void setLibName(String libName);
+   public SheetView(String name, CircuitPart part, NetPart netPart) {
+      super();
+      this.name = name;
+      this.part = part;
+      this.netPart = netPart;
+   }
 
-   public void joinWire(Wire wire, String pinNumber);
+   public String getName() {
+      return name;
+   }
+
+   public CircuitPart getPart() {
+      return part;
+   }
+
+   public NetPart getNetPart() {
+      return netPart;
+   }
+
 }

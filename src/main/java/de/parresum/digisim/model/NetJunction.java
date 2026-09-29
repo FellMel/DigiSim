@@ -17,6 +17,9 @@ package de.parresum.digisim.model;
 
 import static de.parresum.digisim.model.ModelConstants.UNIT_FACTOR;
 
+import java.awt.Graphics2D;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
 import java.util.List;
 
 import de.parresum.kicad.parser.eescheme.Junction;
@@ -27,6 +30,7 @@ import de.parresum.kicad.parser.eescheme.Junction;
  * @author Kai Uwe Bachmann
  */
 public class NetJunction extends AbstractNetElement {
+   private static final double RADIUS = 0.4 * UNIT_FACTOR;
 
    /** point of the junction */
    private final NetPoint point;
@@ -51,6 +55,17 @@ public class NetJunction extends AbstractNetElement {
    @Override
    public List<NetPoint> getPoints() {
       return List.of(point);
+   }
+
+   @Override
+   public void paint(Graphics2D g) {
+      g.fill(new Ellipse2D.Double(point.getX() - RADIUS, point.getY() - RADIUS, RADIUS + RADIUS, RADIUS + RADIUS));
+
+   }
+
+   @Override
+   public Rectangle2D getBounding() {
+      return new Rectangle2D.Double(point.getX() - RADIUS, point.getY() - RADIUS, RADIUS + RADIUS, RADIUS + RADIUS);
    }
 
    /**

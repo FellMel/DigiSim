@@ -76,6 +76,8 @@ public class MainFrame extends JFrame {
    private ProjectPanel projectPanel;
    private CircuitDocumentPanel circuitPanel;
 
+   private File baseDir;
+
    public static void main(String... args) {
       MainFrame mainframe = new MainFrame();
 
@@ -404,6 +406,7 @@ public class MainFrame extends JFrame {
       }
       File file = fileChooser.getSelectedFile();
       AppPrefferences.setPref("currentDir", file.getParent());
+      baseDir = file.getParentFile();
       try {
          projectPanel.openProject(file);
          openAction.setEnabled(false);
@@ -457,7 +460,7 @@ public class MainFrame extends JFrame {
    }
 
    private void doOpenCircuit(SchemeNode node) {
-      circuitPanel.openDocument(node);
+      circuitPanel.openDocument(baseDir, node);
    }
 
    /**

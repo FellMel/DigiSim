@@ -17,6 +17,7 @@
 package de.parresum.digisim.app.circuit;
 
 import java.awt.BorderLayout;
+import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
@@ -55,9 +56,9 @@ public class CircuitComponent extends JPanel {
    /** Panel holding output elements */
    private final OutputPanel output = new OutputPanel();
 
-   public CircuitComponent(SchemeNode document) {
+   public CircuitComponent(File baseDir, SchemeNode document) {
       super(new BorderLayout());
-      circuit = Parser.parseCircuit(document.getScheme());
+      circuit = Parser.parseCircuit(baseDir, document.getScheme());
       this.document = document;
       // add(new JLabel(document.getName()));
       init();

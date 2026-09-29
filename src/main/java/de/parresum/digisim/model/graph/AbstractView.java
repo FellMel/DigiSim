@@ -31,6 +31,7 @@ import java.awt.Stroke;
 import java.awt.geom.Rectangle2D;
 
 import de.parresum.kicad.parser.eescheme.shape.AbstractShape;
+import de.parresum.kicad.parser.model.Fill;
 import de.parresum.kicad.parser.model.FillType;
 
 /**
@@ -53,53 +54,57 @@ public abstract class AbstractView {
    private final Shape shape;
 
    protected AbstractView(AbstractShape kiCadShape, Shape shape) {
+      this((kiCadShape != null) ? kiCadShape.getStroke() : null, //
+            (kiCadShape != null) ? kiCadShape.getFill() : null, //
+            shape);
+   }
+
+   /**
+    * @param stroke
+    * @param fill
+    * @param shape
+    */
+   public AbstractView(de.parresum.kicad.parser.model.Stroke stroke, Fill fill, Shape shape) {
       this.shape = shape;
-      if (kiCadShape != null) {
-         if (kiCadShape.getStroke() != null) {
-            BasicStroke tmp;
-            lineWidth = kiCadShape.getStroke().getWidth() * UNIT_FACTOR;
+      if (stroke != null) {
+         BasicStroke tmp;
+         lineWidth = stroke.getWidth() * UNIT_FACTOR;
 
-            switch (kiCadShape.getStroke().getType()) {
-               case DASH:
-                  tmp = DASH;
-                  break;
-               case DASH_DOT:
-                  tmp = DASH_DOT;
-                  break;
-               case DASH_DOT_DOT:
-                  tmp = DASH_DOT_DOT;
-                  break;
-               case DOT:
-                  tmp = DOT;
-                  break;
-               case SOLID:
-                  tmp = SOLID;
-                  break;
-               default:
-                  tmp = SOLID;
-            }
-            if (lineWidth > 0.0) {
-               tmp = new BasicStroke((float) lineWidth, tmp.getEndCap(), tmp.getLineJoin(), tmp.getMiterLimit(),
-                     tmp.getDashArray(), tmp.getDashPhase());
-            }
-
-            stroke = tmp;
-            lineColor = createColor(kiCadShape.getStroke().getColor());
-         } else {
-            stroke = SOLID;
-            lineColor = Color.BLACK;
+         switch (stroke.getType()) {
+            case DASH:
+               tmp = DASH;
+               break;
+            case DASH_DOT:
+               tmp = DASH_DOT;
+               break;
+            case DASH_DOT_DOT:
+               tmp = DASH_DOT_DOT;
+               break;
+            case DOT:
+               tmp = DOT;
+               break;
+            case SOLID:
+               tmp = SOLID;
+               break;
+            default:
+               tmp = SOLID;
+         }
+         if (lineWidth > 0.0) {
+            tmp = new BasicStroke((float) lineWidth, tmp.getEndCap(), tmp.getLineJoin(), tmp.getMiterLimit(),
+                  tmp.getDashArray(), tmp.getDashPhase());
          }
 
-         if (kiCadShape.getFill() != null) {
-            fillColor = createColor(kiCadShape.getFill().getColor());
-            fillType = kiCadShape.getFill().getType();
-         } else {
-            fillColor = null;
-            fillType = FillType.NONE;
-         }
+         this.stroke = tmp;
+         lineColor = createColor(stroke.getColor());
       } else {
-         stroke = SOLID;
+         this.stroke = SOLID;
          lineColor = Color.BLACK;
+      }
+
+      if (fill != null) {
+         fillColor = createColor(fill.getColor());
+         fillType = (fill.getType() != null) ? fill.getType() : FillType.NONE;
+      } else {
          fillColor = null;
          fillType = FillType.NONE;
       }
