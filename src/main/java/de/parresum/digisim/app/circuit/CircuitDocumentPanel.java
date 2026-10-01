@@ -28,6 +28,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -309,36 +310,13 @@ public class CircuitDocumentPanel extends JTabbedPane {
          tab = aTab;
          setOpaque(false);
          setLayout(new GridBagLayout());
-
-         GridBagConstraints gbc = new GridBagConstraints();
-         gbc.insets = new Insets(0, 0, 0, 5);
-
-         label = new JLabel(aTitle);
-         label.setIcon(aIcon);
-         add(label, gbc);
-         closingButton = new TabButton();
-         closingButton.addMouseListener(new MouseAdapter() {
+         MouseListener listener = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-               JTabbedPane tabbedPane = (JTabbedPane) getParent().getParent();
                int tabIndex = indexOfComponent(tab);
-//               if (tabClosingListener != null) {
-//                  if (tabClosingListener.selectTabBeforeClosing(tabIndex)) {
-//                     tabbedPane.setSelectedIndex(tabIndex);
-//                  }
-//                  if (tabClosingListener.tabClosing(tabIndex)) {
-//                     tabbedPane.removeTabAt(tabIndex);
-//                  }
-//               } else {
-               tabbedPane.removeTabAt(tabIndex);
-//               }
+               CircuitDocumentPanel.this.setSelectedIndex(tabIndex);
             }
-         });
 
-         gbc.insets = new Insets(0, 0, 0, 0);
-         add(closingButton, gbc);
-
-         this.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                if (e.isPopupTrigger()) {
@@ -354,7 +332,31 @@ public class CircuitDocumentPanel extends JTabbedPane {
                   contextMenu.show(e.getComponent(), e.getX(), e.getY());
                }
             }
+         };
+
+         GridBagConstraints gbc = new GridBagConstraints();
+         gbc.insets = new Insets(0, 0, 0, 5);
+
+         label = new JLabel(aTitle);
+         label.setIcon(aIcon);
+         label.addMouseListener(listener);
+
+         add(label, gbc);
+         closingButton = new TabButton();
+         closingButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+               int tabIndex = indexOfComponent(tab);
+
+               CircuitDocumentPanel.this.setSelectedIndex(tabIndex);
+               closeCurrentDocument();
+            }
          });
+
+         gbc.insets = new Insets(0, 0, 0, 0);
+         add(closingButton, gbc);
+
+         this.addMouseListener(listener);
       }
    }
 
