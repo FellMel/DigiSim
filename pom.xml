@@ -6,13 +6,15 @@
 	<groupId>de.parresum</groupId>
 	<artifactId>digisim</artifactId>
 	<version>1.0-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 
 	<name>Digital Simulator</name>
 	<url>http://parresum.de</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>25</maven.compiler.source>
+		<maven.compiler.target>25</maven.compiler.target>
 	</properties>
 
 	<scm>
@@ -22,145 +24,109 @@
 		<url>https://github.com/FellMel/DigiSim.git</url>
 	</scm>
 
+	<modules>
+		<module>digisimlib</module>
+		<module>digisimapp</module>
+	</modules>
+
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>buildnumber-maven-plugin</artifactId>
-				<version>3.3.1</version>
-				<executions>
-					<execution>
-						<phase>validate</phase>
-						<goals>
-							<goal>create</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<doCheck>false</doCheck>
-					<doUpdate>true</doUpdate>
-					<format>{0,number,#####00000}</format>
-					<items>
-						<item>buildNumber</item>
-					</items>
-					<buildNumberPropertiesFileLocation>${basedir}/buildNumber.properties</buildNumberPropertiesFileLocation>
-				</configuration>
-			</plugin>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>buildnumber-maven-plugin</artifactId>
+					<version>3.3.1</version>
+					<executions>
+						<execution>
+							<phase>validate</phase>
+							<goals>
+								<goal>create</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<doCheck>false</doCheck>
+						<doUpdate>true</doUpdate>
+						<format>{0,number,#####00000}</format>
+						<items>
+							<item>buildNumber</item>
+						</items>
+						<buildNumberPropertiesFileLocation>
+							${basedir}/buildNumber.properties</buildNumberPropertiesFileLocation>
+					</configuration>
+				</plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.15.0</version>
-				<configuration>
-					<source>25</source>
-					<target>25</target>
-				</configuration>
-			</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.15.0</version>
+					<configuration>
+						<source>25</source>
+						<target>25</target>
+					</configuration>
+				</plugin>
 
-			<!--			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy-dependencies</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${project.build.directory}/classes/lib</outputDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
--->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.5.1</version>
-				<configuration>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<classpathPrefix>lib/</classpathPrefix>
-							<mainClass>de.parresum.digisim.app.MainFrame</mainClass>
-						</manifest>
-						<manifestEntries>
-							<Implementation-Build>${buildNumber}</Implementation-Build>
-						</manifestEntries>
-					</archive>
-				</configuration>
-			</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>3.5.1</version>
+				</plugin>
 
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>3.8.0</version>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>de.parresum.digisim.app.MainFrame</mainClass>
-						</manifest>
-						<manifestEntries>
-							<Implementation-Build>${buildNumber}</Implementation-Build>
-						</manifestEntries>
-					</archive>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-					<finalName>${project.build.finalName}-${buildNumber}</finalName>
-					<appendAssemblyId>false</appendAssemblyId>
-				</configuration>
-			</plugin>
+				<plugin>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>3.8.0</version>
+				</plugin>
 
-		</plugins>
+			</plugins>
+		</pluginManagement>
+
 	</build>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>de.parresum</groupId>
+				<artifactId>kicadparser</artifactId>
+				<version>1.1-SNAPSHOT</version>
+			</dependency>
 
-	<dependencies>
-		<dependency>
-			<groupId>de.parresum</groupId>
-			<artifactId>kicadparser</artifactId>
-			<version>1.1-SNAPSHOT</version>
-		</dependency>
+			<dependency>
+				<groupId>de.parresum</groupId>
+				<artifactId>digisimlib</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>3.20.0</version>
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>3.20.0</version>
+			</dependency>
 
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-			<version>2.25.4</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>2.25.4</version>
-		</dependency>
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-api</artifactId>
+				<version>2.25.4</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-core</artifactId>
+				<version>2.25.4</version>
+			</dependency>
 
-		<dependency>
-			<groupId>org.rxtx</groupId>
-			<artifactId>rxtx</artifactId>
-			<version>2.1.7</version>
-			<scope>compile</scope>
-		</dependency>
+			<dependency>
+				<groupId>org.rxtx</groupId>
+				<artifactId>rxtx</artifactId>
+				<version>2.1.7</version>
+				<scope>compile</scope>
+			</dependency>
 
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter</artifactId>
-			<version>6.1.0</version>
-			<scope>test</scope>
-		</dependency>
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter</artifactId>
+				<version>6.1.0</version>
+				<scope>test</scope>
+			</dependency>
 
-	</dependencies>
+		</dependencies>
+	</dependencyManagement>
+
 </project>
