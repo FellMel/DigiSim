@@ -25,16 +25,14 @@ import de.parresum.kicad.parser.eescheme.shape.Circle;
 import de.parresum.kicad.parser.model.Position;
 
 /**
- * agraphical circle element
+ * a graphical circle element
  *
  * @author Kai Uwe Bachmann
  */
 public class CircleView extends AbstractView {
-   private Circle circle;
 
    public CircleView(Circle circle) {
       super(circle, createShape(circle));
-      this.circle = circle;
    }
 
    public static Shape createShape(Circle circle) {

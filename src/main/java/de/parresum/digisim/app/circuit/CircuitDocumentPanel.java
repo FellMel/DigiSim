@@ -53,6 +53,7 @@ import de.parresum.digisim.app.project.SchemeNode;
  */
 public class CircuitDocumentPanel extends JTabbedPane {
 
+   private static final long serialVersionUID = 6485199639452006664L;
    private Set<DocumentSelectionListener> listener = new CopyOnWriteArraySet<>();
    private SchemeNode currentDocument;
 
@@ -146,7 +147,6 @@ public class CircuitDocumentPanel extends JTabbedPane {
          removeTabAt(index);
          currentDocument = null;
       }
-
    }
 
    public void zoomIn() {

@@ -27,13 +27,13 @@ import de.parresum.kicad.parser.model.Position;
  * @author Kai Uwe Bachmann
  */
 public class NetPoint {
-   /** Precission for comparison of points */
+   /** Precision for comparison of points */
    private static final double PRECISSION = 0.01;
 
    /** x coordinate */
    private final double x;
 
-   /** y cordinate */
+   /** y coordinate */
    private final double y;
 
    public NetPoint(Position pos) {
@@ -109,7 +109,6 @@ public class NetPoint {
       NetPoint other = (NetPoint) obj;
 
       return Math.abs(this.x - other.x) < PRECISSION && Math.abs(this.y - other.y) < PRECISSION;
-
    }
 
    /**

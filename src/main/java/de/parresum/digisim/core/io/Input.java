@@ -167,7 +167,7 @@ public class Input extends Box implements CircuitPart, ChangeListener, Out, Inpu
       try {
          PartHelper.join(wire, this, pinNumber);
       } catch (IllegalAccessException | InvocationTargetException e) {
-         throw new IllegalStateException("Can't join wire on Pin " + pinNumber, e);
+         throw new IllegalStateException("Can't join wire on Pin " + pinNumber + " for Input " + name, e);
       }
 
    }

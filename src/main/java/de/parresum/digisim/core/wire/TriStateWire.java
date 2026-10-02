@@ -22,7 +22,7 @@ import de.parresum.digisim.core.State;
 import de.parresum.digisim.core.StateListener;
 
 /**
- * tri state wire.
+ * Tri-State wire.
  *
  * This wire can be open and connected to multiple tri-state outputs. The network will be realized by some internal
  * wires

@@ -38,7 +38,7 @@ public class PartDescriptor {
    /** Creator to create new instances */
    private final PartCreator creator;
 
-   /** known pins of the part and theire accessors */
+   /** known pins of the part and their accessors */
    private final Map<String, PinAccessor> pins = new HashMap<>();
 
    /** additional values of the part */
@@ -47,8 +47,8 @@ public class PartDescriptor {
    /**
     * Creates the descriptor
     *
-    * @param clazz clazz to create the descriptor for
-    * @throws IntrospectionException when an error occours
+    * @param clazz class to create the descriptor for
+    * @throws IntrospectionException when an error occurs
     */
    public PartDescriptor(Class<? extends CircuitPart> clazz) throws IntrospectionException {
 

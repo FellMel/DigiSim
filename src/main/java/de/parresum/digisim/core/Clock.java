@@ -60,7 +60,7 @@ public class Clock extends AbstractPart implements Out, Starter {
     */
    private Timer timer;
 
-   /** whther the generator is working */
+   /** Whether the generator is working */
    private volatile boolean running = false;
 
    /**
@@ -119,12 +119,11 @@ public class Clock extends AbstractPart implements Out, Starter {
    public void start() {
       try {
          running = true;
-         timer = new Timer(delay / 2, l -> doTimer());
+         timer = new Timer(delay / 2, _ -> doTimer());
          timer.start();
       } catch (final Exception e) {
          LOG.error("Can't start timer", e);
       }
-
    }
 
    /**
@@ -151,7 +150,6 @@ public class Clock extends AbstractPart implements Out, Starter {
             output3.set(output3.get() == State.HIGH ? State.LOW : State.HIGH);
          }
       }
-
    }
 
 }

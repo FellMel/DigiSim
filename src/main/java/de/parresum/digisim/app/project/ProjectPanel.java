@@ -36,6 +36,8 @@ import javax.swing.tree.TreePath;
  * @author Kai Uwe Bachmann
  */
 public class ProjectPanel extends JPanel {
+   private static final long serialVersionUID = 6383285155162341948L;
+
    private final ProjectSelectTree tree;
 
    private Set<SchemeDoubleClickListener> listener = new CopyOnWriteArraySet<>();
@@ -61,7 +63,6 @@ public class ProjectPanel extends JPanel {
             }
          }
       });
-
    }
 
    public void addTreeSelectionListener(TreeSelectionListener listener) {

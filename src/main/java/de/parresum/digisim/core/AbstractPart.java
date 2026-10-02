@@ -70,7 +70,7 @@ public abstract class AbstractPart implements CircuitPart {
       try {
          PartHelper.join(wire, this, pinNumber);
       } catch (IllegalAccessException | InvocationTargetException e) {
-         throw new IllegalStateException("Can't join wire on Pin " + pinNumber, e);
+         throw new IllegalStateException("Can't join wire on Pin " + pinNumber + " on Part " + name, e);
       }
 
    }

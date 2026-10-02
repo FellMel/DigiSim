@@ -30,7 +30,7 @@ import de.parresum.digisim.core.wire.Wire;
  * @author Kai Uwe Bachmann
  */
 public abstract class AbstractFlipFlop extends AbstractPart implements StateListener, Out {
-   /** normaler output */
+   /** normal output */
    private Wire output;
 
    /** inverted output */
@@ -83,7 +83,7 @@ public abstract class AbstractFlipFlop extends AbstractPart implements StateList
          // TODO: disconnect old wire
       }
       this.prn = prn;
-      this.prn.addStateListener((src, o, n) -> pr(n));
+      this.prn.addStateListener((_, _, n) -> pr(n));
    }
 
    /**
@@ -97,7 +97,7 @@ public abstract class AbstractFlipFlop extends AbstractPart implements StateList
          // TODO: disconnect old wire
       }
       this.clrn = clrn;
-      this.clrn.addStateListener((src, o, n) -> clr(n));
+      this.clrn.addStateListener((_, _, n) -> clr(n));
    }
 
    /**
@@ -246,7 +246,7 @@ public abstract class AbstractFlipFlop extends AbstractPart implements StateList
    }
 
    /**
-    * iniilaizes the state
+    * Initializes the state
     *
     * @param init state to initialize to
     */

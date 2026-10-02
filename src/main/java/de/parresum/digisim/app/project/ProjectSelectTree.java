@@ -32,6 +32,7 @@ import javax.swing.tree.TreePath;
  * @author Kai Uwe Bachmann
  */
 public class ProjectSelectTree extends JTree {
+   private static final long serialVersionUID = 3769049279404623837L;
    private final ProjectTreeModel treeModel;
 
    public ProjectSelectTree() {

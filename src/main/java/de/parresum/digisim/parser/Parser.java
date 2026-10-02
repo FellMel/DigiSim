@@ -111,7 +111,6 @@ public class Parser {
 
       // Create test window with inputs and outputs
       createSimWindow(circuit);
-
    }
 
    private static Circuit readFile(File file) {
@@ -223,7 +222,6 @@ public class Parser {
          title = scheme.getTitleBlock().getTitle();
       }
       return createCircuit(baseDir, title, lib, parts, sheets, netLists);
-
    }
 
    private static Circuit createCircuit(File baseDir, String name, Map<String, LibPart> lib, List<NetPart> parts,
@@ -302,7 +300,6 @@ public class Parser {
       }
 
       throw new IllegalStateException("Can't find lib entry for " + libSymbol);
-
    }
 
 }

@@ -31,11 +31,9 @@ import de.parresum.kicad.parser.model.Position;
  * @author Kai Uwe Bachmann
  */
 public class BezierView extends AbstractView {
-   private final Bezier bezier;
 
    public BezierView(Bezier bezier) {
       super(bezier, createShape(bezier));
-      this.bezier = bezier;
    }
 
    public static Shape createShape(Bezier bezier) {

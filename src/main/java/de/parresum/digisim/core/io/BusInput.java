@@ -116,7 +116,7 @@ public class BusInput extends Box implements ChangeListener, InputPart {
     */
    public void setOutput(final Wire[] output) {
       if (this.output != null) {
-         throw new IllegalStateException("Double output on wire");
+         throw new IllegalStateException("Double output on Bus " + name);
       }
 
       this.output = output;

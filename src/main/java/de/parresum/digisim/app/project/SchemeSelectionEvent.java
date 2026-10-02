@@ -26,6 +26,7 @@ import javax.swing.tree.TreePath;
  * @author Kai Uwe Bachmann
  */
 public class SchemeSelectionEvent extends EventObject {
+   private static final long serialVersionUID = -5795372798283122944L;
    private final TreePath path;
    private final SchemeNode node;
 

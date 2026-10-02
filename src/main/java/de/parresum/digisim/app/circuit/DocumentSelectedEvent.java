@@ -27,6 +27,7 @@ import de.parresum.digisim.app.project.SchemeNode;
  */
 public class DocumentSelectedEvent extends EventObject {
 
+   private static final long serialVersionUID = -6429450034106812007L;
    private final SchemeNode oldNode;
    private final SchemeNode newNode;
 

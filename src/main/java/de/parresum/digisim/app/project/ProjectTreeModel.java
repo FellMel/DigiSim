@@ -27,7 +27,8 @@ import javax.swing.tree.DefaultTreeModel;
  * @author Kai Uwe Bachmann
  */
 public class ProjectTreeModel extends DefaultTreeModel {
-   // private List<ProjectNode> projects = new ArrayList<>();
+
+   private static final long serialVersionUID = 7310859875595332971L;
 
    public ProjectTreeModel() {
       super(null);

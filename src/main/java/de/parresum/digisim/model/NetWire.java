@@ -72,7 +72,6 @@ public class NetWire extends AbstractNetElement {
          }
       }
       return false;
-
    }
 
    /**
@@ -103,7 +102,6 @@ public class NetWire extends AbstractNetElement {
             bound = new Rectangle2D.Double(pt.getX(), pt.getY(), 0, 0);
          } else {
             bound.add(pt.getX(), pt.getY());
-
          }
       }
 
@@ -117,8 +115,6 @@ public class NetWire extends AbstractNetElement {
    public void print() {
       LOG.info(String.format("  wire (%.2f, %.2f) - (%.2f, %.2f)", points.get(0).getX(), points.get(0).getY(),
             points.get(1).getX(), points.get(1).getY()));
-      // nothing to do, yet
-
    }
 
 }

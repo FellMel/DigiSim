@@ -42,7 +42,7 @@ public class TFlipFlop extends AbstractFlipFlop {
    }
 
    /**
-    * Setzt den T-Eingang
+    * Set the T-Input
     *
     * @param t
     */

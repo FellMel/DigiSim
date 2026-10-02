@@ -20,7 +20,7 @@ import de.parresum.kicad.parser.eescheme.Pin;
 import de.parresum.kicad.parser.library.GraphPin;
 
 /**
- * Extracted pin definition of lib symbol
+ * Extracted pin definition of library symbol
  *
  * @author Kai Uwe Bachmann
  */
@@ -96,10 +96,12 @@ public class LibPin implements CircuitPin {
       return number;
    }
 
+   @Override
    public NetPoint getPosition() {
       return position;
    }
 
+   @Override
    public int getAngle() {
       return angle;
    }

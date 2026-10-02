@@ -30,13 +30,17 @@ import de.parresum.digisim.model.PinType;
 import de.parresum.kicad.parser.model.Justify;
 
 /**
- *
+ * Base for Connection views
  *
  * @author Kai Uwe Bachmann
  */
 public abstract class ConnectionView {
+   /** name of the connection */
    private final String name;
+
+   /** Type of the connection */
    private final NetConnection connection;
+
    private Justify just;
 
    private Wire wire;
@@ -132,7 +136,6 @@ public abstract class ConnectionView {
       Point2D textPos = rotate(width, height, dx, dy, getConnection().getAngle());
       // Draw text
       // TODO: Hoch-/Tief-stellen, andere sonderstyles in Helper erledigen
-      // TODO: Rotate erst nach Text, Textpos in helper rotieren
       g2d.drawString(getConnection().getName(), (float) (textPos.getX()), (float) (textPos.getY() + height / 2.0 - dy));
       g2d.setTransform(tmpTransform);
       g2d.setFont(oldfont);

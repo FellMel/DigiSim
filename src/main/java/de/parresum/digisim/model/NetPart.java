@@ -181,7 +181,6 @@ public class NetPart extends AbstractCircuitPart {
             origin.getY() * UNIT_FACTOR - pinPos.getY() * UNIT_FACTOR);
 
       return pt;
-
    }
 
    private int getPinAngle(Symbol symbol, Pin pin) {
@@ -192,7 +191,6 @@ public class NetPart extends AbstractCircuitPart {
       }
 
       return (int) (libPin.getAngle() + symbol.getPosition().getAngle());
-
    }
 
    public Collection<CircuitPin> getPins() {
@@ -241,7 +239,6 @@ public class NetPart extends AbstractCircuitPart {
       for (TextView item : properties) {
          item.paintOutline(g, angle);
       }
-
    }
 
    protected AffineTransform transform(Graphics2D g2d, NetPoint position, int angle, boolean mirrorX, boolean mirrorY) {

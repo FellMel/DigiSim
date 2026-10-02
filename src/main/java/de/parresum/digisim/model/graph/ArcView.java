@@ -32,11 +32,9 @@ import de.parresum.kicad.parser.model.Position;
  * @author Kai Uwe Bachmann
  */
 public class ArcView extends AbstractView {
-   private final Arc arc;
 
    public ArcView(Arc arc) {
       super(arc, createShape(arc));
-      this.arc = arc;
    }
 
    public static Shape createShape(Arc arc) {

@@ -39,7 +39,6 @@ public class NetJunction extends AbstractNetElement {
       super(junction.getUuid().getUuid());
 
       point = new NetPoint(junction.getPosition().getX() * UNIT_FACTOR, junction.getPosition().getY() * UNIT_FACTOR);
-
    }
 
    @Override
@@ -60,7 +59,6 @@ public class NetJunction extends AbstractNetElement {
    @Override
    public void paint(Graphics2D g) {
       g.fill(new Ellipse2D.Double(point.getX() - RADIUS, point.getY() - RADIUS, RADIUS + RADIUS, RADIUS + RADIUS));
-
    }
 
    @Override
@@ -75,7 +73,6 @@ public class NetJunction extends AbstractNetElement {
    public void print() {
 //      System.out.println(String.format("  junction (%.2f, %.2f)", point.getX(), point.getY()));
       // nothing to do, yet
-
    }
 
 }

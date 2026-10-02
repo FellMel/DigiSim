@@ -110,7 +110,7 @@ public class Wire {
     * @param input
     */
    public void join(final Wire input) {
-      input.addStateListener((s, o, n) -> {
+      input.addStateListener((_, o, n) -> {
          this.current = n;
          fireStateChange(o, n);
       });

@@ -38,7 +38,7 @@ import de.parresum.kicad.parser.library.GraphSymbol;
 import de.parresum.kicad.parser.library.LibSymbol;
 
 /**
- * Extracted symbol definition from lib
+ * Extracted symbol definition from library
  *
  * @author Kai Uwe Bachmann
  */
@@ -108,6 +108,7 @@ public class LibPart extends AbstractCircuitPart {
       }
    }
 
+   @Override
    public String getName() {
       return name;
    }

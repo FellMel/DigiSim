@@ -32,7 +32,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- *
+ * Utility to handle Icons
  *
  * @author Kai Uwe Bachmann
  */
@@ -72,6 +72,7 @@ public class IconCreator {
          }
          return image;
       } catch (IOException e) {
+         LOG.error("Can't load image {}", name, e);
          throw new RuntimeException("Image " + name + " not found", e);
       }
    }

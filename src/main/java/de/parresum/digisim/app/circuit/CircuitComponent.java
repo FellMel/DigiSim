@@ -35,7 +35,6 @@ import de.parresum.digisim.core.io.Input;
 import de.parresum.digisim.core.io.Output;
 import de.parresum.digisim.gui.InputPanel;
 import de.parresum.digisim.gui.OutputPanel;
-import de.parresum.digisim.gui.scheme.SchemePanel;
 import de.parresum.digisim.parser.Parser;
 
 /**
@@ -45,6 +44,7 @@ import de.parresum.digisim.parser.Parser;
  */
 public class CircuitComponent extends JPanel {
 
+   private static final long serialVersionUID = -3535918475429640972L;
    private final SchemeNode document;
    private final Circuit circuit;
 
@@ -92,7 +92,6 @@ public class CircuitComponent extends JPanel {
       }
       this.schemaPanel = new SchemePanel(circuit);
       this.add(new JScrollPane(schemaPanel), BorderLayout.CENTER);
-
    }
 
    public SchemeNode getDocument() {

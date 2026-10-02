@@ -29,6 +29,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
  * @author Kai Uwe Bachmann
  */
 public class ProjectCellRenderer extends DefaultTreeCellRenderer {
+   private static final long serialVersionUID = -4111174665824688230L;
    private Icon icon;
 
    @Override

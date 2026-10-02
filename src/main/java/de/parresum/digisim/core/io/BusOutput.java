@@ -109,7 +109,7 @@ public class BusOutput extends Box implements StateListener, OutputPart {
 
    public void addInput(final Wire[] input) {
       if (!inputs.isEmpty()) {
-         throw new IllegalStateException("Multiple inputs for Not");
+         throw new IllegalStateException("Multiple inputs for Bus " + name);
       }
       for (final Wire w : input) {
          inputs.add(w);

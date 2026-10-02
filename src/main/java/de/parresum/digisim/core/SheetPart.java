@@ -20,7 +20,7 @@ import de.parresum.digisim.core.wire.Wire;
 import de.parresum.digisim.model.graph.ConnectionView;
 
 /**
- *
+ * Hierarchical Sheet within a circuit
  *
  * @author Kai Uwe Bachmann
  */
@@ -35,18 +35,15 @@ public class SheetPart implements CircuitPart {
    public SheetPart(Circuit circuit) {
       name = circuit.getName();
       this.circuit = circuit;
-      // TODO Auto-generated constructor stub
    }
 
    @Override
    public String getLibName() {
-      // TODO Auto-generated method stub
       return null;
    }
 
    @Override
    public void setLibName(String libName) {
-      // TODO Auto-generated method stub
 
    }
 
@@ -54,7 +51,7 @@ public class SheetPart implements CircuitPart {
    public void joinWire(Wire wire, String pinNumber) {
       ConnectionView con = circuit.getConection(pinNumber);
       if (con == null) {
-         System.err.println("Pin not found: " + pinNumber);
+         System.err.println("Pin not found: " + pinNumber + " on Part " + name);
          // TODO: report problem
          return;
       }

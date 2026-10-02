@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.parresum.digisim.gui.scheme;
+package de.parresum.digisim.app.circuit;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -30,20 +30,31 @@ import de.parresum.digisim.model.graph.NetView;
 import de.parresum.digisim.model.graph.PartView;
 
 /**
- *
+ * A panel holding / viewing one scheme
  *
  * @author Kai Uwe Bachmann
  */
 public class SchemePanel extends JPanel {
+   private static final long serialVersionUID = -7199484633475717850L;
    private final static int BORDER = 20;
+
+   /** Possible zoom factors */
    private final static double[] ZOOM_FACTORS = { 0.1, 0.2, 0.5, 1, 2, 5, 10, 20 };
+
+   /** the circuit shown by this panel */
    private Circuit circuit;
 
+   /** index of current zoom factor */
    private int zoom = 2;
 
+   /** Size of the panel needed to show the circuit */
    private Rectangle2D bounding;
-   private Dimension size;
 
+   /**
+    * Creates a new panel for the given scheme
+    *
+    * @param circuit
+    */
    public SchemePanel(Circuit circuit) {
       super();
       this.circuit = circuit;

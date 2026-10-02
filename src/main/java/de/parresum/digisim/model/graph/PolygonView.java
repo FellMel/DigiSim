@@ -31,11 +31,9 @@ import de.parresum.kicad.parser.model.Position;
  * @author Kai Uwe Bachmann
  */
 public class PolygonView extends AbstractView {
-   private final Polyline polyline;
 
    public PolygonView(Polyline polyline) {
       super(polyline, createShape(polyline));
-      this.polyline = polyline;
    }
 
    public static Shape createShape(Polyline polyline) {

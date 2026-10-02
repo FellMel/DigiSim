@@ -22,12 +22,12 @@ import java.util.List;
 
 import javax.swing.JComponent;
 
+import de.parresum.digisim.app.circuit.SchemePanel;
 import de.parresum.digisim.core.Circuit;
 import de.parresum.digisim.core.InputPart;
 import de.parresum.digisim.core.OutputPart;
 import de.parresum.digisim.core.io.Input;
 import de.parresum.digisim.core.io.Output;
-import de.parresum.digisim.gui.scheme.SchemePanel;
 
 /**
  * General window for simulation

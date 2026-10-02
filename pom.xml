@@ -15,8 +15,38 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+	<scm>
+		<connection>scm:git:https://github.com/FellMel/DigiSim.git</connection>
+		<developerConnection>scm:git:hhttps://github.com/FellMel/DigiSim.git</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/FellMel/DigiSim.git</url>
+	</scm>
+
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<version>3.3.1</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>create</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<doCheck>false</doCheck>
+					<doUpdate>true</doUpdate>
+					<format>{0,number,#####00000}</format>
+					<items>
+						<item>buildNumber</item>
+					</items>
+					<buildNumberPropertiesFileLocation>${basedir}/buildNumber.properties</buildNumberPropertiesFileLocation>
+				</configuration>
+			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -53,8 +83,11 @@
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>lib/</classpathPrefix>
-							<mainClass>de.parresum.digisim.parser.Parser</mainClass>
+							<mainClass>de.parresum.digisim.app.MainFrame</mainClass>
 						</manifest>
+						<manifestEntries>
+							<Implementation-Build>${buildNumber}</Implementation-Build>
+						</manifestEntries>
 					</archive>
 				</configuration>
 			</plugin>
@@ -74,12 +107,17 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>de.parresum.digisim.parser.Parser</mainClass>
+							<mainClass>de.parresum.digisim.app.MainFrame</mainClass>
 						</manifest>
+						<manifestEntries>
+							<Implementation-Build>${buildNumber}</Implementation-Build>
+						</manifestEntries>
 					</archive>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
+					<finalName>${project.build.finalName}-${buildNumber}</finalName>
+					<appendAssemblyId>false</appendAssemblyId>
 				</configuration>
 			</plugin>
 

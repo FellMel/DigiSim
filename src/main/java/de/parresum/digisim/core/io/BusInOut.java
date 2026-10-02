@@ -84,7 +84,7 @@ public class BusInOut extends Box implements ChangeListener, InputPart, OutputPa
 
          myBus[i] = new Wire("");
          output[i].addWire(myBus[i]);
-         output[i].addStateListener((s, o, n) -> busChanged());
+         output[i].addStateListener((_, _, _) -> busChanged());
       }
 
       spnNumber = new JSpinner(new SpinnerNumberModel(0, 0, maxValue, 1));
@@ -101,7 +101,7 @@ public class BusInOut extends Box implements ChangeListener, InputPart, OutputPa
 
       this.add(input);
       input.setAlignmentX(CENTER_ALIGNMENT);
-      input.addChangeListener(l -> enableChanged());
+      input.addChangeListener(_ -> enableChanged());
       setOutput(output);
       this.setBorder(new EmptyBorder(3, 3, 3, 3));
       enableChanged();
@@ -134,7 +134,7 @@ public class BusInOut extends Box implements ChangeListener, InputPart, OutputPa
     */
    public void setOutput(final TriStateWire[] output) {
       if (this.bus != null) {
-         throw new IllegalStateException("Double output on wire");
+         throw new IllegalStateException("Double output on Bus InOut " + name);
       }
 
       this.bus = output;

@@ -29,7 +29,7 @@ import org.apache.logging.log4j.Logger;
 import de.parresum.digisim.app.AppPrefferences;
 
 /**
- *
+ * Utility to handle internationalization
  *
  * @author Kai Uwe Bachmann
  */
@@ -45,7 +45,6 @@ public class LanguageManager {
 
    static {
       AppPrefferences.setPref(LANGUAGE, "default");
-
    }
 
    /**
@@ -68,15 +67,36 @@ public class LanguageManager {
       return CURRENT.getString(key);
    }
 
+   /**
+    * gets a parameterized international string
+    *
+    * @param key    key of the text
+    * @param params parameter to replace
+    * @return the internationalized string of key if no translation present
+    */
    public static String get(String key, Object... params) {
       String text = CURRENT.getString(key);
       return String.format(text, params);
    }
 
+   /**
+    * gets an internationalized string
+    *
+    * @param key    the key
+    * @param params optional parameters
+    * @return the internationalized string of null if no translation present
+    */
    public static String getOrNull(String key) {
       return CURRENT.getString(key);
    }
 
+   /**
+    * gets a parameterized international string
+    *
+    * @param key    key of the text
+    * @param params parameter to replace
+    * @return the internationalized string of null if no translation present
+    */
    public static String getOrNull(String key, Object... params) {
       String text = CURRENT.getString(key);
       if (text == null) {
@@ -85,6 +105,13 @@ public class LanguageManager {
       return String.format(text, params);
    }
 
+   /**
+    * initializes an action with internationalized values
+    *
+    * @param key    base key for the action
+    * @param action action to initialize
+    * @return the initialized action
+    */
    public static Action getAction(String key, Action action) {
       String text = CURRENT.getString(key + ".name");
       action.putValue(Action.NAME, text);
@@ -119,6 +146,12 @@ public class LanguageManager {
       return action;
    }
 
+   /**
+    * Adjust platform dependent accelerator key
+    *
+    * @param keycode
+    * @return
+    */
    private static String translateAccelerator(String keycode) {
       if (IS_MAC) {
          keycode = keycode.replace("control", "meta");
@@ -126,6 +159,12 @@ public class LanguageManager {
       return keycode;
    }
 
+   /**
+    * translates a string representation to its key event
+    *
+    * @param name
+    * @return
+    */
    private static Integer stringToKeyEvent(String name) {
       try {
          Field field = KeyEvent.class.getDeclaredField(name);

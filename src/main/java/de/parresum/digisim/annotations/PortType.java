@@ -27,7 +27,7 @@ public enum PortType {
    OUTPUT,
 
    /** Port is input and output */
-   INOUT,
+   BIDIRECTIONAL,
 
    /** Port is tri-state */
    TRISTATE

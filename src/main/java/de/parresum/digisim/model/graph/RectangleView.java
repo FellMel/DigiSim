@@ -40,10 +40,12 @@ public class RectangleView extends AbstractView {
    }
 
    /**
-    * @param at
-    * @param size
-    * @param stroke
-    * @param fill
+    * Creates a new Rectangular shape
+    *
+    * @param at     Position of the shape
+    * @param size   size of the shape
+    * @param stroke line stroke of the shape
+    * @param fill   fill mode of the shape
     */
    public RectangleView(PositionAt at, Size size, Stroke stroke, Fill fill) {
       super(stroke, fill, createShape(at, size));
@@ -63,6 +65,8 @@ public class RectangleView extends AbstractView {
    }
 
    /**
+    * Creates the shape
+    *
     * @param at
     * @param size
     * @return

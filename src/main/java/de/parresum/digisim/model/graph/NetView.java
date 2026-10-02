@@ -28,7 +28,7 @@ import de.parresum.digisim.core.wire.Wire;
 import de.parresum.digisim.model.AbstractNetElement;
 
 /**
- * a graphical part representing a wire with all pathes
+ * a graphical part representing a wire with all paths
  *
  * @author Kai Uwe Bachmann
  */

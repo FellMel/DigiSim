@@ -22,7 +22,6 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Dimension2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 
@@ -138,7 +137,7 @@ public class HierarchicalConnectionView extends ConnectionView {
       g2d.draw(shape);
       g2d.setTransform(tmp);
 
-      Dimension2D textSize = paintText(g2d, WIDTH, HEIGHT / 2.0);
+      paintText(g2d, WIDTH, HEIGHT / 2.0);
 
       g2d.setTransform(oldTransform);
 

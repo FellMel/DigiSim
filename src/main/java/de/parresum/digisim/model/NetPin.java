@@ -35,7 +35,6 @@ public class NetPin extends AbstractNetElement implements CircuitPin {
    /** Position of the pin in scheme */
    private final NetPoint point;
    private final int angle;
-//   private final double length;
 
    /** Name of the pin */
    private final String pinNr;
@@ -51,8 +50,6 @@ public class NetPin extends AbstractNetElement implements CircuitPin {
       this.pinNr = pin.getName();
       this.point = point;
       this.angle = angle;
-      // this.length = pin.getLength();
-      // this.pinShape = PinShapeView.from(pin.getGraphicPinShape());
    }
 
    public NetPin(Pin pin, String part) {
@@ -101,21 +98,12 @@ public class NetPin extends AbstractNetElement implements CircuitPin {
       return point;
    }
 
-//   public double getLength() {
-//      return length;
-//   }
-//
-//   public PinShapeView getPinShape() {
-//      return pinShape;
-//   }
-
    /**
     * for debugging, only
     */
    @Override
    public void print() {
       LOG.info(String.format("  %s, %s (%s)", part, pinNr, point));
-
    }
 
    @Override
@@ -127,7 +115,6 @@ public class NetPin extends AbstractNetElement implements CircuitPin {
 
    @Override
    public Rectangle2D getBounding() {
-      // TODO Auto-generated method stub
       return new Rectangle2D.Double(point.getX(), point.getY(), 0, 0);
    }
 

@@ -28,7 +28,7 @@ import de.parresum.kicad.parser.eescheme.Pin;
 import de.parresum.kicad.parser.library.PinType;
 
 /**
- *
+ * A representation of a connection in a hierarchical sheet
  *
  * @author Kai Uwe Bachmann
  */
@@ -38,7 +38,11 @@ public class SheetPinView extends AbstractView {
 
    /** the size of the clock triangle */
    private final static double HEIGHT = 1.27 * UNIT_FACTOR;
+
+   /** position of the connection */
    private NetPoint pinPos;
+
+   /** orientation of the connection */
    private int angle;
 
    public SheetPinView(Pin pin) {

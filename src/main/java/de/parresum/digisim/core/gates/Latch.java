@@ -28,7 +28,7 @@ import de.parresum.digisim.core.wire.Wire;
 /**
  * Tri-State-Latch
  *
- * When enable is low, output will be open
+ * When enable is low, output will be active
  *
  * @author Kai Uwe Bachmann
  */
@@ -61,33 +61,33 @@ public class Latch extends AbstractPart implements StateListener, Out {
    }
 
    /**
-    * Setzt die eingangsleitung
+    * set the input wire
     *
     * @param in
     */
    @Pin("I")
    public void setIn(final Wire in) {
       this.in = in;
-      // super.addInput(in);
+      in.addStateListener(this);
    }
 
    /**
-    * Setzt die Enable-Leitung
+    * set the enable wire
     *
     * @param enable
     */
    @Pin("E")
    public void setEnable(final Wire enable) {
       this.enable = enable;
-      // super.addInput(enable);
+      enable.addStateListener(this);
    }
 
    /**
-    * Setzt die ausgangsleitung
+    * set the output wire
     *
     * @param out
     */
-   @Pin(value = "O", type = PortType.INOUT)
+   @Pin(value = "O", type = PortType.BIDIRECTIONAL)
    public void setOut(final TriStateWire out) {
       if (this.out != null) {
          this.out.removeWire(wire);

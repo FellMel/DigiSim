@@ -665,7 +665,7 @@
         "uuid": "8bfb3fb8-a8de-494a-8fa2-4b100a99d8bf"
       }
     ],
-    "used_designators": "or1-12,sw1-8,led1-7,nor1-3,nand1-11,and1-6",
+    "used_designators": "IC1,or1-12,sw1-8,led1-7,nor1-3,nand1-11,and1-6",
     "variants": []
   },
   "sheets": [

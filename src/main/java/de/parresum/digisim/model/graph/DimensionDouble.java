@@ -27,6 +27,8 @@ import java.util.Objects;
  */
 public class DimensionDouble extends Dimension2D implements java.io.Serializable {
 
+   private static final long serialVersionUID = -707648767677611998L;
+
    /**
     * The width dimension; negative values can be used.
     *
