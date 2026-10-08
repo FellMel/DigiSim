@@ -15,21 +15,21 @@
  */
 package de.parresum.digisim.lib.flipflop;
 
-import de.parresum.digisim.annotations.Pin;
-import de.parresum.digisim.annotations.PortType;
-import de.parresum.digisim.lib.AbstractPart;
+import de.parresum.digisim.api.AbstractComponent;
+import de.parresum.digisim.api.State;
+import de.parresum.digisim.api.StateListener;
+import de.parresum.digisim.api.annotations.Pin;
+import de.parresum.digisim.api.annotations.PortType;
+import de.parresum.digisim.api.wire.Wire;
 import de.parresum.digisim.lib.Out;
-import de.parresum.digisim.lib.State;
-import de.parresum.digisim.lib.StateListener;
 import de.parresum.digisim.lib.gates.AbstractGate;
-import de.parresum.digisim.lib.wire.Wire;
 
 /**
  * Base implementation of Flip-Flops
  *
  * @author Kai Uwe Bachmann
  */
-public abstract class AbstractFlipFlop extends AbstractPart implements StateListener, Out {
+public abstract class AbstractFlipFlop extends AbstractComponent implements StateListener, Out {
    /** normal output */
    private Wire output;
 

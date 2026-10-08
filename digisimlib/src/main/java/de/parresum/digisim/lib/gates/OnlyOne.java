@@ -15,9 +15,9 @@
  */
 package de.parresum.digisim.lib.gates;
 
+import de.parresum.digisim.api.State;
+import de.parresum.digisim.api.wire.Wire;
 import de.parresum.digisim.lib.Out;
-import de.parresum.digisim.lib.State;
-import de.parresum.digisim.lib.wire.Wire;
 
 /**
  * Exactly one input is high

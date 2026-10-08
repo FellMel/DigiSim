@@ -21,21 +21,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import de.parresum.digisim.annotations.Pin;
-import de.parresum.digisim.annotations.PortType;
-import de.parresum.digisim.lib.AbstractPart;
+import de.parresum.digisim.api.AbstractComponent;
+import de.parresum.digisim.api.State;
+import de.parresum.digisim.api.StateListener;
+import de.parresum.digisim.api.annotations.Pin;
+import de.parresum.digisim.api.annotations.PortType;
+import de.parresum.digisim.api.wire.PullUpWire;
+import de.parresum.digisim.api.wire.Wire;
 import de.parresum.digisim.lib.Out;
-import de.parresum.digisim.lib.State;
-import de.parresum.digisim.lib.StateListener;
-import de.parresum.digisim.lib.wire.PullUpWire;
-import de.parresum.digisim.lib.wire.Wire;
 
 /**
  * Base of all gate implementations
  *
  * @author Kai Uwe Bachmann
  */
-public abstract class AbstractGate extends AbstractPart implements StateListener, Out {
+public abstract class AbstractGate extends AbstractComponent implements StateListener, Out {
    /** Counter of instances for reporting */
    private static final Map<String, Integer> instances = new HashMap<>();
 
@@ -219,7 +219,7 @@ public abstract class AbstractGate extends AbstractPart implements StateListener
     * @param wire wire to connect
     * @return previously connected wire on this pin
     */
-   protected Wire setInput(int pos, Wire wire) {
+   public Wire setInput(int pos, Wire wire) {
       while (inputs.size() <= pos) {
          inputs.add(null);
       }

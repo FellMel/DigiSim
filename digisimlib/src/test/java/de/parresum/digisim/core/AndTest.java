@@ -19,9 +19,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import de.parresum.digisim.lib.State;
+import de.parresum.digisim.api.State;
+import de.parresum.digisim.api.wire.Wire;
 import de.parresum.digisim.lib.gates.And;
-import de.parresum.digisim.lib.wire.Wire;
 
 public class AndTest {
 

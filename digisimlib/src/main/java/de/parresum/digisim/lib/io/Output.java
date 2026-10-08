@@ -20,24 +20,23 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.border.EmptyBorder;
 
-import de.parresum.digisim.annotations.Part;
-import de.parresum.digisim.annotations.PartConnector;
-import de.parresum.digisim.annotations.Pin;
-import de.parresum.digisim.annotations.PortType;
-import de.parresum.digisim.annotations.Value;
-import de.parresum.digisim.lib.CircuitPart;
+import de.parresum.digisim.api.CircuitComponent;
+import de.parresum.digisim.api.State;
+import de.parresum.digisim.api.StateListener;
+import de.parresum.digisim.api.annotations.Component;
+import de.parresum.digisim.api.annotations.Pin;
+import de.parresum.digisim.api.annotations.PortType;
+import de.parresum.digisim.api.annotations.Value;
+import de.parresum.digisim.api.wire.Wire;
 import de.parresum.digisim.lib.OutputPart;
-import de.parresum.digisim.lib.State;
-import de.parresum.digisim.lib.StateListener;
-import de.parresum.digisim.lib.wire.Wire;
 
 /**
  * GUI-Element of an output wire / LED
  *
  * @author Kai Uwe Bachmann
  */
-@Part("digisim:LED")
-public class Output extends Box implements CircuitPart, StateListener, OutputPart {
+@Component("digisim:LED")
+public class Output extends Box implements CircuitComponent, StateListener, OutputPart {
 
    private static final long serialVersionUID = 5797566509949991774L;
 
@@ -172,11 +171,6 @@ public class Output extends Box implements CircuitPart, StateListener, OutputPar
          final State current = input.get();
          output.setValue(current);
       }
-   }
-
-   @Override
-   public void joinWire(Wire wire, String pinNumber, PartConnector connector) {
-      connector.joinWire(wire, this, pinNumber);
    }
 
    @Override

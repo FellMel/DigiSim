@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.parresum.digisim.lib.wire;
+package de.parresum.digisim.api.wire;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import de.parresum.digisim.lib.State;
-import de.parresum.digisim.lib.StateListener;
+import de.parresum.digisim.api.State;
+import de.parresum.digisim.api.StateListener;
 
 /**
  * Tri-State wire.

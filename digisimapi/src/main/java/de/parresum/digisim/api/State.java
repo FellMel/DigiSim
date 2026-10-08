@@ -13,31 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.parresum.digisim.annotations;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Repeatable;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package de.parresum.digisim.api;
 
 /**
- * Pin definition of a part
+ * States, a wire can be in.
  *
  * @author Kai Uwe Bachmann
  */
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-@Repeatable(Pins.class)
-public @interface Pin {
-   PortType type() default PortType.INPUT;
+public enum State {
+   /** Low state */
+   LOW,
+
+   /** High state */
+   HIGH,
+
+   /** Open state of a tri-state wire or an OC-wire */
+   OPEN;
 
    /**
-    * Name of the pin number to connect.
+    * inverts the current state
     *
-    * @return
+    * @return the inverted state
     */
-   String value();
-
-   String part() default "";
+   public State not() {
+      switch (this) {
+         case HIGH:
+            return LOW;
+         case LOW:
+            return HIGH;
+         case OPEN:
+         default:
+            return OPEN;
+      }
+   }
 }

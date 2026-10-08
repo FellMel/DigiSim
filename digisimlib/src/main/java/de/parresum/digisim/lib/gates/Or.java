@@ -15,24 +15,24 @@
  */
 package de.parresum.digisim.lib.gates;
 
-import de.parresum.digisim.annotations.Part;
+import de.parresum.digisim.api.State;
+import de.parresum.digisim.api.annotations.Component;
+import de.parresum.digisim.api.wire.Wire;
 import de.parresum.digisim.lib.Out;
-import de.parresum.digisim.lib.State;
-import de.parresum.digisim.lib.wire.Wire;
 
 /**
  * OR-Gate with 2-8 inputs
  *
  * @author Kai Uwe Bachmann
  */
-@Part("OR")
-@Part("digisim:Or 2")
-@Part("digisim:Or 3")
-@Part("digisim:Or 4")
-@Part("digisim:Or 5")
-@Part("digisim:Or 6")
-@Part("digisim:Or 7")
-@Part("digisim:Or 8")
+@Component("OR")
+@Component("digisim:Or 2")
+@Component("digisim:Or 3")
+@Component("digisim:Or 4")
+@Component("digisim:Or 5")
+@Component("digisim:Or 6")
+@Component("digisim:Or 7")
+@Component("digisim:Or 8")
 public class Or extends AbstractGate {
 
    public Or(final String name, final Wire output, final Wire... inputs) {

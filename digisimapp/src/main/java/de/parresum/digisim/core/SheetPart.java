@@ -16,9 +16,11 @@
 
 package de.parresum.digisim.core;
 
-import de.parresum.digisim.annotations.PartConnector;
-import de.parresum.digisim.lib.CircuitPart;
-import de.parresum.digisim.lib.wire.Wire;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import de.parresum.digisim.api.CircuitComponent;
+import de.parresum.digisim.api.wire.Wire;
 import de.parresum.digisim.model.graph.ConnectionView;
 
 /**
@@ -26,7 +28,7 @@ import de.parresum.digisim.model.graph.ConnectionView;
  *
  * @author Kai Uwe Bachmann
  */
-public class SheetPart implements CircuitPart {
+public class SheetPart implements CircuitComponent {
    /** Name of this part in the scheme */
    private final String name;
    private final Circuit circuit;
@@ -34,9 +36,20 @@ public class SheetPart implements CircuitPart {
    /**
     * @param name
     */
-   public SheetPart(Circuit circuit) {
+   public SheetPart(Circuit circuit, Map<String, Wire> pins) {
       name = circuit.getName();
       this.circuit = circuit;
+
+      for (Entry<String, Wire> entry : pins.entrySet()) {
+         ConnectionView con = circuit.getConection(entry.getKey());
+         if (con == null) {
+            System.err.println("Pin not found: " + entry.getKey() + " on Part " + name);
+            // TODO: report problem
+            return;
+         }
+
+         con.joinWire(entry.getValue());
+      }
    }
 
    @Override
@@ -47,18 +60,6 @@ public class SheetPart implements CircuitPart {
    @Override
    public void setLibName(String libName) {
 
-   }
-
-   @Override
-   public void joinWire(Wire wire, String pinNumber, PartConnector connector) {
-      ConnectionView con = circuit.getConection(pinNumber);
-      if (con == null) {
-         System.err.println("Pin not found: " + pinNumber + " on Part " + name);
-         // TODO: report problem
-         return;
-      }
-
-      con.joinWire(wire);
    }
 
 }

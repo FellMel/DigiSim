@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package de.parresum.digisim.lib;
+package de.parresum.digisim.api;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.parresum.digisim.annotations.PartConnector;
-import de.parresum.digisim.lib.wire.Wire;
+import de.parresum.digisim.api.wire.Wire;
 
 /**
  * Base Element of most parts.
  *
  * @author Kai Uwe Bachmann
  */
-public abstract class AbstractPart implements CircuitPart {
+public abstract class AbstractComponent implements CircuitComponent {
    /** Name of this part in the scheme */
    private final String name;
 
@@ -37,7 +36,7 @@ public abstract class AbstractPart implements CircuitPart {
    // no global logger to select logging of particular gates
    protected final Logger log;
 
-   public AbstractPart(String name) {
+   public AbstractComponent(String name) {
       super();
       this.name = name;
       if (name != null && !name.isBlank()) {
@@ -63,9 +62,20 @@ public abstract class AbstractPart implements CircuitPart {
       this.libName = libName;
    }
 
-   @Override
-   public void joinWire(Wire wire, String pinNumber, PartConnector connector) {
-      connector.joinWire(wire, this, pinNumber);
+   // ------------------------------- o -------------------------------
+   protected boolean getState(Wire wire) {
+      if (wire == null) {
+         return false;
+      }
+
+      return wire.get() == State.HIGH;
    }
 
+   protected void setState(Wire wire, boolean val) {
+      if (wire != null) {
+         wire.set(val ? State.HIGH : State.LOW);
+      }
+   }
+
+   // ------------------------------- o -------------------------------
 }

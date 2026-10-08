@@ -15,24 +15,24 @@
  */
 package de.parresum.digisim.lib.gates;
 
-import de.parresum.digisim.annotations.Part;
+import de.parresum.digisim.api.State;
+import de.parresum.digisim.api.annotations.Component;
+import de.parresum.digisim.api.wire.Wire;
 import de.parresum.digisim.lib.Out;
-import de.parresum.digisim.lib.State;
-import de.parresum.digisim.lib.wire.Wire;
 
 /**
  * NAND-Gate with 2-8 inputs
  *
  * @author Kai Uwe Bachmann
  */
-@Part("NAND")
-@Part("digisim:Nand 2")
-@Part("digisim:Nand 3")
-@Part("digisim:Nand 4")
-@Part("digisim:Nand 5")
-@Part("digisim:Nand 6")
-@Part("digisim:Nand 7")
-@Part("digisim:Nand 8")
+@Component("NAND")
+@Component("digisim:Nand 2")
+@Component("digisim:Nand 3")
+@Component("digisim:Nand 4")
+@Component("digisim:Nand 5")
+@Component("digisim:Nand 6")
+@Component("digisim:Nand 7")
+@Component("digisim:Nand 8")
 public class Nand extends AbstractGate {
 
    public Nand(final String name, final Wire output, final Wire... inputs) {

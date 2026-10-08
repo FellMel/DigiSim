@@ -15,20 +15,20 @@
  */
 package de.parresum.digisim.lib.gates;
 
-import de.parresum.digisim.annotations.Part;
-import de.parresum.digisim.annotations.Pin;
-import de.parresum.digisim.annotations.PortType;
+import de.parresum.digisim.api.State;
+import de.parresum.digisim.api.annotations.Component;
+import de.parresum.digisim.api.annotations.Pin;
+import de.parresum.digisim.api.annotations.PortType;
+import de.parresum.digisim.api.wire.Wire;
 import de.parresum.digisim.lib.Out;
-import de.parresum.digisim.lib.State;
-import de.parresum.digisim.lib.wire.Wire;
 
 /**
  * NOT-Gate
  *
  * @author Kai Uwe Bachmann
  */
-@Part("NOT")
-@Part("digisim:Not")
+@Component("NOT")
+@Component("digisim:Not")
 public class Not extends AbstractGate {
 
    public static final String TYPE_NAME = "NOT";
@@ -45,6 +45,20 @@ public class Not extends AbstractGate {
 
    public Not(final String name) {
       super(name);
+   }
+
+   public Not(final String name, final boolean openCollector, final Wire output, final Wire inputs) {
+      super(name, openCollector, output, inputs);
+      register("NOT");
+   }
+
+   public Not(final String name, final boolean openCollector, final Out gate) {
+      super(name, openCollector, gate.getOutput());
+      register("NOT");
+   }
+
+   public Not(final String name, final boolean openCollector) {
+      super(name, openCollector);
    }
 
    @Override

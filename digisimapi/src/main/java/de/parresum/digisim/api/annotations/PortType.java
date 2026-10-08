@@ -13,37 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.parresum.digisim.lib;
+package de.parresum.digisim.api.annotations;
 
 /**
- * States, a wire can be in.
+ * Type of a port
  *
  * @author Kai Uwe Bachmann
  */
-public enum State {
-   /** Low state */
-   LOW,
+public enum PortType {
+   /** Port is input */
+   INPUT,
+   /** Port is output */
+   OUTPUT,
 
-   /** High state */
-   HIGH,
+   /** Port is input and output */
+   BIDIRECTIONAL,
 
-   /** Open state of a tri-state wire or an OC-wire */
-   OPEN;
-
-   /**
-    * inverts the current state
-    *
-    * @return the inverted state
-    */
-   public State not() {
-      switch (this) {
-         case HIGH:
-            return LOW;
-         case LOW:
-            return HIGH;
-         case OPEN:
-         default:
-            return OPEN;
-      }
-   }
+   /** Port is tri-state */
+   TRISTATE
 }

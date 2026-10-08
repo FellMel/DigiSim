@@ -22,8 +22,8 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
+import de.parresum.digisim.api.wire.Wire;
 import de.parresum.digisim.lib.io.Input;
-import de.parresum.digisim.lib.wire.Wire;
 
 /**
  * A Panel holding some input elements

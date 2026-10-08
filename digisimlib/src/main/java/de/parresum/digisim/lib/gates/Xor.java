@@ -15,18 +15,18 @@
  */
 package de.parresum.digisim.lib.gates;
 
-import de.parresum.digisim.annotations.Part;
+import de.parresum.digisim.api.State;
+import de.parresum.digisim.api.annotations.Component;
+import de.parresum.digisim.api.wire.Wire;
 import de.parresum.digisim.lib.Out;
-import de.parresum.digisim.lib.State;
-import de.parresum.digisim.lib.wire.Wire;
 
 /**
  * XOR-Gate
  *
  * @author Kai Uwe Bachmann
  */
-@Part("XOR")
-@Part("digisim:Xor 2")
+@Component("XOR")
+@Component("digisim:Xor 2")
 public class Xor extends AbstractGate {
 
    public Xor(final String name, final Wire output, final Wire... inputs) {

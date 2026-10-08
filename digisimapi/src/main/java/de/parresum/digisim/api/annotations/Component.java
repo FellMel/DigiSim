@@ -13,22 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.parresum.digisim.annotations;
+package de.parresum.digisim.api.annotations;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Type of a port
+ * Marks a component aka symbol in the library
  *
  * @author Kai Uwe Bachmann
  */
-public enum PortType {
-   /** Port is input */
-   INPUT,
-   /** Port is output */
-   OUTPUT,
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Repeatable(Components.class)
+public @interface Component {
+   /** name of the part in library */
+   String value();
 
-   /** Port is input and output */
-   BIDIRECTIONAL,
-
-   /** Port is tri-state */
-   TRISTATE
 }

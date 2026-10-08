@@ -15,17 +15,17 @@
  */
 package de.parresum.digisim.lib.flipflop;
 
-import de.parresum.digisim.annotations.Part;
-import de.parresum.digisim.annotations.Pin;
-import de.parresum.digisim.lib.State;
-import de.parresum.digisim.lib.wire.Wire;
+import de.parresum.digisim.api.State;
+import de.parresum.digisim.api.annotations.Component;
+import de.parresum.digisim.api.annotations.Pin;
+import de.parresum.digisim.api.wire.Wire;
 
 /**
  * SR-Flip-Flop
  *
  * @author Kai Uwe Bachmann
  */
-@Part("SRFF")
+@Component("SRFF")
 public class SRFlipFlop extends AbstractFlipFlop {
    // Set-Input
    private Wire s;

@@ -15,8 +15,8 @@
  */
 package de.parresum.digisim.lib;
 
-import de.parresum.digisim.lib.wire.TriStateWire;
-import de.parresum.digisim.lib.wire.Wire;
+import de.parresum.digisim.api.wire.TriStateWire;
+import de.parresum.digisim.api.wire.Wire;
 
 /**
  * some utils for wires

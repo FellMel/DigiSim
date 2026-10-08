@@ -21,7 +21,7 @@ import java.awt.Dimension;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
-import de.parresum.digisim.lib.State;
+import de.parresum.digisim.api.State;
 
 /**
  * A GUI LED element

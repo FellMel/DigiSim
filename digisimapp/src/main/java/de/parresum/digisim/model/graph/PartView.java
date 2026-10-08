@@ -16,7 +16,7 @@
 
 package de.parresum.digisim.model.graph;
 
-import de.parresum.digisim.lib.CircuitPart;
+import de.parresum.digisim.api.CircuitComponent;
 import de.parresum.digisim.model.AbstractCircuitPart;
 
 /**
@@ -27,11 +27,11 @@ import de.parresum.digisim.model.AbstractCircuitPart;
 public class PartView {
 
    private final String name;
-   private final CircuitPart part;
+   private final CircuitComponent part;
 
    private final AbstractCircuitPart netPart;
 
-   public PartView(String name, CircuitPart part, AbstractCircuitPart netPart) {
+   public PartView(String name, CircuitComponent part, AbstractCircuitPart netPart) {
       super();
       this.name = name;
       this.part = part;
@@ -42,7 +42,7 @@ public class PartView {
       return name;
    }
 
-   public CircuitPart getPart() {
+   public CircuitComponent getPart() {
       return part;
    }
 

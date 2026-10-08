@@ -15,17 +15,17 @@
  */
 package de.parresum.digisim.lib.flipflop;
 
-import de.parresum.digisim.annotations.Part;
-import de.parresum.digisim.annotations.Pin;
-import de.parresum.digisim.lib.State;
-import de.parresum.digisim.lib.wire.Wire;
+import de.parresum.digisim.api.State;
+import de.parresum.digisim.api.annotations.Component;
+import de.parresum.digisim.api.annotations.Pin;
+import de.parresum.digisim.api.wire.Wire;
 
 /**
  * JK-Flip-Flop
  *
  * @author Kai Uwe Bachmann
  */
-@Part("JKFF")
+@Component("JKFF")
 public class JKFlipFlop extends AbstractFlipFlop {
    // J-Input
    private Wire j;

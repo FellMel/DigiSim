@@ -15,24 +15,24 @@
  */
 package de.parresum.digisim.lib.gates;
 
-import de.parresum.digisim.annotations.Part;
+import de.parresum.digisim.api.State;
+import de.parresum.digisim.api.annotations.Component;
+import de.parresum.digisim.api.wire.Wire;
 import de.parresum.digisim.lib.Out;
-import de.parresum.digisim.lib.State;
-import de.parresum.digisim.lib.wire.Wire;
 
 /**
  * NOR-Gate with 2-8 inputs
  *
  * @author Kai Uwe Bachmann
  */
-@Part("NOR")
-@Part("digisim:Nor 2")
-@Part("digisim:Nor 3")
-@Part("digisim:Nor 4")
-@Part("digisim:Nor 5")
-@Part("digisim:Nor 6")
-@Part("digisim:Nor 7")
-@Part("digisim:Nor 8")
+@Component("NOR")
+@Component("digisim:Nor 2")
+@Component("digisim:Nor 3")
+@Component("digisim:Nor 4")
+@Component("digisim:Nor 5")
+@Component("digisim:Nor 6")
+@Component("digisim:Nor 7")
+@Component("digisim:Nor 8")
 public class Nor extends AbstractGate {
 
    public Nor(final String name, final Wire output, final Wire... inputs) {
@@ -47,6 +47,20 @@ public class Nor extends AbstractGate {
 
    public Nor(final String name) {
       super(name);
+   }
+
+   public Nor(final String name, final boolean openCollector, final Wire output, final Wire... inputs) {
+      super(name, openCollector, output, inputs);
+      register("NOR " + inputs.length);
+   }
+
+   public Nor(final String name, final boolean openCollector, final Out... inputs) {
+      super(name, openCollector, inputs);
+      register("NOR " + inputs.length);
+   }
+
+   public Nor(final String name, final boolean openCollector) {
+      super(name, openCollector);
    }
 
    @Override

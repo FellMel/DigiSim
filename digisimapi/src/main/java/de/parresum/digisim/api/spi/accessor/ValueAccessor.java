@@ -14,39 +14,47 @@
  * limitations under the License.
  */
 
-package de.parresum.digisim.parser.accessor;
+package de.parresum.digisim.api.spi.accessor;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 
-import de.parresum.digisim.lib.CircuitPart;
-import de.parresum.digisim.lib.wire.Wire;
+import de.parresum.digisim.api.CircuitComponent;
 
 /**
- * Helper to access wires of parts
+ * Accessor to set a value within a part
  *
  * @author Kai Uwe Bachmann
  */
-public class PinAccessor {
-   /** Pin number, the accessor is for */
-   protected final String pinNumber;
+public class ValueAccessor {
+   /** name of the value */
+   protected final String value;
 
-   /** Class, the accessor is for */
-   protected final Class<? extends CircuitPart> part;
+   /** part, the value is for */
+   protected final Class<? extends CircuitComponent> part;
 
-   /** property descriptor defining the wire within the part class */
+   /** property descriptor defining the value within the part class */
    protected final PropertyDescriptor prop;
 
-   public PinAccessor(String pinNumber, Class<? extends CircuitPart> part, PropertyDescriptor prop) {
+   public ValueAccessor(String value, Class<? extends CircuitComponent> part, PropertyDescriptor prop) {
       super();
-      this.pinNumber = pinNumber;
+      this.value = value;
       this.part = part;
       this.prop = prop;
    }
 
-   public void setWire(CircuitPart part, Wire wire) throws IllegalAccessException, InvocationTargetException {
+   /**
+    * seets the value within the part
+    *
+    * @param part  pat to set the value in
+    * @param value value to set
+    * @throws IllegalAccessException
+    * @throws InvocationTargetException
+    */
+   public void setValue(CircuitComponent part, String value) throws IllegalAccessException, InvocationTargetException {
       // TODO: check part is of correct type ...
 
-      prop.getWriteMethod().invoke(part, wire);
+      prop.getWriteMethod().invoke(part, value);
    }
+
 }

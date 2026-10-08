@@ -30,10 +30,10 @@ import javax.swing.event.ChangeListener;
 import javax.swing.text.DefaultFormatter;
 import javax.swing.text.DefaultFormatterFactory;
 
-import de.parresum.digisim.annotations.Value;
+import de.parresum.digisim.api.State;
+import de.parresum.digisim.api.annotations.Value;
+import de.parresum.digisim.api.wire.Wire;
 import de.parresum.digisim.lib.InputPart;
-import de.parresum.digisim.lib.State;
-import de.parresum.digisim.lib.wire.Wire;
 
 /**
  * Input for Bus (multiple wires)

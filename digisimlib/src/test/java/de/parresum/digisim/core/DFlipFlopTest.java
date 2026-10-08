@@ -15,15 +15,15 @@
  */
 package de.parresum.digisim.core;
 
-import static de.parresum.digisim.lib.State.HIGH;
-import static de.parresum.digisim.lib.State.LOW;
+import static de.parresum.digisim.api.State.HIGH;
+import static de.parresum.digisim.api.State.LOW;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import de.parresum.digisim.api.wire.Wire;
 import de.parresum.digisim.lib.flipflop.DFlipFlop;
-import de.parresum.digisim.lib.wire.Wire;
 
 public class DFlipFlopTest {
 

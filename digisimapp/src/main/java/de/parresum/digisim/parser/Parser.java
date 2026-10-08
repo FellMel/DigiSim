@@ -18,13 +18,13 @@ package de.parresum.digisim.parser;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.ServiceLoader;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
@@ -32,9 +32,10 @@ import javax.swing.filechooser.FileFilter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.parresum.digisim.api.CircuitComponent;
+import de.parresum.digisim.api.spi.ComponentProvider;
 import de.parresum.digisim.core.Circuit;
 import de.parresum.digisim.gui.SimulationWindow;
-import de.parresum.digisim.lib.CircuitPart;
 import de.parresum.digisim.model.AbstractNetElement;
 import de.parresum.digisim.model.CircuitPin;
 import de.parresum.digisim.model.LibPart;
@@ -43,6 +44,7 @@ import de.parresum.digisim.model.NetJunction;
 import de.parresum.digisim.model.NetPart;
 import de.parresum.digisim.model.NetPin;
 import de.parresum.digisim.model.NetPoint;
+import de.parresum.digisim.model.NetValue;
 import de.parresum.digisim.model.NetWire;
 import de.parresum.digisim.model.SheetPart;
 import de.parresum.digisim.model.graph.ConnectionView;
@@ -68,8 +70,6 @@ import de.parresum.kicad.parser.sexpr.SExpressionParser;
 public class Parser {
    private final static Logger LOG = LogManager.getLogger(Parser.class);
 
-   private static PartHelper helper = new PartHelper();
-
    public static void main(String[] args) {
       LOG.info("Start parsing");
       File file = null;
@@ -80,8 +80,8 @@ public class Parser {
       } else {
          JFileChooser fileChooser = new JFileChooser();
 
-         // Optional: Startverzeichnis festlegen (z. B. Benutzerordner)
-         fileChooser.setCurrentDirectory(new File("src/main/resources/kicad/DigiSim"));
+         // Optional: define start path (z. B. user home)
+         fileChooser.setCurrentDirectory(new File("kicad/DigiSim"));
          fileChooser.setAcceptAllFileFilterUsed(false);
          fileChooser.addChoosableFileFilter(new FileFilter() {
             @Override
@@ -99,10 +99,10 @@ public class Parser {
             }
          });
 
-         // 2. Dialog anzeigen (parent ist z. B. ein JFrame oder null)
+         // 2. show dialog
          int result = fileChooser.showOpenDialog(null);
 
-         // 3. Ergebnis auswerten
+         // 3. check result
          if (result != JFileChooser.APPROVE_OPTION) {
             System.exit(0);
          }
@@ -156,6 +156,9 @@ public class Parser {
 
       List<NetPart> parts = new ArrayList<NetPart>();
       for (Symbol symbol : scheme.getSymbols()) {
+         if ("digisim:Switch".equalsIgnoreCase(symbol.getLibraryIdentifier())) {
+            System.out.println("switch");
+         }
          LibPart libPart = getLibSymbol(symbol.getLibraryIdentifier(), lib);
          NetPart part = new NetPart(symbol, libPart);
          parts.add(part);
@@ -231,43 +234,30 @@ public class Parser {
 
       Circuit circuit = new Circuit(name);
 
-      // first create elements
+      ServiceLoader<ComponentProvider> serviceLoader = ServiceLoader.load(ComponentProvider.class);
       try {
-         for (NetPart part : parts) {
-            CircuitPart sp = helper.createPart(part);
-            PartView view = new PartView(part.getName(), sp, part);
-            circuit.addPart(part.getName(), view);
-         }
-         for (SheetPart part : sheets) {
-            String filename = part.getFilename();
+         Map<String, NetView> views = new HashMap<>();
 
-            Circuit sub = readFile(new File(baseDir, filename));
-
-            de.parresum.digisim.core.SheetPart sp = new de.parresum.digisim.core.SheetPart(sub);
-            PartView view = new PartView(part.getName(), sp, part);
-            circuit.addPart(part.getName(), view);
-         }
-
-         // now create wires and connect them to elements
+         // first create wires
          for (Entry<String, List<AbstractNetElement>> net : netLists.entrySet()) {
-            de.parresum.digisim.lib.wire.Wire wire = new de.parresum.digisim.lib.wire.Wire(net.getKey());
+            // TODO: handle special kind of wires (OC, Tri-State, ...)
+            // TODO: handle bus
+            de.parresum.digisim.api.wire.Wire wire = new de.parresum.digisim.api.wire.Wire(net.getKey());
             NetView view = new NetView(net.getKey(), wire);
+            views.put(net.getKey(), view);
             circuit.addWire(view);
+         }
+
+         // now create connectors and pin-Lists
+         // Map of <ElementName, Map<PinNumber, Wire>>
+         Map<String, Map<String, de.parresum.digisim.api.wire.Wire>> pinMap = new HashMap<>();
+         for (Entry<String, List<AbstractNetElement>> net : netLists.entrySet()) {
+            NetView view = views.get(net.getKey());
+
             for (AbstractNetElement item : net.getValue()) {
                view.addElement(item);
-               if (item.isPin()) {
-                  NetPin pin = (NetPin) item;
-                  String partName = pin.getPart();
-                  String pinNumber = pin.getPinNr();
 
-                  PartView part = circuit.getPart(partName);
-                  if (part == null) {
-                     throw new IllegalStateException("Unknown part with name " + partName);
-                  }
-
-                  CircuitPart component = part.getPart();
-                  component.joinWire(wire, pinNumber, helper);
-               } else if (item instanceof NetConnection) {
+               if (item instanceof NetConnection) {
                   NetConnection connection = (NetConnection) item;
                   String conName = connection.getName();
 
@@ -277,13 +267,59 @@ public class Parser {
                   } else {
                      partConnection = new GlobalConnectionView(connection);
                   }
-                  partConnection.setWire(wire);
+                  partConnection.setWire(view.getWire());
                   circuit.addConnection(conName, partConnection);
+               } else if (item.isPin()) {
+                  NetPin pin = (NetPin) item;
+                  String partName = pin.getPart();
+                  String pinNumber = pin.getPinNr();
+
+                  Map<String, de.parresum.digisim.api.wire.Wire> entry = pinMap.computeIfAbsent(partName,
+                        _ -> new HashMap<>());
+                  entry.put(pinNumber, view.getWire());
                }
             }
          }
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-            | InvocationTargetException e) {
+
+         // create components, now
+         for (NetPart part : parts) {
+            CircuitComponent component = null;
+            String libName = part.getLib();
+            String elementName = part.getName();
+            Map<String, de.parresum.digisim.api.wire.Wire> pins = pinMap.get(elementName);
+            List<NetValue> values = part.getValues();
+            Map<String, String> parameter = new HashMap<>();
+            for (NetValue val : values) {
+               parameter.put(val.getName(), val.getValue());
+            }
+
+            for (ComponentProvider provider : serviceLoader) {
+               if (provider.isResponsible(libName)) {
+                  component = provider.create(libName, elementName, pins, parameter);
+                  break;
+               }
+
+            }
+            if (component == null) {
+               LOG.error("Can't create component {} - {}", libName, elementName);
+            }
+            PartView view = new PartView(part.getName(), component, part);
+            circuit.addPart(part.getName(), view);
+         }
+
+         // finally create sub sheets
+         for (SheetPart part : sheets) {
+            String filename = part.getFilename();
+
+            Circuit sub = readFile(new File(baseDir, filename));
+
+            Map<String, de.parresum.digisim.api.wire.Wire> pins = pinMap.get(part.getName());
+            de.parresum.digisim.core.SheetPart sp = new de.parresum.digisim.core.SheetPart(sub, pins);
+            PartView view = new PartView(part.getName(), sp, part);
+            circuit.addPart(part.getName(), view);
+         }
+
+      } catch (IllegalArgumentException e) {
          LOG.error("Error in imlementation ...", e);
          System.exit(-1);
       }

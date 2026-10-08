@@ -1,4 +1,4 @@
-package de.parresum.digisim.lib.wire;
+package de.parresum.digisim.api.wire;
 /*
  *     Copyright 2026 Parresum Soft @ http://parresum.de
  *
@@ -21,8 +21,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.parresum.digisim.lib.State;
-import de.parresum.digisim.lib.StateListener;
+import de.parresum.digisim.api.State;
+import de.parresum.digisim.api.StateListener;
 
 /**
  * General wire to connect parts

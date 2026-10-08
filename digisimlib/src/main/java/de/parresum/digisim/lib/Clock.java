@@ -20,18 +20,20 @@ import javax.swing.Timer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.parresum.digisim.annotations.Part;
-import de.parresum.digisim.annotations.Pin;
-import de.parresum.digisim.annotations.PortType;
-import de.parresum.digisim.lib.wire.Wire;
+import de.parresum.digisim.api.AbstractComponent;
+import de.parresum.digisim.api.State;
+import de.parresum.digisim.api.annotations.Component;
+import de.parresum.digisim.api.annotations.Pin;
+import de.parresum.digisim.api.annotations.PortType;
+import de.parresum.digisim.api.wire.Wire;
 
 /**
  * A clock generator
  *
  * @author Kai Uwe Bachmann
  */
-@Part("CLK")
-public class Clock extends AbstractPart implements Out, Starter {
+@Component("CLK")
+public class Clock extends AbstractComponent implements Out, Starter {
 
    // no global logger to select logging of particular gates
    private static final Logger LOG = LogManager.getLogger(Clock.class);

@@ -15,24 +15,24 @@
  */
 package de.parresum.digisim.lib.gates;
 
-import de.parresum.digisim.annotations.Part;
+import de.parresum.digisim.api.State;
+import de.parresum.digisim.api.annotations.Component;
+import de.parresum.digisim.api.wire.Wire;
 import de.parresum.digisim.lib.Out;
-import de.parresum.digisim.lib.State;
-import de.parresum.digisim.lib.wire.Wire;
 
 /**
  * AND-Gate with 2-8 inputs
  *
  * @author Kai Uwe Bachmann
  */
-@Part("AND")
-@Part("digisim:And 2")
-@Part("digisim:And 3")
-@Part("digisim:And 4")
-@Part("digisim:And 5")
-@Part("digisim:And 6")
-@Part("digisim:And 7")
-@Part("digisim:And 8")
+@Component("AND")
+@Component("digisim:And 2")
+@Component("digisim:And 3")
+@Component("digisim:And 4")
+@Component("digisim:And 5")
+@Component("digisim:And 6")
+@Component("digisim:And 7")
+@Component("digisim:And 8")
 public class And extends AbstractGate {
 
    public And(final String name, final Wire output, final Wire... inputs) {
@@ -47,6 +47,20 @@ public class And extends AbstractGate {
 
    public And(final String name) {
       super(name);
+   }
+
+   public And(final String name, final boolean openCollector, final Wire output, final Wire... inputs) {
+      super(name, openCollector, output, inputs);
+      register("AND " + inputs.length);
+   }
+
+   public And(final String name, final boolean openCollector, final Out... inputs) {
+      super(name, openCollector, inputs);
+      register("AND " + inputs.length);
+   }
+
+   public And(final String name, final boolean openCollector) {
+      super(name, openCollector);
    }
 
    @Override

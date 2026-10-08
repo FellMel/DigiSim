@@ -15,7 +15,7 @@
  */
 package de.parresum.digisim.lib;
 
-import de.parresum.digisim.lib.wire.Wire;
+import de.parresum.digisim.api.wire.Wire;
 
 /**
  * General output

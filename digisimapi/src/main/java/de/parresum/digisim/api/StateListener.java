@@ -13,22 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package de.parresum.digisim.api;
 
-package de.parresum.digisim.annotations;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import de.parresum.digisim.api.wire.Wire;
 
 /**
- * List of parts, when an implementation covers multiple symbols in library
+ * Listener to react on state changes of a wire
  *
  * @author Kai Uwe Bachmann
  */
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Parts {
-   /** List of covered symbols */
-   Part[] value();
+public interface StateListener {
+   /**
+    * State of a wire is changed
+    *
+    * @param src      wire triggering the change
+    * @param oldState old state
+    * @param newState new state
+    */
+   public void stateChanged(Wire src, State oldState, State newState);
 }

@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.parresum.digisim.lib.CircuitPart;
+import de.parresum.digisim.api.CircuitComponent;
 import de.parresum.digisim.lib.InputPart;
 import de.parresum.digisim.lib.OutputPart;
 import de.parresum.digisim.lib.io.Input;
@@ -80,7 +80,7 @@ public class Circuit {
     */
    public void addPart(String name, PartView part) {
       parts.put(name, part);
-      CircuitPart element = part.getPart();
+      CircuitComponent element = part.getPart();
       if (element instanceof OutputPart) {
          outputs.add((OutputPart) element);
       } else if (element instanceof InputPart) {

@@ -14,29 +14,27 @@
  * limitations under the License.
  */
 
-package de.parresum.digisim.parser.accessor;
+package de.parresum.digisim.api.spi.accessor;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import de.parresum.digisim.lib.CircuitPart;
-import de.parresum.digisim.model.NetPart;
+import de.parresum.digisim.api.CircuitComponent;
 
 /**
- * Creator to create a new instance of a circuit part
+ * Creator to create a new instance of a circuit component
  *
  * @author Kai Uwe Bachmann
  */
-public class PartCreator {
+public class ComponentCreator {
    /** constructor to call for creation */
-   private final Constructor<? extends CircuitPart> ctor;
+   private final Constructor<? extends CircuitComponent> ctor;
 
-   public PartCreator(Class<? extends CircuitPart> clazz) {
-      super();
-
-      Constructor<? extends CircuitPart>[] ctors = (Constructor<? extends CircuitPart>[]) clazz.getConstructors();
-      Constructor<? extends CircuitPart> ctor = null;
-      for (Constructor<? extends CircuitPart> item : ctors) {
+   public ComponentCreator(Class<? extends CircuitComponent> clazz) {
+      Constructor<? extends CircuitComponent>[] ctors = (Constructor<? extends CircuitComponent>[]) clazz
+            .getConstructors();
+      Constructor<? extends CircuitComponent> ctor = null;
+      for (Constructor<? extends CircuitComponent> item : ctors) {
          if (item.getParameterCount() == 1 && item.getParameterTypes()[0] == String.class) {
             ctor = item;
             break;
@@ -54,11 +52,9 @@ public class PartCreator {
     *
     * @param netPart extracted definition of the part to create
     */
-   public CircuitPart create(NetPart netPart)
+   public CircuitComponent create(String name)
          throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-      CircuitPart part = ctor.newInstance(netPart.getName());
-      part.setLibName(netPart.getLib());
-
+      CircuitComponent part = ctor.newInstance(name);
       return part;
    }
 }

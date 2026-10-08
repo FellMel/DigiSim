@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.parresum.digisim.annotations;
+package de.parresum.digisim.api.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

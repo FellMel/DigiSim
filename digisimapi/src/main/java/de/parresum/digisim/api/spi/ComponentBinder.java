@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package de.parresum.digisim.parser;
+package de.parresum.digisim.api.spi;
 
 import java.beans.IntrospectionException;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -29,43 +28,42 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.parresum.digisim.annotations.Part;
-import de.parresum.digisim.annotations.PartConnector;
-import de.parresum.digisim.lib.CircuitPart;
-import de.parresum.digisim.lib.wire.Wire;
-import de.parresum.digisim.model.NetPart;
-import de.parresum.digisim.model.NetValue;
-import de.parresum.digisim.parser.accessor.PartCreator;
-import de.parresum.digisim.parser.accessor.PartDescriptor;
-import de.parresum.digisim.parser.accessor.PinAccessor;
-import de.parresum.digisim.parser.accessor.ValueAccessor;
+import de.parresum.digisim.api.CircuitComponent;
+import de.parresum.digisim.api.annotations.Component;
+import de.parresum.digisim.api.spi.accessor.ComponentCreator;
+import de.parresum.digisim.api.spi.accessor.ComponentDescriptor;
+import de.parresum.digisim.api.spi.accessor.PinAccessor;
+import de.parresum.digisim.api.spi.accessor.ValueAccessor;
+import de.parresum.digisim.api.wire.Wire;
 
 /**
- * Helper to handle circuit Parts
+ * Helper to handle circuit components
  *
  * @author Kai Uwe Bachmann
  */
-public class PartHelper implements PartConnector {
-   private final static Logger LOG = LogManager.getLogger(PartHelper.class);
+public class ComponentBinder {
+   private final static Logger LOG = LogManager.getLogger(ComponentBinder.class);
 
    /** map to store known part descriptors */
-   private final static Map<String, PartDescriptor> descriptors = new HashMap<>();
-   static {
+   private final Map<String, ComponentDescriptor> descriptors = new HashMap<>();
+
+   public ComponentBinder(String basepath) {
+
       try {
          LOG.info("Start searching parts ...");
-         // TODO: implement a configuration service to extend with new parts
-         List<Class<? extends CircuitPart>> pkg = getClasses("de.parresum.digisim.lib");
-         for (Class<? extends CircuitPart> cls : pkg) {
-            Part[] parts = (Part[]) cls.getAnnotationsByType(Part.class);
+         List<Class<? extends CircuitComponent>> pkg = getClasses(basepath);
+         for (Class<? extends CircuitComponent> cls : pkg) {
+            Component[] parts = (Component[]) cls.getAnnotationsByType(Component.class);
             if (parts.length > 0) {
-               PartDescriptor desc = new PartDescriptor(cls);
-               for (Part part : parts) {
+               ComponentDescriptor desc = new ComponentDescriptor(cls);
+               for (Component part : parts) {
                   descriptors.put(part.value(), desc);
                   LOG.info("Found part {} in class {}", part.value(), cls.getName());
 
@@ -81,25 +79,24 @@ public class PartHelper implements PartConnector {
    }
 
    /**
-    * gets a list of all CircuitPart classes within tge given package and its subpackages
+    * gets a list of all CircuitPart classes within the given package and its sub packages
     *
     * @param pckgname package to parse
     * @return list of classes found
-    * @throws ClassNotFoundException when an error occours
+    * @throws ClassNotFoundException when an error occurs
     * @throws IOException
     * @throws URISyntaxException
     */
-   private static List<Class<? extends CircuitPart>> getClasses(String pckgname)
+   private static List<Class<? extends CircuitComponent>> getClasses(String pckgname)
          throws ClassNotFoundException, IOException, URISyntaxException {
 
       ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-      ArrayList<String> names = new ArrayList<String>();
 
       String path = pckgname.replace(".", "/");
       URL packageURL = classLoader.getResource(path);
 
       if (packageURL.getProtocol().equals("jar")) {
-         ArrayList<Class<? extends CircuitPart>> classes = new ArrayList<>();
+         ArrayList<Class<? extends CircuitComponent>> classes = new ArrayList<>();
 
          // build jar file name, then loop through zipped entries
          String jarFileName = URLDecoder.decode(packageURL.getFile(), "UTF-8");
@@ -116,8 +113,8 @@ public class PartHelper implements PartConnector {
                   // we are only interested in .class files
                   // removes the .class extension
                   Class<?> candidate = Class.forName(entryName.replace("/", "."));
-                  if (CircuitPart.class.isAssignableFrom(candidate)) {
-                     classes.add((Class<? extends CircuitPart>) candidate);
+                  if (CircuitComponent.class.isAssignableFrom(candidate)) {
+                     classes.add((Class<? extends CircuitComponent>) candidate);
                   }
                }
             }
@@ -132,9 +129,9 @@ public class PartHelper implements PartConnector {
       }
    }
 
-   private static List<Class<? extends CircuitPart>> getFileClasses(String pckgname, File folder)
+   private static List<Class<? extends CircuitComponent>> getFileClasses(String pckgname, File folder)
          throws ClassNotFoundException {
-      ArrayList<Class<? extends CircuitPart>> classes = new ArrayList<>();
+      ArrayList<Class<? extends CircuitComponent>> classes = new ArrayList<>();
       File[] content = folder.listFiles();
       for (File actual : content) {
          if (actual.isDirectory()) {
@@ -145,8 +142,8 @@ public class PartHelper implements PartConnector {
             if (entryName.endsWith(".class")) {
                // removes the .class extension
                Class<?> candidate = Class.forName(pckgname + '.' + entryName.substring(0, entryName.length() - 6));
-               if (CircuitPart.class.isAssignableFrom(candidate)) {
-                  classes.add((Class<? extends CircuitPart>) candidate);
+               if (CircuitComponent.class.isAssignableFrom(candidate)) {
+                  classes.add((Class<? extends CircuitComponent>) candidate);
                }
             }
          }
@@ -159,52 +156,43 @@ public class PartHelper implements PartConnector {
     *
     * @param netPart definition to create the part from
     * @return the created part
-    * @throws InstantiationException
-    * @throws IllegalAccessException
+    * @throws ReflectiveOperationException
     * @throws IllegalArgumentException
-    * @throws InvocationTargetException
     */
-   public CircuitPart createPart(NetPart netPart)
-         throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-      PartDescriptor desc = descriptors.get(netPart.getLib());
+   public CircuitComponent createComponent(String libElement, String elementName, Map<String, Wire> wires,
+         Map<String, String> parameter) throws ReflectiveOperationException {
+      ComponentDescriptor desc = descriptors.get(libElement);
       if (desc == null) {
-         throw new IllegalArgumentException("Unknown Lib Element: " + netPart.getLib());
+         throw new IllegalArgumentException("Unknown Lib Element: " + libElement);
       }
 
-      PartCreator creator = desc.getCreator();
-      CircuitPart part = creator.create(netPart);
+      ComponentCreator creator = desc.getCreator();
+      CircuitComponent part = creator.create(elementName);
+
+      for (Entry<String, Wire> wire : wires.entrySet()) {
+         PinAccessor accessor = desc.getPin(wire.getKey());
+         // TODO: check for special wire types ...
+
+         if (accessor == null) {
+            LOG.error("Unknown pin {} for element {} ({}). Ignoring", wire.getKey(), elementName, libElement);
+         } else {
+            accessor.setWire(part, wire.getValue());
+         }
+      }
 
       // initialize values
-      for (NetValue val : netPart.getValues()) {
-         ValueAccessor accessor = desc.getValues().get(val.getName());
-         if (accessor != null) {
-            accessor.setValue(part, val.getValue());
+      if (parameter != null) {
+         for (Entry<String, String> param : parameter.entrySet()) {
+            ValueAccessor accessor = desc.getValues().get(param.getKey());
+            if (accessor != null) {
+               accessor.setValue(part, param.getValue());
+            } else {
+               LOG.warn("Unknown value {} for element {} ({}). Ignoring", param.getKey(), elementName, libElement);
+            }
          }
       }
 
       return part;
-   }
-
-   /**
-    * connects a wire to a circuit part
-    *
-    * @param wire      wire to connect
-    * @param part      part to connect the wire to
-    * @param pinNumber pin name to connect the wire to
-    * @throws IllegalAccessException
-    * @throws InvocationTargetException
-    */
-   @Override
-   public void joinWire(Wire wire, CircuitPart part, String pinNumber) {
-      try {
-         PartDescriptor desc = descriptors.get(part.getLibName());
-
-         PinAccessor pinAccess = desc.getPins().get(pinNumber);
-         LOG.info("  connection {} on {} : {}", wire.getName(), part.getLibName(), pinNumber);
-         pinAccess.setWire(part, wire);
-      } catch (IllegalAccessException | InvocationTargetException e) {
-         throw new IllegalStateException("Can't join wire on Pin " + pinNumber + " on Part " + part, e);
-      }
    }
 
 }

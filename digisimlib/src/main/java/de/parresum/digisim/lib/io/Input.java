@@ -23,25 +23,24 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import de.parresum.digisim.annotations.Part;
-import de.parresum.digisim.annotations.PartConnector;
-import de.parresum.digisim.annotations.Pin;
-import de.parresum.digisim.annotations.PortType;
-import de.parresum.digisim.annotations.Value;
-import de.parresum.digisim.lib.CircuitPart;
+import de.parresum.digisim.api.CircuitComponent;
+import de.parresum.digisim.api.State;
+import de.parresum.digisim.api.annotations.Component;
+import de.parresum.digisim.api.annotations.Pin;
+import de.parresum.digisim.api.annotations.PortType;
+import de.parresum.digisim.api.annotations.Value;
+import de.parresum.digisim.api.wire.TriStateWire;
+import de.parresum.digisim.api.wire.Wire;
 import de.parresum.digisim.lib.InputPart;
 import de.parresum.digisim.lib.Out;
-import de.parresum.digisim.lib.State;
-import de.parresum.digisim.lib.wire.TriStateWire;
-import de.parresum.digisim.lib.wire.Wire;
 
 /**
  * GUI-Input element / switch
  *
  * @author Kai Uwe Bachmann
  */
-@Part("digisim:Switch")
-public class Input extends Box implements CircuitPart, ChangeListener, Out, InputPart {
+@Component("digisim:Switch")
+public class Input extends Box implements CircuitComponent, ChangeListener, Out, InputPart {
 
    private static final long serialVersionUID = 3660162041124702476L;
    /** Name of the element */
@@ -158,11 +157,6 @@ public class Input extends Box implements CircuitPart, ChangeListener, Out, Inpu
       final State current = input.isSelected() ? State.HIGH : State.LOW;
       output.set(current);
 
-   }
-
-   @Override
-   public void joinWire(Wire wire, String pinNumber, PartConnector connector) {
-      connector.joinWire(wire, this, pinNumber);
    }
 
    @Override

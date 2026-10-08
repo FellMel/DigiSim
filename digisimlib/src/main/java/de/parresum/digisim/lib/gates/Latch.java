@@ -15,15 +15,15 @@
  */
 package de.parresum.digisim.lib.gates;
 
-import de.parresum.digisim.annotations.Part;
-import de.parresum.digisim.annotations.Pin;
-import de.parresum.digisim.annotations.PortType;
-import de.parresum.digisim.lib.AbstractPart;
+import de.parresum.digisim.api.AbstractComponent;
+import de.parresum.digisim.api.State;
+import de.parresum.digisim.api.StateListener;
+import de.parresum.digisim.api.annotations.Component;
+import de.parresum.digisim.api.annotations.Pin;
+import de.parresum.digisim.api.annotations.PortType;
+import de.parresum.digisim.api.wire.TriStateWire;
+import de.parresum.digisim.api.wire.Wire;
 import de.parresum.digisim.lib.Out;
-import de.parresum.digisim.lib.State;
-import de.parresum.digisim.lib.StateListener;
-import de.parresum.digisim.lib.wire.TriStateWire;
-import de.parresum.digisim.lib.wire.Wire;
 
 /**
  * Tri-State-Latch
@@ -32,13 +32,13 @@ import de.parresum.digisim.lib.wire.Wire;
  *
  * @author Kai Uwe Bachmann
  */
-@Part("digisim:Driver")
-public class Latch extends AbstractPart implements StateListener, Out {
+@Component("digisim:Driver")
+public class Latch extends AbstractComponent implements StateListener, Out {
 
    // input
    private Wire in;
 
-   // Enable
+   // not Enable
    private Wire enable;
 
    // output
@@ -46,6 +46,8 @@ public class Latch extends AbstractPart implements StateListener, Out {
 
    // internal wire needed for tri-state handling
    private final Wire wire;
+
+   private boolean inverting = false;
 
    public Latch(final String name) {
       super(name);
@@ -58,6 +60,10 @@ public class Latch extends AbstractPart implements StateListener, Out {
       setOut(out);
       setIn(in);
       setEnable(enable);
+   }
+
+   public void setInverting(boolean inverting) {
+      this.inverting = inverting;
    }
 
    /**
@@ -105,12 +111,16 @@ public class Latch extends AbstractPart implements StateListener, Out {
 
    protected State calculate() {
 
-      if (enable == null || enable.get() == State.LOW) {
-         wire.set(State.OPEN);
+      if (enable == null || enable.get() == State.HIGH) {
+         return State.OPEN;
       } else {
-         wire.set(in.get());
+         boolean input = getState(in);
+         if (inverting) {
+            input = !input;
+         }
+
+         return input ? State.LOW : State.HIGH;
       }
-      return wire.get();
 
    }
 

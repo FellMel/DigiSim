@@ -23,14 +23,14 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.border.EmptyBorder;
 
-import de.parresum.digisim.annotations.Value;
+import de.parresum.digisim.api.State;
+import de.parresum.digisim.api.StateListener;
+import de.parresum.digisim.api.annotations.Value;
+import de.parresum.digisim.api.wire.Wire;
 import de.parresum.digisim.gui.Digit;
 import de.parresum.digisim.gui.FourDigit;
 import de.parresum.digisim.gui.TwoDigit;
 import de.parresum.digisim.lib.OutputPart;
-import de.parresum.digisim.lib.State;
-import de.parresum.digisim.lib.StateListener;
-import de.parresum.digisim.lib.wire.Wire;
 
 /**
  * Display for bus outputs

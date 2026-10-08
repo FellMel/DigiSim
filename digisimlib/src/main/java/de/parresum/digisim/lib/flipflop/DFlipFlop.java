@@ -15,10 +15,10 @@
  */
 package de.parresum.digisim.lib.flipflop;
 
-import de.parresum.digisim.annotations.Part;
-import de.parresum.digisim.annotations.Pin;
-import de.parresum.digisim.lib.State;
-import de.parresum.digisim.lib.wire.Wire;
+import de.parresum.digisim.api.State;
+import de.parresum.digisim.api.annotations.Component;
+import de.parresum.digisim.api.annotations.Pin;
+import de.parresum.digisim.api.wire.Wire;
 
 /**
  * D-Flip-Flop.
@@ -27,7 +27,7 @@ import de.parresum.digisim.lib.wire.Wire;
  *
  * @author Kai Uwe Bachmann
  */
-@Part("DFF")
+@Component("DFF")
 public class DFlipFlop extends AbstractFlipFlop {
 
    // D-input

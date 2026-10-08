@@ -24,7 +24,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.parresum.digisim.lib.wire.Wire;
+import de.parresum.digisim.api.wire.Wire;
 import de.parresum.digisim.model.AbstractNetElement;
 
 /**

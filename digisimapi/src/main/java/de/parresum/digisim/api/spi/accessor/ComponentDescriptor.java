@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.parresum.digisim.parser.accessor;
+package de.parresum.digisim.api.spi.accessor;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -23,20 +23,20 @@ import java.beans.PropertyDescriptor;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.parresum.digisim.annotations.Pin;
-import de.parresum.digisim.annotations.Value;
-import de.parresum.digisim.lib.CircuitPart;
-import de.parresum.digisim.lib.wire.Wire;
+import de.parresum.digisim.api.CircuitComponent;
+import de.parresum.digisim.api.annotations.Pin;
+import de.parresum.digisim.api.annotations.Value;
+import de.parresum.digisim.api.wire.Wire;
 
 /**
  * Descriptor holding informations to create the part and access its elements
  *
  * @author Kai Uwe Bachmann
  */
-public class PartDescriptor {
+public class ComponentDescriptor {
 
    /** Creator to create new instances */
-   private final PartCreator creator;
+   private final ComponentCreator creator;
 
    /** known pins of the part and their accessors */
    private final Map<String, PinAccessor> pins = new HashMap<>();
@@ -50,9 +50,9 @@ public class PartDescriptor {
     * @param clazz class to create the descriptor for
     * @throws IntrospectionException when an error occurs
     */
-   public PartDescriptor(Class<? extends CircuitPart> clazz) throws IntrospectionException {
+   public ComponentDescriptor(Class<? extends CircuitComponent> clazz) throws IntrospectionException {
 
-      creator = new PartCreator(clazz);
+      creator = new ComponentCreator(clazz);
 
       BeanInfo bean = Introspector.getBeanInfo(clazz);
 
@@ -85,7 +85,7 @@ public class PartDescriptor {
     *
     * @return
     */
-   public PartCreator getCreator() {
+   public ComponentCreator getCreator() {
       return creator;
    }
 
@@ -96,6 +96,16 @@ public class PartDescriptor {
     */
    public Map<String, PinAccessor> getPins() {
       return pins;
+   }
+
+   /**
+    * Gets the accessor of a given pin
+    * 
+    * @param pinName name of the pin
+    * @return the accessor or null, if unknown
+    */
+   public PinAccessor getPin(String pinName) {
+      return pins.get(pinName);
    }
 
    /**

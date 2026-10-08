@@ -22,8 +22,8 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
+import de.parresum.digisim.api.wire.Wire;
 import de.parresum.digisim.lib.io.Output;
-import de.parresum.digisim.lib.wire.Wire;
 
 /**
  * Panel to capture all output elements

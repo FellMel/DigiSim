@@ -14,20 +14,27 @@
  * limitations under the License.
  */
 
-package de.parresum.digisim.annotations;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package de.parresum.digisim.api;
 
 /**
+ * Base for all components which can be put to a circuit
  *
+ * @author Kai Uwe Bachmann
  */
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Pins {
-   /** List of different pins */
-   Pin[] value();
+public interface CircuitComponent {
+
+   /**
+    * gets the name of lib, where the part comes from
+    *
+    * @return name of the lib
+    */
+   public String getLibName();
+
+   /**
+    * sets the name of the lib, where the part comes from
+    *
+    * @param libName
+    */
+   public void setLibName(String libName);
 
 }

@@ -17,11 +17,11 @@ package de.parresum.digisim.gui.example;
 
 import java.awt.HeadlessException;
 
+import de.parresum.digisim.api.wire.Wire;
 import de.parresum.digisim.gui.MainWindow;
 import de.parresum.digisim.lib.gates.Or;
 import de.parresum.digisim.lib.io.Input;
 import de.parresum.digisim.lib.io.Output;
-import de.parresum.digisim.lib.wire.Wire;
 
 public class OrExample extends MainWindow {
 

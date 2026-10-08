@@ -14,31 +14,21 @@
  * limitations under the License.
  */
 
-package de.parresum.digisim.lib;
+package de.parresum.digisim.api.annotations;
 
-import de.parresum.digisim.annotations.PartConnector;
-import de.parresum.digisim.lib.wire.Wire;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Base for all parts which can be put to a circuit
+ * List of components, when an implementation covers multiple symbols in library
  *
  * @author Kai Uwe Bachmann
  */
-public interface CircuitPart {
-
-   /**
-    * gets the name of lib, where the part comes from
-    *
-    * @return name of the lib
-    */
-   public String getLibName();
-
-   /**
-    * sets the name of the lib, where the part comes from
-    *
-    * @param libName
-    */
-   public void setLibName(String libName);
-
-   public void joinWire(Wire wire, String pinNumber, PartConnector connector);
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Components {
+   /** List of covered symbols */
+   Component[] value();
 }

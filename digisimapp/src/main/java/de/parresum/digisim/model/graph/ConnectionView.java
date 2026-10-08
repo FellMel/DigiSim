@@ -23,7 +23,7 @@ import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
-import de.parresum.digisim.lib.wire.Wire;
+import de.parresum.digisim.api.wire.Wire;
 import de.parresum.digisim.model.NetConnection;
 import de.parresum.digisim.model.NetPoint;
 import de.parresum.digisim.model.PinType;

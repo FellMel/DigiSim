@@ -17,11 +17,11 @@ package de.parresum.digisim.gui.analyser.devices;
 
 import java.io.IOException;
 
+import de.parresum.digisim.api.State;
+import de.parresum.digisim.api.StateListener;
+import de.parresum.digisim.api.wire.Wire;
 import de.parresum.digisim.gui.analyser.CapturedData;
 import de.parresum.digisim.lib.Starter;
-import de.parresum.digisim.lib.State;
-import de.parresum.digisim.lib.StateListener;
-import de.parresum.digisim.lib.wire.Wire;
 
 /**
  * Device to connect to wires
