@@ -77,5 +77,62 @@ public abstract class AbstractComponent implements CircuitComponent {
       }
    }
 
+   protected void setOpen(Wire wire) {
+      if (wire != null) {
+         wire.set(State.OPEN);
+      }
+   }
+
+   protected void setOpen(Wire[] wires) {
+      for (Wire wire : wires) {
+         if (wire != null) {
+            wire.set(State.OPEN);
+         }
+      }
+   }
+
+   /**
+    * reads the input wires as integer
+    *
+    * @param wires wires to read the value from
+    * @return the read value
+    */
+   protected int wireToInt(Wire[] wires) {
+      int val = 0;
+      for (int i = wires.length - 1; i >= 0; i--) {
+         val <<= 1;
+         val |= getState(wires[i]) ? 1 : 0;
+      }
+
+      return val;
+   }
+
+   /**
+    * writes the value to the wires binary decoded
+    *
+    * @param val   value to write
+    * @param wires wires to write to
+    */
+   protected void intToWire(int val, Wire[] wires) {
+      for (int i = 0; i < wires.length; i++) {
+         setState(wires[i], (val & 0x01) != 0);
+         val >>= 1;
+      }
+   }
+
+   /**
+    * selects one wire
+    *
+    * @param val       number of the wire to select
+    * @param wires     wires to select
+    * @param activeLow true, when active is low
+    */
+   protected void selectWire(int val, Wire[] wires, boolean activeLow) {
+      for (int i = 0; i < wires.length; i++) {
+         setState(wires[i], (val == i) ^ activeLow);
+         val >>= 1;
+      }
+   }
+
    // ------------------------------- o -------------------------------
 }

@@ -26,14 +26,14 @@ import de.parresum.digisim.api.wire.Wire;
 import de.parresum.digisim.lib.Out;
 
 /**
- * Tri-State-Latch
+ * Tri-State Driver
  *
  * When enable is low, output will be active
  *
  * @author Kai Uwe Bachmann
  */
 @Component("digisim:Driver")
-public class Latch extends AbstractComponent implements StateListener, Out {
+public class Driver extends AbstractComponent implements StateListener, Out {
 
    // input
    private Wire in;
@@ -49,13 +49,13 @@ public class Latch extends AbstractComponent implements StateListener, Out {
 
    private boolean inverting = false;
 
-   public Latch(final String name) {
+   public Driver(final String name) {
       super(name);
       wire = new Wire(name + ".LatchOut");
       AbstractGate.register("LATCH");
    }
 
-   public Latch(final String name, final TriStateWire out, final Wire in, final Wire enable) {
+   public Driver(final String name, final TriStateWire out, final Wire in, final Wire enable) {
       this(name);
       setOut(out);
       setIn(in);

@@ -54,7 +54,7 @@ public class LibComponentProviderImpl implements ComponentProvider {
 
    @Override
    public String getKiCadLibFile() throws IOException {
-      InputStream infile = this.getClass().getClassLoader().getResourceAsStream("/kicad/" + LIB_NAME + ".kicad_lib");
+      InputStream infile = this.getClass().getClassLoader().getResourceAsStream("/kicad/" + LIB_NAME + ".kicad_sym");
 
       if (infile == null) {
          throw new FileNotFoundException("Can't find library file");
@@ -70,7 +70,6 @@ public class LibComponentProviderImpl implements ComponentProvider {
    @Override
    public CircuitComponent create(String libName, String componentName, Map<String, Wire> wires,
          Map<String, String> parameter) {
-      // TODO Auto-generated method stub
       try {
          CircuitComponent component = binder.createComponent(libName, componentName, wires, parameter);
          component.setLibName(libName);

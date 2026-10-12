@@ -23,6 +23,7 @@ package de.parresum.digisim.api.annotations;
 public enum PortType {
    /** Port is input */
    INPUT,
+
    /** Port is output */
    OUTPUT,
 
@@ -30,5 +31,8 @@ public enum PortType {
    BIDIRECTIONAL,
 
    /** Port is tri-state */
-   TRISTATE
+   TRISTATE,
+
+   /** Open-Collector */
+   OPENCOLLECTOR
 }
