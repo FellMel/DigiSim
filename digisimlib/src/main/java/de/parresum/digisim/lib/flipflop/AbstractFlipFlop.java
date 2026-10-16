@@ -53,6 +53,7 @@ public abstract class AbstractFlipFlop extends AbstractComponent implements Stat
       AbstractGate.register(getSymbolName());
    }
 
+   // ----------------------------------- o -----------------------------------
    protected abstract String getSymbolName();
 
    /**
@@ -136,6 +137,7 @@ public abstract class AbstractFlipFlop extends AbstractComponent implements Stat
       return output;
    }
 
+   // ----------------------------------- o -----------------------------------
    /**
     * do the preset
     *
@@ -180,6 +182,7 @@ public abstract class AbstractFlipFlop extends AbstractComponent implements Stat
 
    }
 
+   // ----------------------------------- o -----------------------------------
    /**
     * writes the pin states to log file
     */
@@ -237,6 +240,12 @@ public abstract class AbstractFlipFlop extends AbstractComponent implements Stat
 
    }
 
+   @Override
+   public void connected() {
+      this.stateChanged(null, null, null);
+   }
+
+   // ----------------------------------- o -----------------------------------
    /**
     * initializes the state
     */
@@ -255,6 +264,7 @@ public abstract class AbstractFlipFlop extends AbstractComponent implements Stat
       outputState();
    }
 
+   // ----------------------------------- o -----------------------------------
    /**
     * propagates the state to output pins
     */
@@ -268,4 +278,5 @@ public abstract class AbstractFlipFlop extends AbstractComponent implements Stat
       }
    }
 
+   // ----------------------------------- o -----------------------------------
 }

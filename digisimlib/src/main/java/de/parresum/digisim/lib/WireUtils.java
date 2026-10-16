@@ -15,7 +15,6 @@
  */
 package de.parresum.digisim.lib;
 
-import de.parresum.digisim.api.wire.TriStateWire;
 import de.parresum.digisim.api.wire.Wire;
 
 /**
@@ -30,7 +29,7 @@ public class WireUtils {
     * @param name name of the bus to create
     * @return the created wires
     */
-   public static TriStateWire[] createAdrBus(final String name) {
+   public static Wire[] createAdrBus(final String name) {
       return createBusIO(name, 16);
    }
 
@@ -51,10 +50,11 @@ public class WireUtils {
     * @param size width of the bus
     * @return the created wires
     */
-   public static TriStateWire[] createBusIO(final String name, final int size) {
-      final TriStateWire[] bus = new TriStateWire[size];
+   public static Wire[] createBusIO(final String name, final int size) {
+      final Wire[] bus = new Wire[size];
       for (int i = 0; i < bus.length; i++) {
-         bus[i] = new TriStateWire(name + "." + i);
+         bus[i] = new Wire(name + "." + i);
+         bus[i].setTriState();
       }
       return bus;
    }

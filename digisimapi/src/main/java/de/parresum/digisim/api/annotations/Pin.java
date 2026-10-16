@@ -39,5 +39,5 @@ public @interface Pin {
     */
    String value();
 
-   String part() default "";
+   String component() default "";
 }

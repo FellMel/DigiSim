@@ -44,7 +44,7 @@ public class LibComponentProviderImpl implements ComponentProvider {
    private final ComponentBinder binder;
 
    public LibComponentProviderImpl() {
-      binder = new ComponentBinder("de.parresum.digisim.lib");
+      binder = new ComponentBinder("de.parresum.digisim.lib", this.getClass());
    }
 
    @Override

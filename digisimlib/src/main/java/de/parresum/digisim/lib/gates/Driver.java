@@ -21,7 +21,6 @@ import de.parresum.digisim.api.StateListener;
 import de.parresum.digisim.api.annotations.Component;
 import de.parresum.digisim.api.annotations.Pin;
 import de.parresum.digisim.api.annotations.PortType;
-import de.parresum.digisim.api.wire.TriStateWire;
 import de.parresum.digisim.api.wire.Wire;
 import de.parresum.digisim.lib.Out;
 
@@ -42,7 +41,7 @@ public class Driver extends AbstractComponent implements StateListener, Out {
    private Wire enable;
 
    // output
-   private TriStateWire out;
+   private Wire out;
 
    // internal wire needed for tri-state handling
    private final Wire wire;
@@ -55,13 +54,14 @@ public class Driver extends AbstractComponent implements StateListener, Out {
       AbstractGate.register("LATCH");
    }
 
-   public Driver(final String name, final TriStateWire out, final Wire in, final Wire enable) {
+   public Driver(final String name, final Wire out, final Wire in, final Wire enable) {
       this(name);
       setOut(out);
       setIn(in);
       setEnable(enable);
    }
 
+   // ----------------------------------- o -----------------------------------
    public void setInverting(boolean inverting) {
       this.inverting = inverting;
    }
@@ -93,8 +93,9 @@ public class Driver extends AbstractComponent implements StateListener, Out {
     *
     * @param out
     */
-   @Pin(value = "O", type = PortType.BIDIRECTIONAL)
-   public void setOut(final TriStateWire out) {
+   @Pin(value = "O", type = PortType.TRISTATE)
+   public void setOut(final Wire out) {
+      out.setTriState();
       if (this.out != null) {
          this.out.removeWire(wire);
       }
@@ -109,6 +110,7 @@ public class Driver extends AbstractComponent implements StateListener, Out {
       return this.out;
    }
 
+   // ----------------------------------- o -----------------------------------
    protected State calculate() {
 
       if (enable == null || enable.get() == State.HIGH) {
@@ -119,9 +121,8 @@ public class Driver extends AbstractComponent implements StateListener, Out {
             input = !input;
          }
 
-         return input ? State.LOW : State.HIGH;
+         return input ? State.HIGH : State.LOW;
       }
-
    }
 
    /**
@@ -137,6 +138,10 @@ public class Driver extends AbstractComponent implements StateListener, Out {
          log.debug("  now: {}", current);
       }
       wire.set(current);
+   }
 
+   @Override
+   public void connected() {
+      this.stateChanged(null, null, null);
    }
 }

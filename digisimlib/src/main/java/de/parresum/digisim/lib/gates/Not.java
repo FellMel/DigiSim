@@ -77,6 +77,10 @@ public class Not extends AbstractGate {
    @Override
    protected State calculate() {
 
+      if (inputs.isEmpty()) {
+         return State.HIGH;
+      }
+
       final State current = inputs.getFirst().get();
       return current.not();
 

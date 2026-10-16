@@ -25,6 +25,7 @@ import java.util.Map;
 
 import de.parresum.digisim.api.CircuitComponent;
 import de.parresum.digisim.api.annotations.Pin;
+import de.parresum.digisim.api.annotations.Pins;
 import de.parresum.digisim.api.annotations.Value;
 import de.parresum.digisim.api.wire.Wire;
 
@@ -35,6 +36,7 @@ import de.parresum.digisim.api.wire.Wire;
  */
 public class ComponentDescriptor {
 
+   private final String libName;
    /** Creator to create new instances */
    private final ComponentCreator creator;
 
@@ -50,21 +52,40 @@ public class ComponentDescriptor {
     * @param clazz class to create the descriptor for
     * @throws IntrospectionException when an error occurs
     */
-   public ComponentDescriptor(Class<? extends CircuitComponent> clazz) throws IntrospectionException {
+   public ComponentDescriptor(Class<? extends CircuitComponent> clazz, String libName) throws IntrospectionException {
 
+      this.libName = libName;
       creator = new ComponentCreator(clazz);
 
       BeanInfo bean = Introspector.getBeanInfo(clazz);
 
       for (PropertyDescriptor prop : bean.getPropertyDescriptors()) {
          if (prop.getWriteMethod() != null) {
-            Pin pin = prop.getWriteMethod().getAnnotation(Pin.class);
+            Pins pins = prop.getWriteMethod().getAnnotation(Pins.class);
+            Pin pin = null;
+            if (pins != null) {
+               // search specialited pin definition
+               for (Pin p : pins.value()) {
+                  if (p.component().equals(libName)) {
+                     // if special pin version is found, take this
+                     pin = p;
+                     // don't need to search further definitions
+                     break;
+                  } else if (p.component().equals("")) {
+                     // if general definition is found, take this and check further pins
+                     pin = p;
+                  }
+               }
+            } else {
+               pin = prop.getWriteMethod().getAnnotation(Pin.class);
+            }
+
             if (pin != null) {
                if (prop.getWriteMethod().getParameterCount() != 1
                      || !Wire.class.isAssignableFrom(prop.getWriteMethod().getParameters()[0].getType())) {
                   System.err.println("Illegal Wire setter. Need one argument of typ Wire");
                } else {
-                  pins.put(pin.value(), new PinAccessor(pin.value(), clazz, prop));
+                  this.pins.put(pin.value(), new PinAccessor(pin.value(), clazz, prop));
                }
             }
             Value value = prop.getWriteMethod().getAnnotation(Value.class);
@@ -100,7 +121,7 @@ public class ComponentDescriptor {
 
    /**
     * Gets the accessor of a given pin
-    * 
+    *
     * @param pinName name of the pin
     * @return the accessor or null, if unknown
     */

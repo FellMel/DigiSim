@@ -62,4 +62,9 @@ public class SheetPart implements CircuitComponent {
 
    }
 
+   @Override
+   public void connected() {
+      // nothing to do, yet
+   }
+
 }

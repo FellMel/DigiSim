@@ -96,7 +96,6 @@ public abstract class AbstractGate extends AbstractComponent implements StateLis
     */
    public AbstractGate(final String name, final Out... inputs) {
       this(name);
-      setOutput(new Wire(""));
       addInputs(inputs);
    }
 
@@ -110,7 +109,6 @@ public abstract class AbstractGate extends AbstractComponent implements StateLis
    public AbstractGate(final String name, final boolean openCollector, final Out... inputs) {
       this(name);
       this.openCollector = openCollector;
-      setOutput(new Wire(""));
       addInputs(inputs);
    }
 
@@ -144,9 +142,9 @@ public abstract class AbstractGate extends AbstractComponent implements StateLis
          this.output = new Wire(output.toString());
          output.join(this.output);
       } else {
-
          this.output = output;
       }
+      stateChanged(null, null, null);
 
    }
 
@@ -321,6 +319,11 @@ public abstract class AbstractGate extends AbstractComponent implements StateLis
       }
       output.set(current);
 
+   }
+
+   @Override
+   public void connected() {
+      this.stateChanged(null, null, null);
    }
 
    // ----------------------------------- o -----------------------------------

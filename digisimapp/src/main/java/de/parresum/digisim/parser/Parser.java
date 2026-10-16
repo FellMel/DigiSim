@@ -156,9 +156,6 @@ public class Parser {
 
       List<NetPart> parts = new ArrayList<NetPart>();
       for (Symbol symbol : scheme.getSymbols()) {
-         if ("digisim:Switch".equalsIgnoreCase(symbol.getLibraryIdentifier())) {
-            System.out.println("switch");
-         }
          LibPart libPart = getLibSymbol(symbol.getLibraryIdentifier(), lib);
          NetPart part = new NetPart(symbol, libPart);
          parts.add(part);
@@ -235,6 +232,9 @@ public class Parser {
       Circuit circuit = new Circuit(name);
 
       ServiceLoader<ComponentProvider> serviceLoader = ServiceLoader.load(ComponentProvider.class);
+      for (ComponentProvider provider : serviceLoader) {
+         System.out.println("Found provider " + provider.getLibName());
+      }
       try {
          Map<String, NetView> views = new HashMap<>();
 

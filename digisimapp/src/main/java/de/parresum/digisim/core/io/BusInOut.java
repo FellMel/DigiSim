@@ -33,7 +33,6 @@ import javax.swing.text.DefaultFormatterFactory;
 
 import de.parresum.digisim.api.State;
 import de.parresum.digisim.api.annotations.Value;
-import de.parresum.digisim.api.wire.TriStateWire;
 import de.parresum.digisim.api.wire.Wire;
 import de.parresum.digisim.lib.InputPart;
 import de.parresum.digisim.lib.OutputPart;
@@ -54,7 +53,7 @@ public class BusInOut extends Box implements ChangeListener, InputPart, OutputPa
    private String description;
 
    /** Connected tri state wires */
-   private TriStateWire[] bus;
+   private Wire[] bus;
 
    /** internal bus for handling */
    private final Wire[] myBus;
@@ -71,7 +70,7 @@ public class BusInOut extends Box implements ChangeListener, InputPart, OutputPa
    /** GUI-Label */
    private final JLabel label;
 
-   public BusInOut(final String name, final TriStateWire[] output, final Wire enable) {
+   public BusInOut(final String name, final Wire[] output, final Wire enable) {
       super(BoxLayout.Y_AXIS);
       this.name = name;
       this.enable = enable;
@@ -132,7 +131,7 @@ public class BusInOut extends Box implements ChangeListener, InputPart, OutputPa
     *
     * @param output wires to connect
     */
-   public void setOutput(final TriStateWire[] output) {
+   public void setOutput(final Wire[] output) {
       if (this.bus != null) {
          throw new IllegalStateException("Double output on Bus InOut " + name);
       }

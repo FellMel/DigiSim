@@ -29,7 +29,6 @@ import de.parresum.digisim.api.annotations.Component;
 import de.parresum.digisim.api.annotations.Pin;
 import de.parresum.digisim.api.annotations.PortType;
 import de.parresum.digisim.api.annotations.Value;
-import de.parresum.digisim.api.wire.TriStateWire;
 import de.parresum.digisim.api.wire.Wire;
 import de.parresum.digisim.lib.InputPart;
 import de.parresum.digisim.lib.Out;
@@ -102,6 +101,7 @@ public class Input extends Box implements CircuitComponent, ChangeListener, Out,
       this(output.toString(), output);
    }
 
+   // ----------------------------------- o -----------------------------------
    /**
     * gets the display name of this input element
     *
@@ -138,9 +138,9 @@ public class Input extends Box implements CircuitComponent, ChangeListener, Out,
          throw new IllegalStateException("Double output on switch");
       }
 
-      if (output instanceof TriStateWire) {
+      if (output.isTriState()) {
          final Wire tmp = new Wire("tmp");
-         ((TriStateWire) output).addWire(tmp);
+         output.addWire(tmp);
          output = tmp;
       }
       this.output = output;
@@ -152,6 +152,7 @@ public class Input extends Box implements CircuitComponent, ChangeListener, Out,
       return output;
    }
 
+   // ----------------------------------- o -----------------------------------
    @Override
    public void stateChanged(final ChangeEvent e) {
       final State current = input.isSelected() ? State.HIGH : State.LOW;
@@ -159,6 +160,12 @@ public class Input extends Box implements CircuitComponent, ChangeListener, Out,
 
    }
 
+   @Override
+   public void connected() {
+      this.stateChanged(null);
+   }
+
+   // ----------------------------------- o -----------------------------------
    @Override
    public String toString() {
       return name;

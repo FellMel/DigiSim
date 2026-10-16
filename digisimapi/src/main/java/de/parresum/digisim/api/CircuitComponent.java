@@ -37,4 +37,8 @@ public interface CircuitComponent {
     */
    public void setLibName(String libName);
 
+   /**
+    * initializes component after fully connction
+    */
+   public void connected();
 }

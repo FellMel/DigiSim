@@ -86,6 +86,7 @@ public class Clock extends AbstractComponent implements Out, Starter {
       this.delay = delay;
    }
 
+   // ----------------------------------- o -----------------------------------
    @Pin(value = "CLK", type = PortType.OUTPUT)
    public void setOutput(final Wire output2) {
       this.output2 = output2;
@@ -114,6 +115,13 @@ public class Clock extends AbstractComponent implements Out, Starter {
       return output3;
    }
 
+   // ----------------------------------- o -----------------------------------
+   @Override
+   public void connected() {
+      this.doTimer();
+   }
+
+   // ----------------------------------- o -----------------------------------
    /**
     * starts the generator
     */

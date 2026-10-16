@@ -48,12 +48,12 @@ public class Xnor extends AbstractGate {
    protected State calculate() {
       int currentHigh = 0;
       for (final Wire wire : inputs) {
-         if (wire != null && wire.get() == State.HIGH) {
+         if (getState(wire)) {
             currentHigh++;
          }
       }
 
-      return (currentHigh % 2 == 0 ? State.HIGH : State.LOW);
+      return ((currentHigh & 0x01) == 0 ? State.HIGH : State.LOW);
 
    }
 

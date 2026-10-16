@@ -55,21 +55,31 @@ public class ComponentBinder {
    private final Map<String, ComponentDescriptor> descriptors = new HashMap<>();
 
    public ComponentBinder(String basepath) {
+      this(basepath, null);
+   }
 
+   /**
+    * Creates a new binder
+    *
+    * @param basepath path to search for components in
+    * @param anchor   anchor class to find the right jar-file / class-folder
+    */
+   public ComponentBinder(String basepath, Class<?> anchor) {
       try {
          LOG.info("Start searching parts ...");
-         List<Class<? extends CircuitComponent>> pkg = getClasses(basepath);
+         List<Class<? extends CircuitComponent>> pkg = getClasses(basepath, anchor);
          for (Class<? extends CircuitComponent> cls : pkg) {
             Component[] parts = (Component[]) cls.getAnnotationsByType(Component.class);
             if (parts.length > 0) {
-               ComponentDescriptor desc = new ComponentDescriptor(cls);
                for (Component part : parts) {
+                  ComponentDescriptor desc = new ComponentDescriptor(cls, part.value());
                   descriptors.put(part.value(), desc);
                   LOG.info("Found part {} in class {}", part.value(), cls.getName());
+                  LOG.info("Component {}", part.value());
+                  for (String e : desc.getPins().keySet()) {
+                     LOG.info("   Pin {}", e);
+                  }
 
-               }
-               for (String e : desc.getPins().keySet()) {
-                  LOG.info("   Pin {}", e);
                }
             }
          }
@@ -87,16 +97,29 @@ public class ComponentBinder {
     * @throws IOException
     * @throws URISyntaxException
     */
-   private static List<Class<? extends CircuitComponent>> getClasses(String pckgname)
+   private List<Class<? extends CircuitComponent>> getClasses(String pckgname, Class<?> anchor)
          throws ClassNotFoundException, IOException, URISyntaxException {
 
-      ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+      LOG.debug("parsing path {}", pckgname);
+
+      List<Class<? extends CircuitComponent>> result = new ArrayList<>();
 
       String path = pckgname.replace(".", "/");
-      URL packageURL = classLoader.getResource(path);
+      URL packageURL;
+      if (anchor != null) {
+         // little hack.
+         // without the anchor we get some random URL, when the path is in more than one JAR-File/Folder (e.g. test
+         // folder)
+         String baseName = anchor.getCanonicalName().replace(".", "/");
+         ClassLoader classLoader = anchor.getClassLoader();
+         packageURL = classLoader.getResource(baseName + ".class");
+      } else {
+         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+         packageURL = classLoader.getResource(path);
+      }
+      LOG.debug("  found: {}", packageURL);
 
       if (packageURL.getProtocol().equals("jar")) {
-         ArrayList<Class<? extends CircuitComponent>> classes = new ArrayList<>();
 
          // build jar file name, then loop through zipped entries
          String jarFileName = URLDecoder.decode(packageURL.getFile(), "UTF-8");
@@ -114,29 +137,39 @@ public class ComponentBinder {
                   // removes the .class extension
                   Class<?> candidate = Class.forName(entryName.replace("/", "."));
                   if (CircuitComponent.class.isAssignableFrom(candidate)) {
-                     classes.add((Class<? extends CircuitComponent>) candidate);
+                     result.add((Class<? extends CircuitComponent>) candidate);
                   }
                }
             }
          }
-         return classes;
-
       } else {
          // loop through files in classpath
          URI uri = new URI(packageURL.toString());
          File folder = new File(uri.getPath());
-         return getFileClasses(pckgname, folder);
+
+         // When URL is recognized by anchor, we need to reduce to basepath ...
+         while (!folder.getAbsolutePath().endsWith(path)) {
+            folder = folder.getParentFile();
+         }
+
+         result.addAll(getFileClasses(pckgname, folder));
       }
+      return result;
    }
 
-   private static List<Class<? extends CircuitComponent>> getFileClasses(String pckgname, File folder)
+   private List<Class<? extends CircuitComponent>> getFileClasses(String pckgname, File folder)
          throws ClassNotFoundException {
       ArrayList<Class<? extends CircuitComponent>> classes = new ArrayList<>();
+      LOG.debug("parsing file system {}", folder);
       File[] content = folder.listFiles();
+      LOG.debug("found {} entries", content.length);
+
       for (File actual : content) {
          if (actual.isDirectory()) {
+            LOG.debug("  parsing folder {}", actual.getName());
             classes.addAll(getFileClasses(pckgname + "." + actual.getName(), actual));
          } else {
+            LOG.debug("  parsing file {}", actual.getName());
             String entryName = actual.getName();
             // we are only interested in .class files
             if (entryName.endsWith(".class")) {
@@ -191,6 +224,8 @@ public class ComponentBinder {
             }
          }
       }
+
+      part.connected();
 
       return part;
    }

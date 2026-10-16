@@ -15,6 +15,8 @@ package de.parresum.digisim.api.wire;
  * limitations under the License.
  */
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -29,20 +31,7 @@ import de.parresum.digisim.api.StateListener;
  *
  * @author Kai Uwe Bachmann
  */
-public class Wire {
-
-   // local logger to enable each wire separated
-   protected final Logger log;
-
-   // name of the wire / net
-   private final String name;
-
-   // current state of the wire
-   protected State current = State.LOW;
-
-   // creates a double change signal, needeed by flipflops
-   private boolean doubleSignal = false;
-
+public class Wire implements StateListener {
    /**
     * Wire with constant low
     */
@@ -65,9 +54,27 @@ public class Wire {
 
    };
 
+   // ------------------------------- o -------------------------------
+   // local logger to enable each wire separated
+   protected final Logger log;
+
+   // name of the wire / net
+   private final String name;
+
+   // current state of the wire
+   protected State current = State.LOW;
+
+   // creates a double change signal, needeed by flipflops
+   private boolean doubleSignal = false;
+
+   private boolean triState = false;
+   /** internal inputs for tri state */
+   private List<Wire> inputs;
+
    // Listeners on this wire
    private final Set<StateListener> listeners = new CopyOnWriteArraySet<>();
 
+   // ------------------------------- o -------------------------------
    /**
     * Creates a new wire
     *
@@ -84,6 +91,7 @@ public class Wire {
       }
    }
 
+   // ------------------------------- o -------------------------------
    /**
     * gets the name of the wire
     *
@@ -123,13 +131,22 @@ public class Wire {
     * @return previous state
     */
    public State set(final State current) {
+      if (triState) {
+         throw new IllegalAccessError("TriState cant be set direct");
+      }
+      return setInternal(current);
+   }
+
+   private State setInternal(State current) {
       final State old = get();
       this.current = current;
       final State tmp = get();
       fireStateChange(old, tmp);
       return old;
+
    }
 
+   // ------------------------------- o -------------------------------
    /**
     * checks whether this wire create a double signal
     *
@@ -148,6 +165,45 @@ public class Wire {
       this.doubleSignal = doubleSignal;
    }
 
+   // ------------------------------- o -------------------------------
+   /**
+    * switches the wire to Tri-State A Tri-State-Wire can't be switched back to normal
+    *
+    * This wire can be open and connected to multiple tri-state outputs. The network will be realized by some internal
+    * wires
+    * 
+    */
+   public void setTriState() {
+      if (this.triState) {
+         return;
+      }
+
+      this.triState = true;
+      inputs = new ArrayList<Wire>();
+   }
+
+   /**
+    * @return the triState
+    */
+   public boolean isTriState() {
+      return triState;
+   }
+
+   public void addWire(final Wire wire) {
+      if (triState) {
+         inputs.add(wire);
+         wire.addStateListener(this);
+      }
+   }
+
+   public void removeWire(final Wire wire) {
+      if (triState) {
+         wire.removeStateListener(this);
+         inputs.remove(wire);
+      }
+   }
+
+   // ------------------------------- o -------------------------------
    /**
     * adds a listener to this wire
     *
@@ -187,8 +243,28 @@ public class Wire {
    }
 
    @Override
+   public void stateChanged(final Wire src, final State oldState, final State newState) {
+      State current = State.OPEN;
+      for (final Wire in : inputs) {
+         log.debug("   Input {}: {}", in, in.get());
+         if (in.get() != State.OPEN) {
+            // TODO: Reactivate
+//              if (current != State.OPEN) {
+//                  throw new IllegalStateException("Multiple outputs on same wire: " + toString());
+//              }
+            current = in.get();
+         }
+      }
+
+      setInternal(current);
+
+   }
+
+   // ------------------------------- o -------------------------------
+   @Override
    public String toString() {
       return name;
    }
 
+   // ------------------------------- o -------------------------------
 }

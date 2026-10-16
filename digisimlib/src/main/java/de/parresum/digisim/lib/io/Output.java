@@ -96,6 +96,7 @@ public class Output extends Box implements CircuitComponent, StateListener, Outp
       this(input.toString(), input);
    }
 
+   // ----------------------------------- o -----------------------------------
    /**
     * gets the display name of this output element
     *
@@ -165,6 +166,7 @@ public class Output extends Box implements CircuitComponent, StateListener, Outp
       return input;
    }
 
+   // ----------------------------------- o -----------------------------------
    @Override
    public void stateChanged(final Wire src, final State oldState, final State newState) {
       if (input != null) {
@@ -173,6 +175,12 @@ public class Output extends Box implements CircuitComponent, StateListener, Outp
       }
    }
 
+   @Override
+   public void connected() {
+      this.stateChanged(null, null, null);
+   }
+
+   // ----------------------------------- o -----------------------------------
    @Override
    public String toString() {
       return name;
