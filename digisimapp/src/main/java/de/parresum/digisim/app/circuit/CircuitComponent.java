@@ -35,7 +35,7 @@ import de.parresum.digisim.lib.InputPart;
 import de.parresum.digisim.lib.OutputPart;
 import de.parresum.digisim.lib.io.Input;
 import de.parresum.digisim.lib.io.Output;
-import de.parresum.digisim.parser.Parser;
+import de.parresum.digisim.parser.SchemeParser;
 
 /**
  * Component which shows the circuit.
@@ -58,7 +58,7 @@ public class CircuitComponent extends JPanel {
 
    public CircuitComponent(File baseDir, SchemeNode document) {
       super(new BorderLayout());
-      circuit = Parser.parseCircuit(baseDir, document.getScheme());
+      circuit = SchemeParser.parseCircuit(baseDir, document.getScheme());
       this.document = document;
       // add(new JLabel(document.getName()));
       init();

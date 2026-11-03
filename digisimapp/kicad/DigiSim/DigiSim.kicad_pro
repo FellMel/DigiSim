@@ -663,9 +663,14 @@
         "filename": "6bitincdec.kicad_sch",
         "name": "6BitIncDec",
         "uuid": "8bfb3fb8-a8de-494a-8fa2-4b100a99d8bf"
+      },
+      {
+        "filename": "4-bit-full-adder.kicad_sch",
+        "name": "4-bit-full-adder",
+        "uuid": "3910df55-6fae-4ad6-a8e6-23c0ca22cb3d"
       }
     ],
-    "used_designators": "IC1,or1-12,sw1-8,led1-7,nor1-3,nand1-11,and1-6",
+    "used_designators": "IC1,or1-12,or14-16,not2-8,sw1-8,led1-7,nor1-9,nand1-15,and1-6,and8-20",
     "variants": []
   },
   "sheets": [
@@ -692,6 +697,18 @@
     [
       "444aed17-0ebd-4591-b570-dca3e2ecef10",
       "incdec2"
+    ],
+    [
+      "3910df55-6fae-4ad6-a8e6-23c0ca22cb3d",
+      "4-bit-full-adder"
+    ],
+    [
+      "c481537d-2184-4ee1-8037-13df63c28a4b",
+      "incdec4"
+    ],
+    [
+      "2c815938-4a53-4bdc-97a1-04ea3db0e150",
+      "incdec3"
     ]
   ],
   "text_variables": {},

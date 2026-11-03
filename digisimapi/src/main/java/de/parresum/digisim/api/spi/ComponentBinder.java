@@ -66,7 +66,7 @@ public class ComponentBinder {
     */
    public ComponentBinder(String basepath, Class<?> anchor) {
       try {
-         LOG.info("Start searching parts ...");
+         LOG.info("Start searching parts at {} ...", basepath);
          List<Class<? extends CircuitComponent>> pkg = getClasses(basepath, anchor);
          for (Class<? extends CircuitComponent> cls : pkg) {
             Component[] parts = (Component[]) cls.getAnnotationsByType(Component.class);

@@ -26,13 +26,13 @@ import de.parresum.digisim.lib.Out;
  * @author Kai Uwe Bachmann
  */
 @Component("NOR")
-@Component("digisim:Nor 2")
-@Component("digisim:Nor 3")
-@Component("digisim:Nor 4")
-@Component("digisim:Nor 5")
-@Component("digisim:Nor 6")
-@Component("digisim:Nor 7")
-@Component("digisim:Nor 8")
+@Component("Nor 2")
+@Component("Nor 3")
+@Component("Nor 4")
+@Component("Nor 5")
+@Component("Nor 6")
+@Component("Nor 7")
+@Component("Nor 8")
 public class Nor extends AbstractGate {
 
    public Nor(final String name, final Wire output, final Wire... inputs) {

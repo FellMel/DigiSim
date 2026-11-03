@@ -70,8 +70,13 @@ public class LibComponentProviderImpl implements ComponentProvider {
    @Override
    public CircuitComponent create(String libName, String componentName, Map<String, Wire> wires,
          Map<String, String> parameter) {
+      String baseName = libName;
+      if (libName.startsWith(LIB_NAME + ":")) {
+         baseName = libName.substring(LIB_NAME.length() + 1);
+      }
+
       try {
-         CircuitComponent component = binder.createComponent(libName, componentName, wires, parameter);
+         CircuitComponent component = binder.createComponent(baseName, componentName, wires, parameter);
          component.setLibName(libName);
          return component;
       } catch (ReflectiveOperationException e) {

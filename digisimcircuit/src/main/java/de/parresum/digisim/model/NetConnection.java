@@ -28,6 +28,7 @@ import de.parresum.kicad.parser.eescheme.label.AbstractLabel;
 import de.parresum.kicad.parser.eescheme.label.GlobalLabel;
 import de.parresum.kicad.parser.eescheme.label.HierarchicalLabel;
 import de.parresum.kicad.parser.model.Justify;
+import de.parresum.kicad.parser.model.Property;
 import de.parresum.kicad.parser.model.Size;
 import de.parresum.kicad.parser.model.TextEffects;
 
@@ -49,6 +50,8 @@ public class NetConnection extends AbstractNetElement {
 
    /** Label of the connection */
    private final String name;
+
+   private final String pinName;
 
    private Font font;
    private Justify just;
@@ -94,6 +97,15 @@ public class NetConnection extends AbstractNetElement {
 
       }
       readEffects(label.getTextEffects());
+
+      String pin = null;
+      for (Property prop : label.getProperties()) {
+         if ("pin".equalsIgnoreCase(prop.getKey())) {
+            pin = prop.getValue();
+            break;
+         }
+      }
+      pinName = pin;
    }
 
    private void readEffects(TextEffects stile) {
@@ -115,6 +127,13 @@ public class NetConnection extends AbstractNetElement {
 
    public String getName() {
       return name;
+   }
+
+   /**
+    * @return the pinName
+    */
+   public String getPinName() {
+      return pinName;
    }
 
    public NetPoint getPoint() {

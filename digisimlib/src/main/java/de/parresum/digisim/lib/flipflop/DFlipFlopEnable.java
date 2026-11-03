@@ -27,7 +27,7 @@ import de.parresum.digisim.api.wire.Wire;
  *
  * @author Kai Uwe Bachmann
  */
-@Component("DFFE")
+@Component("D-Flipflop_with_Enable")
 public class DFlipFlopEnable extends DFlipFlop {
    /**
     * Enable input

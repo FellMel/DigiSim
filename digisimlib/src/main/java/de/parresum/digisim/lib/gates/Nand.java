@@ -26,13 +26,13 @@ import de.parresum.digisim.lib.Out;
  * @author Kai Uwe Bachmann
  */
 @Component("NAND")
-@Component("digisim:Nand 2")
-@Component("digisim:Nand 3")
-@Component("digisim:Nand 4")
-@Component("digisim:Nand 5")
-@Component("digisim:Nand 6")
-@Component("digisim:Nand 7")
-@Component("digisim:Nand 8")
+@Component("Nand 2")
+@Component("Nand 3")
+@Component("Nand 4")
+@Component("Nand 5")
+@Component("Nand 6")
+@Component("Nand 7")
+@Component("Nand 8")
 public class Nand extends AbstractGate {
 
    public Nand(final String name, final Wire output, final Wire... inputs) {

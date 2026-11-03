@@ -25,7 +25,7 @@ import de.parresum.digisim.api.wire.Wire;
  *
  * @author Kai Uwe Bachmann
  */
-@Component("SRFF")
+@Component("SR-Flipflop")
 public class SRFlipFlop extends AbstractFlipFlop {
    // Set-Input
    private Wire s;

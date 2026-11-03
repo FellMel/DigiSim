@@ -26,13 +26,13 @@ import de.parresum.digisim.lib.Out;
  * @author Kai Uwe Bachmann
  */
 @Component("AND")
-@Component("digisim:And 2")
-@Component("digisim:And 3")
-@Component("digisim:And 4")
-@Component("digisim:And 5")
-@Component("digisim:And 6")
-@Component("digisim:And 7")
-@Component("digisim:And 8")
+@Component("And 2")
+@Component("And 3")
+@Component("And 4")
+@Component("And 5")
+@Component("And 6")
+@Component("And 7")
+@Component("And 8")
 public class And extends AbstractGate {
 
    public And(final String name, final Wire output, final Wire... inputs) {

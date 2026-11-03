@@ -33,10 +33,10 @@ import de.parresum.kicad.parser.library.PinShapeType;
  */
 public class PinView extends AbstractView {
    /** diameter of the inverter circle */
-   private final static double DIAMETER = 0.8 * UNIT_FACTOR;
+   private final static double DIAMETER = 0.508 * UNIT_FACTOR;
 
    /** the size of the clock triangle */
-   private final static double CLOCK_SIZE = 0.8 * UNIT_FACTOR;
+   private final static double CLOCK_SIZE = 0.508 * UNIT_FACTOR;
 
    public PinView(GraphPin pin) {
       super(null, createShape(pin));
@@ -161,15 +161,16 @@ public class PinView extends AbstractView {
                   false);
             break;
          case 90:
-            path.lineTo(to.getX(), -(to.getY() - DIAMETER));
-            path.append(new Ellipse2D.Double((to.getX() - DIAMETER / 2.0), to.getY(), DIAMETER, DIAMETER), false);
+            path.lineTo(to.getX(), (to.getY() - DIAMETER));
+            path.append(new Ellipse2D.Double((to.getX() - DIAMETER / 2.0), to.getY() - DIAMETER, DIAMETER, DIAMETER),
+                  false);
             break;
          case 180: // checked
-            path.lineTo((to.getX() + DIAMETER), -to.getY());
+            path.lineTo((to.getX() + DIAMETER), to.getY());
             path.append(new Ellipse2D.Double(to.getX(), (to.getY() - DIAMETER / 2.0), DIAMETER, DIAMETER), false);
             break;
          case 270:
-            path.lineTo(to.getX(), -(to.getY() - DIAMETER));
+            path.lineTo(to.getX(), to.getY() + DIAMETER);
             path.append(new Ellipse2D.Double((to.getX() - DIAMETER / 2.0), to.getY(), DIAMETER, DIAMETER), false);
             break;
       }

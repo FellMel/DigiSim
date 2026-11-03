@@ -26,7 +26,7 @@ import de.parresum.digisim.lib.Out;
  * @author Kai Uwe Bachmann
  */
 @Component("XOR")
-@Component("digisim:Xor 2")
+@Component("Xor 2")
 public class Xor extends AbstractGate {
 
    public Xor(final String name, final Wire output, final Wire... inputs) {

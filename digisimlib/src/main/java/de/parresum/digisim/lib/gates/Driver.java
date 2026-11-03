@@ -31,7 +31,7 @@ import de.parresum.digisim.lib.Out;
  *
  * @author Kai Uwe Bachmann
  */
-@Component("digisim:Driver")
+@Component("Driver")
 public class Driver extends AbstractComponent implements StateListener, Out {
 
    // input

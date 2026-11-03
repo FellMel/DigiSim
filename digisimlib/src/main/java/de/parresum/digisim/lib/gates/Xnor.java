@@ -27,7 +27,7 @@ import de.parresum.digisim.lib.Out;
  * @author Kai Uwe Bachmann
  */
 @Component("XNOR")
-@Component("digisim:Xnor 2")
+@Component("Xnor 2")
 public class Xnor extends AbstractGate {
 
    public Xnor(final String name, final Wire output, final Wire... inputs) {

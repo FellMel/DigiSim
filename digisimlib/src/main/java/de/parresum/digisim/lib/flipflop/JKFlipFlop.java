@@ -25,7 +25,7 @@ import de.parresum.digisim.api.wire.Wire;
  *
  * @author Kai Uwe Bachmann
  */
-@Component("JKFF")
+@Component("JK-Flipflop")
 public class JKFlipFlop extends AbstractFlipFlop {
    // J-Input
    private Wire j;

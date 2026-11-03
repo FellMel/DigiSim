@@ -155,6 +155,9 @@ public abstract class AbstractGate extends AbstractComponent implements StateLis
     */
    @Override
    public Wire getOutput() {
+      if (this.output == null) {
+         setOutput(new Wire(this + "-out"));
+      }
       return output;
    }
 

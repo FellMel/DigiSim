@@ -27,6 +27,7 @@
 	<modules>
 		<module>digisimapi</module>
 		<module>digisimlib</module>
+		<module>digisimcircuit</module>
 		<module>digisimapp</module>
 	</modules>
 
@@ -99,6 +100,12 @@
 			<dependency>
 				<groupId>de.parresum</groupId>
 				<artifactId>digisimlib</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>de.parresum</groupId>
+				<artifactId>digisimcircuit</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 

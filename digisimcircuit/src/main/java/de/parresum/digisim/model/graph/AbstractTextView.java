@@ -23,33 +23,28 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.font.FontRenderContext;
-import java.awt.font.TextAttribute;
 import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-import java.text.AttributedString;
 
 import de.parresum.digisim.model.NetPoint;
-import de.parresum.kicad.parser.eescheme.Pin;
 import de.parresum.kicad.parser.eescheme.shape.Text;
 import de.parresum.kicad.parser.model.Justify;
-import de.parresum.kicad.parser.model.Property;
+import de.parresum.kicad.parser.model.PositionAt;
 import de.parresum.kicad.parser.model.Size;
 import de.parresum.kicad.parser.model.TextEffects;
 
 /**
- * A graphical text element
+ *
  *
  * @author Kai Uwe Bachmann
  */
-public class TextView extends AbstractView {
+public abstract class AbstractTextView extends AbstractView {
    /** Position of the text */
    private final NetPoint pos;
 
-   private NetPoint delta;
-
    /** rotation of the text */
-   private final double angle;
+   protected final double angle;
 
    /** the text itself */
    private final String str;
@@ -58,9 +53,9 @@ public class TextView extends AbstractView {
    private Color fontColor;
 
    private Shape shape;
-   private Justify just;
+   protected Justify just;
 
-   public TextView(Text text) {
+   public AbstractTextView(Text text) {
       super(text, null);
       this.pos = new NetPoint(text.getPosition());
       angle = text.getPosition().getAngle();
@@ -69,26 +64,13 @@ public class TextView extends AbstractView {
       readEffects(text.getTextEffects());
    }
 
-   public TextView(Property prop) {
+   public AbstractTextView(String str, PositionAt pos, TextEffects stile) {
       super(null, null);
-      this.pos = new NetPoint(prop.getAt());
-      this.angle = prop.getAt().getAngle();
-      this.str = prop.getValue();
+      this.pos = new NetPoint(pos);
+      this.angle = pos.getAngle();
+      this.str = str;
 
-      readEffects(prop.getEffects());
-   }
-
-   /**
-    * @param item
-    */
-   public TextView(Pin pin, double dx, double dy) {
-      super(null, null);
-      this.pos = new NetPoint(pin.getPosition());
-      this.angle = pin.getPosition().getAngle();
-      this.str = pin.getName();
-      this.delta = new NetPoint(dx, dy);
-
-      readEffects(pin.getEffects());
+      readEffects(stile);
    }
 
    private void readEffects(TextEffects stile) {
@@ -142,65 +124,17 @@ public class TextView extends AbstractView {
          rotate += 180.0;
       }
       g2d.rotate(Math.toRadians(rotate));
-      if (delta != null) {
-         if ((this.angle + angle) <= 90.0) {
-            g2d.translate(-mirrorX * delta.getX(), mirrorY * delta.getY());
+      translate(g2d, mirrorX, mirrorY);
+      // TODO: positioning offset / inside
 
-         } else {
-            g2d.translate(mirrorX * delta.getX(), mirrorY * delta.getY());
-         }
-
+      if (this instanceof PinTextView) {
+         System.out.println();
       }
 
       g2d.drawString(str, getXPos(width), getYPos(descent, ascent));
 
       g2d.setTransform(origTransform);
       g2d.setFont(oldfont);
-   }
-
-   public static Shape getTextShape(Graphics2D g2d, String text, double x, double y, Font font, boolean ltr) {
-      AttributedString attstring = new AttributedString(text);
-      attstring.addAttribute(TextAttribute.FONT, font);
-      attstring.addAttribute(TextAttribute.RUN_DIRECTION,
-            ltr ? TextAttribute.RUN_DIRECTION_LTR : TextAttribute.RUN_DIRECTION_RTL);
-      FontRenderContext frc = g2d.getFontRenderContext();
-      TextLayout t = new TextLayout(attstring.getIterator(), frc);
-      AffineTransform transform = new AffineTransform();
-      transform.translate(x, y);
-      return t.getOutline(transform);
-   }
-
-   @Override
-   protected void paintBackground(Graphics2D g2d) {
-      // nothing to do, yet
-   }
-
-   private float getXPos(float width) {
-      if (just != null && just.getHoritontalAlignment() != null) {
-         switch (just.getHoritontalAlignment()) {
-            case CENTER:
-               return -width / 2.0f;
-            case LEFT:
-               return 0f;
-            case RIGHT:
-               return -width;
-         }
-      }
-      return -width / 2.0f;
-   }
-
-   private float getYPos(float descent, float ascent) {
-      if (just != null && just.getVerticalAlignment() != null) {
-         switch (just.getVerticalAlignment()) {
-            case CENTER:
-               return ascent / 2.0f;
-            case BOTTOM:
-               return 0f;
-            case TOP:
-               return ascent;
-         }
-      }
-      return ascent / 2.0f;
    }
 
    @Override
@@ -219,4 +153,9 @@ public class TextView extends AbstractView {
             fontBound.getWidth(), fontBound.getHeight());
    }
 
+   protected abstract float getXPos(float width);
+
+   protected abstract float getYPos(float descent, float ascent);
+
+   protected abstract void translate(Graphics2D g2d, double mirrorX, double mirrorY);
 }

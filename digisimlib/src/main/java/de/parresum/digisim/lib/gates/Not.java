@@ -28,7 +28,7 @@ import de.parresum.digisim.lib.Out;
  * @author Kai Uwe Bachmann
  */
 @Component("NOT")
-@Component("digisim:Not")
+@Component("Not")
 public class Not extends AbstractGate {
 
    public static final String TYPE_NAME = "NOT";

@@ -134,7 +134,17 @@ public abstract class AbstractFlipFlop extends AbstractComponent implements Stat
     */
    @Override
    public Wire getOutput() {
+      if (output == null) {
+         setOutput(new Wire("Q"));
+      }
       return output;
+   }
+
+   public Wire getOutputN() {
+      if (outputn == null) {
+         setOutputn(new Wire("QN"));
+      }
+      return outputn;
    }
 
    // ----------------------------------- o -----------------------------------

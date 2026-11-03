@@ -27,7 +27,7 @@ import de.parresum.digisim.api.wire.Wire;
  *
  * @author Kai Uwe Bachmann
  */
-@Component("TFF")
+@Component("T-Flipflop")
 public class TFlipFlop extends AbstractFlipFlop {
    // T-Input
    private Wire t;

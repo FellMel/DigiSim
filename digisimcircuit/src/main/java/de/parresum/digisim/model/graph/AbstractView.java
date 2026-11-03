@@ -171,4 +171,5 @@ public abstract class AbstractView {
       }
       return new Color(col.getRed(), col.getGreen(), col.getBlue());
    }
+
 }

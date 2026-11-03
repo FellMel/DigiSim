@@ -26,16 +26,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.ServiceLoader;
 
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.util.Strings;
 
 import de.parresum.digisim.api.CircuitComponent;
 import de.parresum.digisim.api.spi.ComponentProvider;
 import de.parresum.digisim.core.Circuit;
-import de.parresum.digisim.gui.SimulationWindow;
 import de.parresum.digisim.model.AbstractNetElement;
 import de.parresum.digisim.model.CircuitPin;
 import de.parresum.digisim.model.LibPart;
@@ -67,55 +64,10 @@ import de.parresum.kicad.parser.sexpr.SExpressionParser;
  *
  * @author Kai Uwe Bachmann
  */
-public class Parser {
-   private final static Logger LOG = LogManager.getLogger(Parser.class);
+public class SchemeParser {
+   private final static Logger LOG = LogManager.getLogger(SchemeParser.class);
 
-   public static void main(String[] args) {
-      LOG.info("Start parsing");
-      File file = null;
-
-      if (args.length > 0) {
-         String filename = args[0];
-         file = new File(filename);
-      } else {
-         JFileChooser fileChooser = new JFileChooser();
-
-         // Optional: define start path (z. B. user home)
-         fileChooser.setCurrentDirectory(new File("kicad/DigiSim"));
-         fileChooser.setAcceptAllFileFilterUsed(false);
-         fileChooser.addChoosableFileFilter(new FileFilter() {
-            @Override
-            public String getDescription() {
-               return "KiCad Scheme (*.kicad_sch)";
-            }
-
-            @Override
-            public boolean accept(File f) {
-               if (f.isDirectory()) {
-                  return true;
-               } else {
-                  return f.getName().toLowerCase().endsWith(".kicad_sch");
-               }
-            }
-         });
-
-         // 2. show dialog
-         int result = fileChooser.showOpenDialog(null);
-
-         // 3. check result
-         if (result != JFileChooser.APPROVE_OPTION) {
-            System.exit(0);
-         }
-         file = fileChooser.getSelectedFile();
-      }
-
-      Circuit circuit = readFile(file);
-
-      // Create test window with inputs and outputs
-      createSimWindow(circuit);
-   }
-
-   private static Circuit readFile(File file) {
+   public static Circuit readFile(File file) {
       try (FileReader infile = new FileReader(file)) {
 
          final Schematic result = SExpressionParser.parse(infile, new Schematic());
@@ -156,7 +108,11 @@ public class Parser {
 
       List<NetPart> parts = new ArrayList<NetPart>();
       for (Symbol symbol : scheme.getSymbols()) {
-         LibPart libPart = getLibSymbol(symbol.getLibraryIdentifier(), lib);
+         String symbolName = symbol.getLibName();
+         if (Strings.isEmpty(symbolName)) {
+            symbolName = symbol.getLibraryIdentifier();
+         }
+         LibPart libPart = getLibSymbol(symbolName, lib);
          NetPart part = new NetPart(symbol, libPart);
          parts.add(part);
 
@@ -324,10 +280,6 @@ public class Parser {
          System.exit(-1);
       }
       return circuit;
-   }
-
-   private static void createSimWindow(Circuit circuit) {
-      SimulationWindow wnd = new SimulationWindow(circuit);
    }
 
    private static LibPart getLibSymbol(String libSymbol, Map<String, LibPart> lib) {

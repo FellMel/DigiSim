@@ -144,7 +144,8 @@ public class Input extends Box implements CircuitComponent, ChangeListener, Out,
          output = tmp;
       }
       this.output = output;
-      stateChanged(null);
+
+        stateChanged(null);
    }
 
    @Override
@@ -155,9 +156,10 @@ public class Input extends Box implements CircuitComponent, ChangeListener, Out,
    // ----------------------------------- o -----------------------------------
    @Override
    public void stateChanged(final ChangeEvent e) {
-      final State current = input.isSelected() ? State.HIGH : State.LOW;
-      output.set(current);
-
+    State  current = input.isSelected() ? State.HIGH : State.LOW;
+      if (output != null) {
+         output.set(current);
+      }
    }
 
    @Override

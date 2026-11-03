@@ -26,13 +26,13 @@ import de.parresum.digisim.lib.Out;
  * @author Kai Uwe Bachmann
  */
 @Component("OR")
-@Component("digisim:Or 2")
-@Component("digisim:Or 3")
-@Component("digisim:Or 4")
-@Component("digisim:Or 5")
-@Component("digisim:Or 6")
-@Component("digisim:Or 7")
-@Component("digisim:Or 8")
+@Component("Or 2")
+@Component("Or 3")
+@Component("Or 4")
+@Component("Or 5")
+@Component("Or 6")
+@Component("Or 7")
+@Component("Or 8")
 public class Or extends AbstractGate {
 
    public Or(final String name, final Wire output, final Wire... inputs) {

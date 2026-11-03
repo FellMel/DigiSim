@@ -77,6 +77,12 @@ public abstract class AbstractComponent implements CircuitComponent {
       }
    }
 
+   protected void setState(Wire wire, boolean val, boolean oc) {
+      if (wire != null) {
+         wire.set(val ? (oc ? State.OPEN : State.HIGH) : State.LOW);
+      }
+   }
+
    protected void setOpen(Wire wire) {
       if (wire != null) {
          wire.set(State.OPEN);
@@ -114,8 +120,12 @@ public abstract class AbstractComponent implements CircuitComponent {
     * @param wires wires to write to
     */
    protected void intToWire(int val, Wire[] wires) {
+      intToWire(val, wires, false);
+   }
+
+   protected void intToWire(int val, Wire[] wires, boolean activeLow) {
       for (int i = 0; i < wires.length; i++) {
-         setState(wires[i], (val & 0x01) != 0);
+         setState(wires[i], ((val & 0x01) != 0) ^ activeLow);
          val >>= 1;
       }
    }
@@ -130,7 +140,6 @@ public abstract class AbstractComponent implements CircuitComponent {
    protected void selectWire(int val, Wire[] wires, boolean activeLow) {
       for (int i = 0; i < wires.length; i++) {
          setState(wires[i], (val == i) ^ activeLow);
-         val >>= 1;
       }
    }
 

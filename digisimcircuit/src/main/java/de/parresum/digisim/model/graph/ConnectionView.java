@@ -95,6 +95,10 @@ public abstract class ConnectionView {
       return name;
    }
 
+   public String getPinName() {
+      return connection.getPinName();
+   }
+
    public abstract void paint(Graphics2D g2d);
 
    public abstract Rectangle2D getBounding();

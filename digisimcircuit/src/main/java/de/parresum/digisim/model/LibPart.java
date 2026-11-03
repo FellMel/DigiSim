@@ -23,6 +23,7 @@ import de.parresum.digisim.model.graph.AbstractView;
 import de.parresum.digisim.model.graph.ArcView;
 import de.parresum.digisim.model.graph.BezierView;
 import de.parresum.digisim.model.graph.CircleView;
+import de.parresum.digisim.model.graph.PinTextView;
 import de.parresum.digisim.model.graph.PinView;
 import de.parresum.digisim.model.graph.PolygonView;
 import de.parresum.digisim.model.graph.RectangleView;
@@ -36,6 +37,8 @@ import de.parresum.kicad.parser.eescheme.shape.Text;
 import de.parresum.kicad.parser.library.GraphPin;
 import de.parresum.kicad.parser.library.GraphSymbol;
 import de.parresum.kicad.parser.library.LibSymbol;
+import de.parresum.kicad.parser.library.PinNames;
+import de.parresum.kicad.parser.library.PinNumber;
 
 /**
  * Extracted symbol definition from library
@@ -49,8 +52,9 @@ public class LibPart extends AbstractCircuitPart {
 
       if (symbol.getSymbols() != null) {
          for (GraphSymbol sub : symbol.getSymbols()) {
+            // TODO: Unit ...
             parsePins(sub);
-            parseGraphics(sub);
+            parseGraphics(symbol, sub);
          }
       }
    }
@@ -64,7 +68,7 @@ public class LibPart extends AbstractCircuitPart {
       }
    }
 
-   private void parseGraphics(GraphSymbol symbol) {
+   private void parseGraphics(LibSymbol libSymbol, GraphSymbol symbol) {
       if (symbol.getPolylines() != null) {
          for (Polyline poly : symbol.getPolylines()) {
             graphic.add(new PolygonView(poly));
@@ -104,6 +108,32 @@ public class LibPart extends AbstractCircuitPart {
       if (symbol.getPins() != null) {
          for (GraphPin pin : symbol.getPins()) {
             graphic.add(new PinView(pin));
+
+            PinNames names = libSymbol.getPinNames();
+            if (names == null || !names.isHide()) {
+
+//               if (pin.getEffects() != null && pin.getEffects().isHide()) {
+//                  continue;
+//               }
+               Double offset = null;
+               if (names != null) {
+                  offset = names.getOffset();
+               }
+
+               boolean inside = true;
+               if (offset == null) {
+                  offset = 0.508;
+               }
+               if (offset == 0) {
+                  inside = false;
+               }
+               graphic.add(new PinTextView(pin, inside, offset));
+            }
+
+            PinNumber numbers = libSymbol.getPinNumbers();
+            if (numbers == null || !numbers.isHide()) {
+               graphic.add(new PinTextView(pin));
+            }
          }
       }
    }
