@@ -74,6 +74,36 @@ public class NetWire extends AbstractNetElement {
       return false;
    }
 
+   public boolean split(NetPoint point) {
+
+      for (int i = 1; i < points.size(); i++) {
+         NetPoint prev = points.get(i - 1);
+         NetPoint cur = points.get(i);
+
+         if (prev.getX() == cur.getX() && prev.getX() == point.getX()) {
+            if (prev.getY() < point.getY() && point.getY() < cur.getY()) {
+               points.add(i, point);
+               return true;
+            }
+            if (prev.getY() > point.getY() && point.getY() > cur.getY()) {
+               points.add(i, point);
+               return true;
+            }
+         } else if (prev.getY() == cur.getY() && prev.getY() == point.getY()) {
+            if (prev.getX() < point.getX() && point.getX() < cur.getX()) {
+               points.add(i, point);
+               return true;
+            }
+            if (prev.getX() > point.getX() && point.getX() > cur.getX()) {
+               points.add(i, point);
+               return true;
+            }
+         }
+      }
+
+      return false;
+   }
+
    /**
     * gets the point list
     */

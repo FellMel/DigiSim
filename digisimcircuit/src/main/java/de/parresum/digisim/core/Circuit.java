@@ -93,9 +93,6 @@ public class Circuit {
 
       switch (connection.getType()) {
          case INPUT:
-            if (connection.getName().contains("LOAD")) {
-               System.out.println();
-            }
             inputs.add(new Input(formatConnectionName(connection.getName()), connection.getWire()));
             break;
          case OUTPUT:

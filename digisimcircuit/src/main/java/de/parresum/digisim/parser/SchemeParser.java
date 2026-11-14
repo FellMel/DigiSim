@@ -132,6 +132,18 @@ public class SchemeParser {
       }
       LOG.info("Found " + elements.size() + " elements");
 
+      // fixing Junctions / crossing wires
+      // if netJunction in middle of NetWire, there is a connection
+      for (AbstractNetElement item : elements) {
+         if (item instanceof NetJunction) {
+            for (AbstractNetElement second : elements) {
+               if (second instanceof NetWire) {
+                  ((NetWire) second).split(item.getPoints().getFirst());
+               }
+            }
+         }
+      }
+
       // now group them by netlists
       int netCnt = 1;
       LOG.info("grouping nets ...");
@@ -160,7 +172,9 @@ public class SchemeParser {
             }
          } while (found);
 
-         netLists.put("net " + netCnt, netList);
+         if (netList.size() > 1) { // only, if there more than one participants. Else the pin is "Not Connected"
+            netLists.put("net " + netCnt, netList);
+         }
          netCnt++;
       }
 

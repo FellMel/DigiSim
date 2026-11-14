@@ -2,7 +2,7 @@
  *
  */
 module de.parresum.digisim.circuit {
-   requires java.desktop;
+   requires transitive java.desktop;
    requires org.apache.logging.log4j;
    requires transitive de.parresum.kicad.parser;
    requires org.apache.commons.lang3;

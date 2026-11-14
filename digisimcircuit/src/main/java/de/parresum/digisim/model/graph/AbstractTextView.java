@@ -84,7 +84,6 @@ public abstract class AbstractTextView extends AbstractView {
       font = new Font(face, Font.PLAIN, (int) ((size.getHeight() * 1.4 * UNIT_FACTOR + .5)));
 
       just = stile.getJustify();
-
    }
 
    @Override
@@ -126,10 +125,6 @@ public abstract class AbstractTextView extends AbstractView {
       g2d.rotate(Math.toRadians(rotate));
       translate(g2d, mirrorX, mirrorY);
       // TODO: positioning offset / inside
-
-      if (this instanceof PinTextView) {
-         System.out.println();
-      }
 
       g2d.drawString(str, getXPos(width), getYPos(descent, ascent));
 

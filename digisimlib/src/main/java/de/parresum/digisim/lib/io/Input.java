@@ -42,8 +42,6 @@ import de.parresum.digisim.lib.Out;
 public class Input extends Box implements CircuitComponent, ChangeListener, Out, InputPart {
 
    private static final long serialVersionUID = 3660162041124702476L;
-   /** Name of the element */
-   private final String name;
 
    /** Display name of the element */
    private String description;
@@ -67,7 +65,7 @@ public class Input extends Box implements CircuitComponent, ChangeListener, Out,
     */
    public Input(final String name) {
       super(BoxLayout.Y_AXIS);
-      this.name = name;
+      super.setName(name);
 
       label = new JLabel(name);
       this.add(input);
@@ -145,7 +143,7 @@ public class Input extends Box implements CircuitComponent, ChangeListener, Out,
       }
       this.output = output;
 
-        stateChanged(null);
+      stateChanged(null);
    }
 
    @Override
@@ -156,7 +154,7 @@ public class Input extends Box implements CircuitComponent, ChangeListener, Out,
    // ----------------------------------- o -----------------------------------
    @Override
    public void stateChanged(final ChangeEvent e) {
-    State  current = input.isSelected() ? State.HIGH : State.LOW;
+      State current = input.isSelected() ? State.HIGH : State.LOW;
       if (output != null) {
          output.set(current);
       }
@@ -170,7 +168,7 @@ public class Input extends Box implements CircuitComponent, ChangeListener, Out,
    // ----------------------------------- o -----------------------------------
    @Override
    public String toString() {
-      return name;
+      return getName() + ": " + output.get();
    }
 
 }

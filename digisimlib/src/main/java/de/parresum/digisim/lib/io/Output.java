@@ -183,7 +183,7 @@ public class Output extends Box implements CircuitComponent, StateListener, Outp
    // ----------------------------------- o -----------------------------------
    @Override
    public String toString() {
-      return name;
+      return name + ": " + input.get();
    }
 
 }

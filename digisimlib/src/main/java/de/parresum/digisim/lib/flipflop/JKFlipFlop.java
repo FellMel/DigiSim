@@ -60,11 +60,9 @@ public class JKFlipFlop extends AbstractFlipFlop {
       }
       if (j.get() == State.HIGH) {
          return State.HIGH;
-
       }
       if (k.get() == State.HIGH) {
          return State.LOW;
-
       }
       return cur;
    }

@@ -247,7 +247,8 @@ public class NetPart extends AbstractCircuitPart {
       g2d.translate(position.getX(), position.getY());
       if (mirrorX) {
          g2d.scale(1, -1);
-      } else if (mirrorY) {
+      }
+      if (mirrorY) {
          g2d.scale(-1, 1);
       }
       g2d.rotate(Math.toRadians(angle));

@@ -81,7 +81,6 @@ public class CircuitComponent extends JPanel {
 
       Collections.sort(circuit.getOutputs(), (a, b) -> {
          return a.getName().compareToIgnoreCase(b.getName());
-
       });
       for (OutputPart output : circuit.getOutputs()) {
          if (output instanceof JComponent) {

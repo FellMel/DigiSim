@@ -122,6 +122,7 @@ public class Wire implements StateListener {
          this.current = n;
          fireStateChange(o, n);
       });
+      input.fireStateChange(input.current.not(), input.current);
    }
 
    /**
@@ -171,7 +172,7 @@ public class Wire implements StateListener {
     *
     * This wire can be open and connected to multiple tri-state outputs. The network will be realized by some internal
     * wires
-    * 
+    *
     */
    public void setTriState() {
       if (this.triState) {
@@ -263,7 +264,7 @@ public class Wire implements StateListener {
    // ------------------------------- o -------------------------------
    @Override
    public String toString() {
-      return name;
+      return name + ": " + get();
    }
 
    // ------------------------------- o -------------------------------
