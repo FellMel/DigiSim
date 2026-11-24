@@ -69,22 +69,23 @@ public abstract class ConnectionView {
    /**
     * @param wire
     */
-   public void joinWire(Wire wire) {
+   public Wire joinWire(Wire wire) {
       switch (getType()) {
          case INPUT:
             this.wire.join(wire);
-            break;
+            return wire;
 
          case OUTPUT:
             wire.join(this.wire);
-            break;
+            return wire;
 
          case OPEN_COLLECTOR:
          case TRI_STATE:
             // TODO: join special pin
+            return this.wire;
          default:
       }
-
+      return wire;
    }
 
    public PinType getType() {

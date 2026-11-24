@@ -113,7 +113,7 @@ public class Driver extends AbstractComponent implements StateListener, Out {
    // ----------------------------------- o -----------------------------------
    protected State calculate() {
 
-      if (enable == null || enable.get() == State.HIGH) {
+      if (enable == null || enable.get() == State.LOW) {
          return State.OPEN;
       } else {
          boolean input = getState(in);

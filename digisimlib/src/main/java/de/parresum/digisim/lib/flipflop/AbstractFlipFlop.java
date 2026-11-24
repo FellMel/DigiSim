@@ -84,7 +84,7 @@ public abstract class AbstractFlipFlop extends AbstractComponent implements Stat
          // TODO: disconnect old wire
       }
       this.prn = prn;
-      this.prn.addStateListener((_, _, n) -> pr(n));
+      this.prn.addStateListener((_, _, n) -> prClr(n));
    }
 
    /**
@@ -98,7 +98,7 @@ public abstract class AbstractFlipFlop extends AbstractComponent implements Stat
          // TODO: disconnect old wire
       }
       this.clrn = clrn;
-      this.clrn.addStateListener((_, _, n) -> clr(n));
+      this.clrn.addStateListener((_, _, n) -> prClr(n));
    }
 
    /**
@@ -153,26 +153,16 @@ public abstract class AbstractFlipFlop extends AbstractComponent implements Stat
     *
     * @param state state on the preset pin
     */
-   private void pr(final State state) {
-      if (state == State.LOW) {
+   private void prClr(final State state) {
+      if (prn != null && prn.get() == State.LOW && (clrn == null || clrn.get() == State.HIGH)) {
          this.state = (State.HIGH);
          outputState();
       }
-      log.debug("Preset {}: Output now {}", state, this.state);
-   }
-
-   /**
-    * do the clear
-    *
-    * @param state state on the clear pin
-    */
-   private void clr(final State state) {
-      if (state == State.LOW) {
+      if (clrn != null && clrn.get() == State.LOW && (prn == null || prn.get() == State.HIGH)) {
          this.state = (State.LOW);
          outputState();
       }
-      log.debug("Clear {}: Output now {}", state, this.state);
-
+      log.debug("Preset {}: Output now {}", state, this.state);
    }
 
    /**
@@ -232,22 +222,23 @@ public abstract class AbstractFlipFlop extends AbstractComponent implements Stat
       }
 
       // now normal FF-Handling
-      if (oldState == State.LOW && newState == State.HIGH) {
-         state = flipFlop(state);
-         log.debug("Change through Wire {} from {} to {}. previous {}, now {}", src, oldState, newState, previous,
-               state);
-         if (log.isDebugEnabled()) {
-            logPins();
+      if (src == clk) {
+         if (oldState == State.LOW && newState == State.HIGH) {
+            state = flipFlop(state);
+            log.debug("Change through Wire {} from {} to {}. previous {}, now {}", src, oldState, newState, previous,
+                  state);
+            if (log.isDebugEnabled()) {
+               logPins();
+            }
+         }
+
+         // output is delayed
+         if (oldState == State.HIGH && newState == State.HIGH) {
+            outputState();
+            log.debug("Change through Wire {} from {} to {}. previous {}, now {}", src, oldState, newState, previous,
+                  state);
          }
       }
-
-      // output is delayed
-      if (oldState == State.HIGH && newState == State.HIGH) {
-         outputState();
-         log.debug("Change through Wire {} from {} to {}. previous {}, now {}", src, oldState, newState, previous,
-               state);
-      }
-
    }
 
    @Override

@@ -71,6 +71,14 @@ public abstract class AbstractComponent implements CircuitComponent {
       return wire.get() == State.HIGH;
    }
 
+   protected boolean getStateOc(Wire wire) {
+      if (wire == null) {
+         return false;
+      }
+
+      return wire.get() == State.OPEN;
+   }
+
    protected void setState(Wire wire, boolean val) {
       if (wire != null) {
          wire.set(val ? State.HIGH : State.LOW);
@@ -113,6 +121,16 @@ public abstract class AbstractComponent implements CircuitComponent {
       return val;
    }
 
+   protected int wireToIntOc(Wire[] wires) {
+      int val = 0;
+      for (int i = wires.length - 1; i >= 0; i--) {
+         val <<= 1;
+         val |= getStateOc(wires[i]) ? 1 : 0;
+      }
+
+      return val;
+   }
+
    /**
     * writes the value to the wires binary decoded
     *
@@ -126,6 +144,17 @@ public abstract class AbstractComponent implements CircuitComponent {
    protected void intToWire(int val, Wire[] wires, boolean activeLow) {
       for (int i = 0; i < wires.length; i++) {
          setState(wires[i], ((val & 0x01) != 0) ^ activeLow);
+         val >>= 1;
+      }
+   }
+
+   protected void intToWireOc(int val, Wire[] wires) {
+      intToWireOc(val, wires, false);
+   }
+
+   protected void intToWireOc(int val, Wire[] wires, boolean activeLow) {
+      for (int i = 0; i < wires.length; i++) {
+         setState(wires[i], ((val & 0x01) != 0) ^ activeLow, true);
          val >>= 1;
       }
    }

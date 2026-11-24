@@ -202,9 +202,6 @@ public class SchemeParser {
       Circuit circuit = new Circuit(name);
 
       ServiceLoader<ComponentProvider> serviceLoader = ServiceLoader.load(ComponentProvider.class);
-      for (ComponentProvider provider : serviceLoader) {
-         System.out.println("Found provider " + provider.getLibName());
-      }
       try {
          Map<String, NetView> views = new HashMap<>();
 
